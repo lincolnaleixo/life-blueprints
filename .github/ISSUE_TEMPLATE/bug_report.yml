@@ -1,75 +1,48 @@
-name: Bug report
-description: Report reproducible incorrect behavior in the template
-title: "[Bug]: "
+name: Blueprint correction
+description: Report an incorrect claim, broken reference, or validation defect
+title: "[Correction]: "
 body:
   - type: markdown
     attributes:
-      value: |
-        Do not include secrets, tokens, private data, or production connection strings.
-        Security vulnerabilities should follow SECURITY.md instead of this form.
+      value: Do not include secrets, private business data, or identifying internal context.
   - type: dropdown
-    id: capability
+    id: blueprint
     attributes:
-      label: Affected capability
+      label: Blueprint
       options:
-        - Web and UI
-        - API
-        - Database and migrations
-        - Authentication and authorization
-        - Object storage
-        - Docker and deployment
-        - Observability
-        - Mobile
-        - Desktop
-        - Tooling and documentation
-        - Other
+        - affiliates
+        - content
+        - ebooks
+        - ecommerce
+        - mobile-app
+        - newsletter
+        - saas
+        - social-media
+        - utility-site
+        - youtube
+        - repository tooling
     validations:
       required: true
   - type: textarea
-    id: summary
+    id: problem
     attributes:
       label: Problem
-      description: Describe what is incorrect and why it matters.
+      description: Identify the incorrect or unclear material and why it matters.
     validations:
       required: true
   - type: textarea
-    id: reproduction
+    id: evidence
     attributes:
-      label: Minimal reproduction
-      description: List the smallest reliable sequence that reproduces the problem.
-      placeholder: |
-        1. Create a repository from the template
-        2. Run ...
-        3. Observe ...
+      label: Public evidence
+      description: Link primary public sources or provide a reproducible validator failure.
     validations:
       required: true
-  - type: textarea
-    id: expected
-    attributes:
-      label: Expected behavior
-    validations:
-      required: true
-  - type: textarea
-    id: environment
-    attributes:
-      label: Environment
-      description: Include operating system, architecture, Bun version, Docker version, and relevant platform tooling.
-      render: shell
-    validations:
-      required: true
-  - type: textarea
-    id: logs
-    attributes:
-      label: Sanitized logs or screenshots
-      description: Remove credentials, cookies, tokens, personal data, and internal hostnames when necessary.
   - type: checkboxes
     id: checks
     attributes:
-      label: Checks performed
+      label: Checks
       options:
-        - label: I reproduced the issue from a clean clone or generated repository.
-          required: true
         - label: I searched existing issues and pull requests.
           required: true
-        - label: I removed sensitive information from this report.
+        - label: I removed private or sensitive information.
           required: true

@@ -1,10 +1,9 @@
 # Agent Instructions
 
-1. Read `STATUS.md` first when resuming or planning repository work. It records the current baseline, completed areas, known blockers, and the exact continuation order.
-2. Read `RULES.md` before changing code.
-3. Read `README.md` and the relevant files in `docs/` before changing architecture, infrastructure, UI, or template capabilities.
-4. Use `template.config.ts` as the capability manifest and follow `docs/template-customization.md` when enabling, disabling, replacing, or removing a module.
-5. Keep `CHANGELOG.md` updated for meaningful behavior, architecture, dependency, security, deployment, and design-system changes.
-6. Do not claim support for a platform or workflow unless it is validated or the limitation is documented.
-7. Run `bun run check` plus the relevant integration, end-to-end, container, or native build before considering the work complete.
-8. Do not redo work marked complete in `STATUS.md` unless an executable check proves a concrete defect.
+1. Read `RULES.md`, `README.md`, and `docs/specification.md` before changing a blueprint or repository behavior.
+2. Treat this public repository as the canonical source for every blueprint it contains.
+3. Never add unit plans, private evidence, credentials, personal data, internal hostnames, private repository paths, or private business identifiers.
+4. Change a blueprint here first. Update its version and `CHANGELOG.md` only when the compatibility rules require it.
+5. Run `bun run check` before committing. Do not weaken a validator to admit content that violates the public contract.
+6. Keep changes generic across businesses of the type. Unit-specific work belongs in the unit's private plan, not here.
+7. Preserve uncertainty. Research-informed claims must not be presented as guaranteed or operationally proven without evidence.

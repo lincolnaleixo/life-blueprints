@@ -1,51 +1,33 @@
-name: Feature request
-description: Propose a reusable capability or improvement for generated projects
-title: "[Feature]: "
+name: Blueprint improvement
+description: Propose a reusable capability, phase, or new business type
+title: "[Proposal]: "
 body:
-  - type: markdown
-    attributes:
-      value: |
-        The template follows KISS and YAGNI. A proposal should solve a repeated, current product need without forcing unnecessary complexity on every generated repository.
   - type: textarea
-    id: requirement
+    id: gap
     attributes:
-      label: Product requirement
-      description: Describe the user or operational problem, not only the desired technology.
+      label: Reusable gap
+      description: Explain the recurring business condition that the current catalog misses.
     validations:
       required: true
   - type: textarea
-    id: consumers
+    id: evidence
     attributes:
-      label: Expected consumers
-      description: Which project shapes would retain this capability, and which should remove it?
+      label: Evidence across implementations
+      description: Show why this is generic rather than a project needed by only one business.
     validations:
       required: true
   - type: textarea
     id: proposal
     attributes:
-      label: Smallest useful solution
-      description: Describe the simplest implementation and its boundaries.
+      label: Smallest useful change
+      description: Propose the smallest phase, capability, or guidance change that closes the gap.
     validations:
       required: true
   - type: textarea
-    id: alternatives
+    id: compatibility
     attributes:
-      label: Alternatives considered
-      description: Include platform capabilities, existing dependencies, documentation-only options, and project-specific implementation.
-    validations:
-      required: true
-  - type: textarea
-    id: impact
-    attributes:
-      label: Template impact
-      description: List packages, capabilities, environment variables, migrations, workflows, tests, security, and documentation affected.
-    validations:
-      required: true
-  - type: textarea
-    id: removal
-    attributes:
-      label: Removal or disable path
-      description: Explain how a generated project that does not need this capability removes it cleanly.
+      label: Compatibility
+      description: Explain whether this is editorial, backward-compatible, or breaking.
     validations:
       required: true
   - type: checkboxes
@@ -53,9 +35,7 @@ body:
     attributes:
       label: Proposal checks
       options:
-        - label: This solves a current repeated requirement rather than a speculative future need.
+        - label: This is a durable condition, not a temporary project or task.
           required: true
-        - label: I checked whether the platform or existing stack already provides the capability.
-          required: true
-        - label: I considered maintenance, security, bundle, and operational cost.
+        - label: The proposal contains no private-system context.
           required: true
