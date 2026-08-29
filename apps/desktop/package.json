@@ -1,0 +1,15 @@
+{
+  "name": "@matrix/desktop",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "catalog:",
+    "@types/bun": "catalog:",
+    "typescript": "catalog:"
+  }
+}

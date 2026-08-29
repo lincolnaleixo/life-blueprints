@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Matrix Template",
+  "version": "0.3.0",
+  "identifier": "com.matrix.template",
+  "build": {
+    "beforeDevCommand": "bun run --cwd ../web dev",
+    "devUrl": "http://localhost:3000",
+    "beforeBuildCommand": "bun run --cwd ../web build:native",
+    "frontendDist": "../../web/dist/client"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Matrix Template",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 960,
+        "minHeight": 640,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' asset: http://asset.localhost data:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self'; connect-src 'self' https: http://localhost:* ipc: http://ipc.localhost"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "DeveloperTool",
+    "shortDescription": "Cross-platform Matrix product template"
+  }
+}

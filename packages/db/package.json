@@ -1,0 +1,25 @@
+{
+  "name": "@matrix/db",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts"
+  },
+  "scripts": {
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit migrate",
+    "studio": "drizzle-kit studio",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@matrix/env": "workspace:*",
+    "drizzle-orm": "catalog:",
+    "postgres": "catalog:"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:",
+    "drizzle-kit": "catalog:",
+    "typescript": "catalog:"
+  }
+}
