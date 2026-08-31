@@ -1,10 +1,11 @@
 ---
 type: ecommerce
-version: 3.1
-updated: 2026-08-29
+version: 4.0
+updated: 2026-08-31
 status: pilot
-supersedes: 3.0
+supersedes: 3.1
 normalized_from: 7.0
+plan_grammar: month-quarter
 ---
 
 # Ecommerce Blueprint
@@ -17,7 +18,7 @@ A reusable maturity model for building a physical-product ecommerce brand into a
 - A unit may carry capability debt from an earlier phase while operating at a later stage.
 - Priority is generic to the business type: P1 protects or directly drives profit, P2 strengthens profit on existing demand, P3 expands growth, and P4 is situational.
 - A capability becomes Live only with current evidence and a repeatable condition, not because a task was completed once.
-- A unit plan uses this model as reference rather than mirroring it. It defines unit-specific state phases with at most five bounded projects each; projects within a phase may run in parallel, and phases have no dates or expected durations.
+- A unit plan uses this model as reference rather than mirroring it. An ecommerce unit plans by time — month and quarter containers holding at most five bounded projects each — because an operating commerce business runs on rhythm: monthly buys, seasonal launches, quarterly review. Projects within a container may run in parallel. Unscheduled future work lives in explicit Later groups, never under invented dates, and a unit still in its build-out may declare a deliberate phase-grammar override in its manifest until it truly operates.
 - Projects and capabilities have a many-to-many relationship. Reuse relevant capability slugs without forcing unit-specific work into the catalog or treating one project as permanent capability evidence.
 
 ## Phases
