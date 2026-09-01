@@ -7,6 +7,7 @@ All notable changes to the public blueprint collection are documented here.
 ### Changed
 
 - `ecommerce@4.0` (major, breaking planning contract): an ecommerce unit now plans by time — month and quarter containers with bounded projects and explicit Later groups — instead of unit-specific state phases, with a deliberate per-unit phase override allowed during build-out. Adds the machine-readable `plan_grammar: month-quarter` metadata. Every referencing unit must be reviewed against this version; LongLifeNutri reviewed and converted 2026-08-31.
+- `saas@2.0` (major, breaking planning contract): a SaaS unit now plans by version — one Current release, ordered undated future releases, no more than five projects per version, and completed releases retained as product history. Adds the machine-readable `plan_grammar: version` metadata. Every referencing unit must be reviewed explicitly before moving to this version.
 
 ## [1.0.0] - 2026-08-29
 
