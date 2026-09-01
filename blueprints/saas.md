@@ -1,13 +1,23 @@
 ---
 type: saas
-version: 1.1
-updated: 2026-08-06
-status: written
+version: 2.0
+updated: 2026-09-01
+status: pilot
+supersedes: 1.1
+plan_grammar: version
 ---
 
 # Blueprint — SaaS business
 
 > How to build a **micro-SaaS**: a narrow software tool that solves one painful job for one niche and earns recurring revenue (MRR). This is the **reusable methodology for any operator building this business type**; a specific bet adds its own niche, wedge, name, funnel, and pricing. Run a separate market-validation pass before committing; this blueprint explains how to build after that decision. The benchmarks are research-sourced rather than operationally proven and should be verified against current market evidence.
+
+## Planning Contract
+
+- Phases describe generic SaaS maturity and gate on business evidence; they are not the unit's roadmap containers.
+- A SaaS unit plans by **version** because each bounded release should create an observable product or market state. Keep exactly one incomplete version marked Current, place later versions in priority order without dates or duration estimates, and retain completed versions as the product's natural history.
+- Each version holds at most five top-level projects. A project is a temporary change with an observable completion condition; its concrete execution tasks live directly underneath it.
+- A version closes only after the shipped product, operating evidence, unit rules, and built-state record agree. Shipping code alone does not close a version.
+- Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
 
 ---
 
