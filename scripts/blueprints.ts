@@ -6,6 +6,8 @@ export interface BlueprintMetadata {
   version: string;
   updated: string;
   status: string;
+  planGrammar?: string;
+  experimentLadder?: string;
 }
 
 export interface ValidationProblem {
@@ -36,11 +38,13 @@ export function parseBlueprint(content: string): { metadata: BlueprintMetadata |
   if (!match) return { metadata: null, body: normalized };
   const raw = metadataFrom(match[1]!);
   const metadata = ["type", "version", "updated", "status"].every((key) => raw[key])
-    ? {
+      ? {
         type: raw.type!,
         version: raw.version!,
         updated: raw.updated!,
-        status: raw.status!
+        status: raw.status!,
+        ...(raw.plan_grammar ? { planGrammar: raw.plan_grammar } : {}),
+        ...(raw.experiment_ladder ? { experimentLadder: raw.experiment_ladder } : {})
       }
     : null;
   return { metadata, body: match[2]! };
@@ -89,6 +93,31 @@ export function validateBlueprintContent(
     add("updated must be a valid ISO date");
   }
   if (!allowedStatuses.has(metadata.status)) add(`unsupported status: ${metadata.status}`);
+
+  if (metadata.experimentLadder) {
+    if (metadata.experimentLadder !== "level-trigger") {
+      add(`unsupported experiment_ladder: ${metadata.experimentLadder}`);
+    }
+    const ladder = body.match(/^## Experiment Ladder\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/m)?.[1] || "";
+    if (!ladder) {
+      add("experiment_ladder requires an ## Experiment Ladder section");
+    } else {
+      if (!/level\s+`?0`?/i.test(ladder)) add("experiment ladder must define Level 0 admission");
+      if (!/^\| Level \| Name \| Metric \| Trigger \| Window \| Unlocks \|$/m.test(ladder)) {
+        add("experiment ladder must use the Level, Name, Metric, Trigger, Window, Unlocks table contract");
+      }
+      const rows = [...ladder.matchAll(/^\|\s*(\d+)\s*\|[^\n]+$/gm)]
+        .map((match) => ({ level: Number(match[1]), row: match[0] }));
+      if (!rows.some(({ level }) => level > 0)) add("experiment ladder must define at least one triggered level above 0");
+      const graduations = rows.filter(({ row }) => /\bgraduate\b/i.test(row));
+      if (graduations.length !== 1) add(`experiment ladder must define exactly one graduation level, found ${graduations.length}`);
+      for (const { level, row } of rows) {
+        if (level > 0 && !/(?:>=|<=|>|<|=)\s*\d+/.test(row)) {
+          add(`experiment ladder level ${level} must declare a numeric trigger`);
+        }
+      }
+    }
+  }
 
   const titles = [...body.matchAll(/^#\s+.+$/gm)];
   if (titles.length !== 1) add(`expected exactly one H1, found ${titles.length}`);
