@@ -51,4 +51,35 @@ describe("blueprint validator", () => {
     const problems = validateBlueprintContent("different.md", validBlueprint, "`example@1.0`");
     expect(problems.some((problem) => problem.message.includes("type must match filename"))).toBe(true);
   });
+
+  test("accepts the level-trigger experiment ladder contract", () => {
+    const withLadder = validBlueprint
+      .replace("status: draft", "status: draft\nexperiment_ladder: level-trigger")
+      .replace("## Phases", `## Experiment Ladder
+
+Level \`0\` is admission to a running experiment.
+
+| Level | Name | Metric | Trigger | Window | Unlocks |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Signal | External conversions | \`>= 10\` | Trailing 30 days | Graduate into a unit |
+
+## Phases`);
+    expect(validateBlueprintContent("example.md", withLadder, "`example@1.0`")).toEqual([]);
+  });
+
+  test("rejects an experiment ladder without one graduation trigger", () => {
+    const withLadder = validBlueprint
+      .replace("status: draft", "status: draft\nexperiment_ladder: level-trigger")
+      .replace("## Phases", `## Experiment Ladder
+
+Level 0 is admission.
+
+| Level | Name | Metric | Trigger | Window | Unlocks |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Signal | External conversions | \`>= 10\` | Trailing 30 days | Continue testing |
+
+## Phases`);
+    const problems = validateBlueprintContent("example.md", withLadder, "`example@1.0`");
+    expect(problems.some((problem) => problem.message.includes("exactly one graduation"))).toBe(true);
+  });
 });

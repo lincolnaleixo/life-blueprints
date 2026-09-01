@@ -1,10 +1,11 @@
 ---
 type: saas
-version: 2.0
+version: 2.1
 updated: 2026-09-01
 status: pilot
-supersedes: 1.1
+supersedes: 2.0
 plan_grammar: version
+experiment_ladder: level-trigger
 ---
 
 # Blueprint — SaaS business
@@ -18,6 +19,19 @@ plan_grammar: version
 - Each version holds at most five top-level projects. A project is a temporary change with an observable completion condition; its concrete execution tasks live directly underneath it.
 - A version closes only after the shipped product, operating evidence, unit rules, and built-state record agree. Shipping code alone does not close a version.
 - Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
+
+## Experiment Ladder
+
+A SaaS bet is an **experiment before it is a unit**. Admission requires a live automated product or test, a falsifiable hypothesis, a measurable trigger, a bounded observation window, a reproducible metric source, and no routine operator work before the next decision. Level `0` means the bet has entered that running state; it is not an evidence claim and has no trigger of its own.
+
+Each higher level is earned only from external evidence. Internal accounts, fixtures, complimentary access, and manually asserted results do not count. The experiment record keeps the exact metric definition and source; the public blueprint defines only the reusable ladder.
+
+| Level | Name | Metric | Trigger | Window | Unlocks |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Activated demand | External accounts completing the product's declared activation event | `>= 10` | One verified 90-day observation window | A concrete paid offer may be tested with the activated cohort |
+| 2 | Revenue | External customers with a successfully captured recurring subscription payment | `>= 1` | Trailing 30 days | Graduate the experiment into a SaaS unit at stage `Revenue` |
+
+Graduation is a repository transition, not a forecast: the experiment becomes a unit only after the Level 2 payment is verified from the billing source. The new unit then inherits the SaaS version planning grammar and continues through `Revenue → Profit → Self-running`; the experiment record remains in Git history rather than being duplicated as a second live source.
 
 ---
 

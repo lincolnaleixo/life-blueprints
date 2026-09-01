@@ -14,7 +14,7 @@ A blueprint is reusable reference material, not a task list or a promise of resu
 | Ecommerce | 3.1 | Pilot | [ecommerce](blueprints/ecommerce.md) |
 | Mobile app | 1.1 | Written | [mobile app](blueprints/mobile-app.md) |
 | Newsletter | 1.3 | Written | [newsletter](blueprints/newsletter.md) |
-| SaaS | 2.0 | Pilot | [saas](blueprints/saas.md) |
+| SaaS | 2.1 | Pilot | [saas](blueprints/saas.md) |
 | Social media | 0.6 | First pass | [social media](blueprints/social-media.md) |
 | Utility site | 0.1 | Draft | [utility site](blueprints/utility-site.md) |
 | YouTube | 1.0 | First pass | [youtube](blueprints/youtube.md) |
@@ -33,10 +33,17 @@ Statuses describe confidence, not business maturity:
 2. Validate the specific market independently.
 3. Read the blueprint as reference.
 4. Assess capabilities from current evidence as confirmed, gap, or unknown.
-5. Build a small unit-specific plan around the most important state change.
-6. Feed only generic, reusable lessons back into the blueprint.
+5. When the blueprint declares an experiment ladder, run the bet as an experiment until its graduation trigger is verified.
+6. Create the unit only at graduation, then build a small unit-specific plan around the most important state change.
+7. Feed only generic, reusable lessons back into the blueprint.
 
 Blueprint phases are evidence-gated maturity states, never dates or mandatory project sequences. Capability priorities are generic defaults and must not override the reality of a specific business.
+
+## Experiment ladders
+
+An experiment ladder is the pre-unit evidence contract for one business type. It is declared by `experiment_ladder: level-trigger` in blueprint frontmatter and by an `## Experiment Ladder` section. Level `0` is admission to a real running experiment; every higher level defines a metric, numeric trigger, observation window, and what the evidence unlocks. Exactly one level is marked as graduation, and that trigger must demonstrate real revenue before the bet becomes a unit.
+
+Private experiment records hold the specific hypothesis, metric definition, source, current level, and decisions. The public blueprint never contains a private bet's name, customer data, infrastructure, or result.
 
 ## Development
 
