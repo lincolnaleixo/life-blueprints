@@ -1,9 +1,10 @@
 ---
 type: youtube
-version: 1.1
+version: 1.2
 updated: 2026-09-02
 status: first-pass
 plan_grammar: phases
+experiment_ladder: level-trigger
 ---
 
 # Blueprint — Faceless YouTube business
@@ -18,6 +19,19 @@ plan_grammar: phases
 - Each phase holds at most five top-level projects. A project is a bounded change with an observable completion condition; its concrete execution tasks live directly underneath it and are uncapped.
 - Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
 - Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
+
+## Experiment Ladder
+
+This ladder applies to both the long-form and Shorts lanes. Level `0` is admission to an experiment that is running autonomously until its next trigger; it claims no traction. The view metric is the count of distinct public videos published during the stated window that reach at least 1,000 valid public views. Views may be read from the YouTube Analytics or Reporting API. Revenue is counted only once it is settled and externally attributable to the channel, using an aggregate from YouTube, checkout, or billing systems; do not include viewer or buyer identities.
+
+| Level | Name | Metric | Trigger | Window | Unlocks |
+| --- | --- | --- | --- | --- | --- |
+| 0 | Admission | Experiment is running with its hypothesis, metric, source, and decisions defined | Admission; no traction claim | Until the next trigger | Begin evidence collection |
+| 1 | Audience signal | Number of distinct public long-form or Shorts videos published in the window with at least 1,000 valid public views | >=1 qualifying video | Trailing 90 days | Continue testing reach |
+| 2 | Repeatable reach | Number of distinct public long-form or Shorts videos published in the window with at least 1,000 valid public views | >=3 qualifying videos | Trailing 90 days | Continue testing toward revenue |
+| 3 | Revenue | Settled external channel-attributable revenue (numeric currency amount) | >0 | Trailing 30 days | Graduate into a unit at stage Revenue |
+
+The existing CTR/AVD gate remains a packaging and retention diagnostic for operating decisions; it is not an experiment-ladder level.
 
 ---
 

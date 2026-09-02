@@ -6,6 +6,7 @@ All notable changes to the public blueprint collection are documented here.
 
 ### Changed
 
+- `youtube@1.2` (minor, backward-compatible experiment guidance): adds a universal long-form and Shorts level-trigger experiment ladder using reproducible public-view signals and settled channel-attributable revenue, with revenue as the sole graduation trigger into a Revenue-stage unit. Keeps CTR/AVD as an operating diagnostic rather than a ladder level.
 - `ecommerce@4.1` (minor, backward-compatible planning guidance): corrects the time-grammar project caps. A month container holds at most three top-level projects and a quarter at most five, replacing the previous "at most five bounded projects each"; nested execution tasks are uncapped and every cap is overridable per unit with a recorded reason.
 - `youtube@1.1` (minor, backward-compatible planning guidance): adds a planning contract declaring that a YouTube unit plans by phase, with at most five top-level projects per phase, uncapped nested execution tasks, and per-unit cap overrides. Adds the machine-readable `plan_grammar: phases` metadata.
 - `mobile-app@1.2` (minor, backward-compatible planning guidance): adds a planning contract declaring that a mobile-app unit plans by version, with at most five top-level projects per version, uncapped nested execution tasks, and per-unit cap overrides. Adds the machine-readable `plan_grammar: version` metadata.
