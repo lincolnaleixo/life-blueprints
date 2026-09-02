@@ -1,13 +1,22 @@
 ---
 type: affiliates
-version: 0.6
-updated: 2026-08-26
+version: 0.7
+updated: 2026-09-02
 status: first-pass
+plan_grammar: active-projects
 ---
 
 # Blueprint — Affiliate / CPA arbitrage business (offer-first)
 
 > **How this type differs from `content`/`youtube`.** Those start from an owned audience or asset and affiliate revenue is one lever on top. **This type starts from the offer**: select a converting affiliate or CPA offer, acquire suitable traffic, and keep the spread. The asset is the **funnel economics plus tested creative**, not an audience or product. It is paid-media-native, capital-intensive, and structurally fragile: offers decay and ad accounts can be restricted. This blueprint is research-grounded rather than systematically operated.
+
+## Planning Contract
+
+- Phases describe generic affiliate and CPA arbitrage maturity and gate on business evidence; they are not the unit's roadmap containers.
+- An affiliate unit plans by **active projects** because the work is a portfolio of bounded offer, creative, traffic, and compliance tests rather than a release train or a seasonal buying rhythm, and most of those tests are killed rather than shipped. The roadmap holds three containers: `Active` for committed work in flight, `Future` for ordered work that is not committed yet, and `Completed` as the archive of finished projects. `Active` is the single container marked Current, and every container declares its purpose, focus, and `Done when` condition.
+- `Active` holds at most five top-level projects and `Future` at most ten in total; overflow belongs in the operator's idea store or the unit backlog rather than in a longer list. `Completed` is an archive and is not capped. Execution tasks nested under a project are uncapped.
+- Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
+- Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
 
 ---
 

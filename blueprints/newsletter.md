@@ -1,13 +1,22 @@
 ---
 type: newsletter
-version: 1.3
-updated: 2026-08-06
+version: 1.4
+updated: 2026-09-02
 status: written
+plan_grammar: active-projects
 ---
 
 # Blueprint — Newsletter business
 
 > **How to build a niche newsletter into a sellable media asset** that earns from issue #1. This is the **reusable methodology for any operator building this business type**; a specific bet adds its own niche, name, funnel, and monetization mix.
+
+## Planning Contract
+
+- Phases describe generic newsletter maturity and gate on business evidence; they are not the unit's roadmap containers.
+- A newsletter unit plans by **active projects** because the weekly send is recurring operation rather than project work, so the roadmap should hold only the bounded changes — an owned funnel, a monetization step, a new title — that move the asset between sends. The roadmap holds three containers: `Active` for committed work in flight, `Future` for ordered work that is not committed yet, and `Completed` as the archive of finished projects. `Active` is the single container marked Current, and every container declares its purpose, focus, and `Done when` condition.
+- `Active` holds at most five top-level projects and `Future` at most ten in total; overflow belongs in the operator's idea store or the unit backlog rather than in a longer list. `Completed` is an archive and is not capped. Execution tasks nested under a project are uncapped.
+- Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
+- Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
 
 ---
 
