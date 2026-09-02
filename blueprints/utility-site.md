@@ -1,8 +1,9 @@
 ---
 type: utility-site
-version: 0.1
-updated: 2026-08-06
+version: 0.2
+updated: 2026-09-02
 status: draft
+plan_grammar: version
 ---
 
 # Blueprint — Utility Site
@@ -12,6 +13,15 @@ status: draft
 > utility. This is distinct from an editorial content business because the
 > product experience and trusted output lead; supporting content exists to
 > explain, distribute, and monetize the utility.
+
+## Planning Contract
+
+- Phases describe generic utility-site maturity and gate on business evidence; they are not the unit's roadmap containers.
+- A utility-site unit plans by **version** because the utility is a product with a build, ship, and operate shape: each bounded release makes the tool correct, discoverable, monetized, or wider, and should leave an observable change in the asset. Keep exactly one incomplete version marked Current, place later versions in priority order without dates or duration estimates, and retain completed versions as the asset's natural history. Every container declares its purpose, focus, and `Done when` condition.
+- Each version holds at most five top-level projects. A project is a bounded change with an observable completion condition; its concrete execution tasks live directly underneath it and are uncapped.
+- A version closes only after the shipped utility, its usage and economics evidence, and the unit's own operating record agree. Deploying the tool alone does not close a version.
+- Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
+- Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
 
 ## Operating model
 

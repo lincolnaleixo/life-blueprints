@@ -1,13 +1,22 @@
 ---
 type: social-media
-version: 0.6
-updated: 2026-08-26
+version: 0.7
+updated: 2026-09-02
 status: first-pass
+plan_grammar: active-projects
 ---
 
 # Blueprint — Social-media business (owned audience on social platforms)
 
 > **How this type differs from `youtube`/`content`.** `youtube` is one platform's long-form/faceless engine (monetized by a backend info-product); `content` is an owned site/SEO asset. **`social-media` is the audience-on-a-platform play across the short-form/social surfaces** (TikTok / Reels / Shorts / X / Instagram) where the asset is a **following** on accounts you own, including **AI-generated personas** and faceless niche accounts, monetized by brand deals, creator funds, affiliate, and own-product cross-sell. Distribution *of* a product (faceless video pushing an ebook) is a channel; this type is when the **audience itself** is the asset. **Not operated yet**; the numbers below are research-sourced from creator-economy data and should be treated as directional.
+
+## Planning Contract
+
+- Phases describe generic owned-audience social maturity and gate on business evidence; they are not the unit's roadmap containers.
+- A social-media unit plans by **active projects** because posting cadence is recurring operation rather than project work, and the bounded changes — a format lane, a monetization rail, a new account, an automated production pipeline — arrive neither as releases nor on a calendar. The roadmap holds three containers: `Active` for committed work in flight, `Future` for ordered work that is not committed yet, and `Completed` as the archive of finished projects. `Active` is the single container marked Current, and every container declares its purpose, focus, and `Done when` condition.
+- `Active` holds at most five top-level projects and `Future` at most ten in total; overflow belongs in the operator's idea store or the unit backlog rather than in a longer list. `Completed` is an archive and is not capped. Execution tasks nested under a project are uncapped.
+- Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
+- Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
 
 ---
 

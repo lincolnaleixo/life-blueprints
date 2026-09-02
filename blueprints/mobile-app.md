@@ -1,13 +1,23 @@
 ---
 type: mobile-app
-version: 1.1
-updated: 2026-08-26
+version: 1.2
+updated: 2026-09-02
 status: written
+plan_grammar: version
 ---
 
 # Blueprint — Mobile-app business (native iOS/Android)
 
 > **How to build a native mobile app into a revenue asset**, subscription-first, distributed through the App Store or Google Play. This is the **reusable methodology for any operator building this business type**; a specific bet adds its concept, platform, and monetization model. Run a separate market validation before committing. This blueprint is research-informed rather than operationally proven, so verify the benchmarks against current platform terms and the economics of the specific app.
+
+## Planning Contract
+
+- Phases describe generic mobile-app maturity and gate on business evidence; they are not the unit's roadmap containers.
+- A mobile-app unit plans by **version** because the app ships in bounded releases and the store listing, the paywall, and the retention loop all move with them, so each version should leave an observable product or market state. Keep exactly one incomplete version marked Current, place later versions in priority order without dates or duration estimates, and retain completed versions as the asset's natural history. Every container declares its purpose, focus, and `Done when` condition.
+- Each version holds at most five top-level projects. A project is a bounded change with an observable completion condition; its concrete execution tasks live directly underneath it and are uncapped.
+- A version closes only after the shipped build, its store and subscription evidence, and the unit's own operating record agree. Submitting a build alone does not close a version.
+- Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
+- Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
 
 ---
 

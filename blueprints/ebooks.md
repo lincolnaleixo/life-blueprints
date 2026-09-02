@@ -1,13 +1,22 @@
 ---
 type: ebooks
-version: 0.2
-updated: 2026-08-26
+version: 0.3
+updated: 2026-09-02
 status: first-pass
+plan_grammar: active-projects
 ---
 
 # Blueprint : Ebooks business (Amazon KDP portfolio)
 
 > **How to build a portfolio of Kindle ebooks into a semi-passive, sellable royalty asset**: publish niche nonfiction or fiction titles on Amazon KDP, drive sales with Amazon Ads, and compound a backlist. This is the **reusable methodology for any operator building this business type**; a specific bet adds its niche, pen name, and title list. Run a separate demand-and-competition validation before committing. This blueprint is research-informed rather than operationally proven; verify every benchmark before using it for a financial commitment.
+
+## Planning Contract
+
+- Phases describe generic KDP portfolio maturity and gate on business evidence; they are not the unit's roadmap containers.
+- An ebooks unit plans by **active projects** because the work is a stream of bounded title, cover, listing, and ads projects against a backlist that keeps earning between them, with no release train and no operating calendar to plan against. The roadmap holds three containers: `Active` for committed work in flight, `Future` for ordered work that is not committed yet, and `Completed` as the archive of finished projects. `Active` is the single container marked Current, and every container declares its purpose, focus, and `Done when` condition.
+- `Active` holds at most five top-level projects and `Future` at most ten in total; overflow belongs in the operator's idea store or the unit backlog rather than in a longer list. `Completed` is an archive and is not capped. Execution tasks nested under a project are uncapped.
+- Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
+- Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
 
 ---
 

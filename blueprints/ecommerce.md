@@ -1,7 +1,7 @@
 ---
 type: ecommerce
-version: 4.0
-updated: 2026-08-31
+version: 4.1
+updated: 2026-09-02
 status: pilot
 supersedes: 3.1
 normalized_from: 7.0
@@ -18,7 +18,9 @@ A reusable maturity model for building a physical-product ecommerce brand into a
 - A unit may carry capability debt from an earlier phase while operating at a later stage.
 - Priority is generic to the business type: P1 protects or directly drives profit, P2 strengthens profit on existing demand, P3 expands growth, and P4 is situational.
 - A capability becomes Live only with current evidence and a repeatable condition, not because a task was completed once.
-- A unit plan uses this model as reference rather than mirroring it. An ecommerce unit plans by time — month and quarter containers holding at most five bounded projects each — because an operating commerce business runs on rhythm: monthly buys, seasonal launches, quarterly review. Projects within a container may run in parallel. Unscheduled future work lives in explicit Later groups, never under invented dates, and a unit still in its build-out may declare a deliberate phase-grammar override in its manifest until it truly operates.
+- A unit plan uses this model as reference rather than mirroring it. An ecommerce unit plans by time — month and quarter containers — because an operating commerce business runs on rhythm: monthly buys, seasonal launches, quarterly review. Projects within a container may run in parallel. Unscheduled future work lives in explicit Later groups, never under invented dates, and a unit still in its build-out may declare a deliberate phase-grammar override in its manifest until it truly operates.
+- A month container holds at most three top-level projects and a quarter container at most five, because a month is a short operating window and a quarter is a planning one. Execution tasks nested under a project are uncapped.
+- Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
 - Projects and capabilities have a many-to-many relationship. Reuse relevant capability slugs without forcing unit-specific work into the catalog or treating one project as permanent capability evidence.
 
 ## Phases
@@ -124,6 +126,8 @@ Automate the proven machine, deepen attribution, expand regions and brand lines,
 
 ## Changelog
 
+- 4.1 — Corrected the time-grammar project caps: a month container holds at most three top-level projects and a quarter at most five, with nested execution tasks uncapped and every cap overridable per unit with a recorded reason.
+- 4.0 — Units plan by time (month and quarter containers with explicit Later groups) instead of unit-specific state phases; added the `plan_grammar: month-quarter` metadata.
 - 3.1 — Normalized the fast experimental 4.0–7.0 sequence into the 3.x pilot line; retained the resulting reference-only blueprint, bounded parallel projects, and optional many-to-many capability references.
 - 3.0 — Merged blueprint and plan semantics: phases are maturity and capability debt can cross phases.
 - 2.1 — Zion reference version used as the source baseline for the catalog and phase model.

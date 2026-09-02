@@ -1,13 +1,23 @@
 ---
 type: content
-version: 0.5
-updated: 2026-08-26
+version: 0.6
+updated: 2026-09-02
 status: first-pass
+plan_grammar: version
 ---
 
 # Blueprint — Content / SEO business
 
 > **How to build a niche content/SEO site into a monetizable, sellable asset** — traffic in, money out via ads, affiliate, or lead generation. This is the **reusable methodology for any operator building this business type**; a specific bet adds its own niche, keyword set, and monetization mix. Run a separate demand-and-competition validation before committing; this blueprint explains how to build after that decision.
+
+## Planning Contract
+
+- Phases describe generic content and SEO maturity and gate on business evidence; they are not the unit's roadmap containers.
+- A content unit plans by **version** because the site is a product that ships bounded states — the publishing engine, a monetization rail, a topic cluster, a discovery push — and each release should leave an observable change in the asset. Keep exactly one incomplete version marked Current, place later versions in priority order without dates or duration estimates, and retain completed versions as the asset's natural history. Every container declares its purpose, focus, and `Done when` condition.
+- Each version holds at most five top-level projects. A project is a bounded change with an observable completion condition; its concrete execution tasks live directly underneath it and are uncapped.
+- A version closes only after the shipped site, its traffic and revenue evidence, and the unit's own operating record agree. Publishing more articles alone does not close a version.
+- Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
+- Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
 
 ---
 

@@ -8,16 +8,16 @@ A blueprint is reusable reference material, not a task list or a promise of resu
 
 | Type | Version | Status | Blueprint |
 | --- | --- | --- | --- |
-| Affiliate / CPA | 0.6 | First pass | [affiliates](blueprints/affiliates.md) |
-| Content / SEO | 0.5 | First pass | [content](blueprints/content.md) |
-| Ebooks / KDP | 0.2 | First pass | [ebooks](blueprints/ebooks.md) |
-| Ecommerce | 3.1 | Pilot | [ecommerce](blueprints/ecommerce.md) |
-| Mobile app | 1.1 | Written | [mobile app](blueprints/mobile-app.md) |
-| Newsletter | 1.3 | Written | [newsletter](blueprints/newsletter.md) |
+| Affiliate / CPA | 0.7 | First pass | [affiliates](blueprints/affiliates.md) |
+| Content / SEO | 0.6 | First pass | [content](blueprints/content.md) |
+| Ebooks / KDP | 0.3 | First pass | [ebooks](blueprints/ebooks.md) |
+| Ecommerce | 4.1 | Pilot | [ecommerce](blueprints/ecommerce.md) |
+| Mobile app | 1.2 | Written | [mobile app](blueprints/mobile-app.md) |
+| Newsletter | 1.4 | Written | [newsletter](blueprints/newsletter.md) |
 | SaaS | 3.0 | Pilot | [saas](blueprints/saas.md) |
-| Social media | 0.6 | First pass | [social media](blueprints/social-media.md) |
-| Utility site | 0.1 | Draft | [utility site](blueprints/utility-site.md) |
-| YouTube | 1.0 | First pass | [youtube](blueprints/youtube.md) |
+| Social media | 0.7 | First pass | [social media](blueprints/social-media.md) |
+| Utility site | 0.2 | Draft | [utility site](blueprints/utility-site.md) |
+| YouTube | 1.1 | First pass | [youtube](blueprints/youtube.md) |
 
 Statuses describe confidence, not business maturity:
 

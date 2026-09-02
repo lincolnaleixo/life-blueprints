@@ -18,6 +18,17 @@ The filename must match `type`. Versions use `major.minor`; dates use ISO `YYYY-
 
 Each document has exactly one H1, a `## Phases` section, and a capability catalog containing unique kebab-case slugs.
 
+Every blueprint declares `plan_grammar` and explains it in a `## Planning Contract` section. The grammar is the default roadmap shape a unit of that type inherits, and the section publishes the generic project caps that go with it:
+
+| `plan_grammar` | Containers | Top-level project cap |
+| --- | --- | --- |
+| `month-quarter` | months and quarters, with explicit Later groups | 3 per month, 5 per quarter |
+| `version` | ordered undated versions | 5 per version |
+| `phases` | ordered undated maturity phases | 5 per phase |
+| `active-projects` | `Active`, `Completed`, `Future` | 5 in `Active`, 10 in `Future` in total, `Completed` uncapped |
+
+Execution tasks nested under a project are never capped. Every cap is a generic default that a unit may override in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary. Changing a declared grammar is a breaking planning-contract change; adding the declaration and its caps to a blueprint that had none is a backward-compatible guidance addition.
+
 A blueprint may also declare `experiment_ladder: level-trigger`. It then has an `## Experiment Ladder` section with:
 
 - level `0` defined as admission to a running experiment, never as achieved evidence;

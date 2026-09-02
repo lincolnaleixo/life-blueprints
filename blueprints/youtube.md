@@ -1,13 +1,23 @@
 ---
 type: youtube
-version: 1.0
-updated: 2026-08-06
+version: 1.1
+updated: 2026-09-02
 status: first-pass
+plan_grammar: phases
 ---
 
 # Blueprint — Faceless YouTube business
 
 > **How to build a faceless YouTube channel, split into long-form and Shorts lanes.** Long-form combines evergreen content with an owned product funnel. Shorts uses high-cadence, hook-and-payoff content for reach, then adds sponsors, products, or a funnel when the niche supports one. This is the **reusable methodology for any operator building this business type**; a specific bet adds its own niche, persona, voice, offer, and format mix. Run a separate niche-validation pass before committing. The operating gates draw on YouTube policy and creator post-mortems; treat single-creator claims as heuristics until independently verified.
+
+## Planning Contract
+
+- The maturity phases below describe the generic business. A unit's roadmap phases are its own and are independent from them: several unit phases may build capabilities from one blueprint phase, and matching numbers never imply a one-to-one mapping.
+- A YouTube unit plans by **phase** because a channel advances through meaningful state changes — a validated niche, a production engine that runs without the operator, monetization surfaces enabled, an owned funnel that earns — rather than by product releases or a monthly buying rhythm. A phase takes as long as its state change needs and is never attached to a date, a month, or an estimated duration.
+- Keep exactly one incomplete phase marked Current and order later phases by priority; that order expresses priority, not mandatory dependency. Every phase declares its purpose, focus, and `Done when` condition.
+- Each phase holds at most five top-level projects. A project is a bounded change with an observable completion condition; its concrete execution tasks live directly underneath it and are uncapped.
+- Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
+- Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
 
 ---
 
