@@ -29,12 +29,21 @@ Every blueprint declares `plan_grammar` and explains it in a `## Planning Contra
 
 Execution tasks nested under a project are never capped. Every cap is a generic default that a unit may override in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary. Changing a declared grammar is a breaking planning-contract change; adding the declaration and its caps to a blueprint that had none is a backward-compatible guidance addition.
 
-A blueprint may also declare `experiment_ladder: level-trigger`. It then has an `## Experiment Ladder` section with:
+A blueprint may also declare `experiment_ladder: level-trigger`. Every such blueprint must also declare `experiment_plan_grammar: levels`: the ladder's levels are the private experiment roadmap's only containers, and a second round numbering is invalid. It then has an `## Experiment Ladder` section with:
 
 - level `0` defined as admission to a running experiment, never as achieved evidence;
 - numbered evidence levels above zero;
 - for each evidence level, one metric, numeric trigger, observation window, and unlock;
 - exactly one graduation level whose trigger proves real revenue.
+
+The level-container planning contract is:
+
+- one `L0`, `L1`, ... roadmap container for every ladder level, with exactly one marked `Current`;
+- the Current container number equals the experiment manifest's recorded current level;
+- each level contains the capability introduced at that level and the bounded projects needed to reach the next numeric trigger;
+- advancement requires both the current level's required capability to be verified and the next level's numeric trigger to be met;
+- if the numeric trigger arrives first, it remains ready while the current level's work closes;
+- the revenue graduation level requires no new automation and remains Current only until the explicit graduation decision is resolved.
 
 It must also have an `## Progressive Automation` section with:
 

@@ -9,15 +9,15 @@ A blueprint is reusable reference material, not a task list or a promise of resu
 | Type | Version | Status | Blueprint |
 | --- | --- | --- | --- |
 | Affiliate / CPA | 0.7 | First pass | [affiliates](blueprints/affiliates.md) |
-| Content / SEO | 0.7 | First pass | [content](blueprints/content.md) |
+| Content / SEO | 2.0 | First pass | [content](blueprints/content.md) |
 | Ebooks / KDP | 0.3 | First pass | [ebooks](blueprints/ebooks.md) |
 | Ecommerce | 4.1 | Pilot | [ecommerce](blueprints/ecommerce.md) |
 | Mobile app | 1.2 | Written | [mobile app](blueprints/mobile-app.md) |
 | Newsletter | 1.4 | Written | [newsletter](blueprints/newsletter.md) |
-| SaaS | 3.0 | Pilot | [saas](blueprints/saas.md) |
+| SaaS | 5.0 | Pilot | [saas](blueprints/saas.md) |
 | Social media | 0.7 | First pass | [social media](blueprints/social-media.md) |
-| Utility site | 0.3 | Draft | [utility site](blueprints/utility-site.md) |
-| YouTube | 3.0 | First pass | [youtube](blueprints/youtube.md) |
+| Utility site | 2.0 | Draft | [utility site](blueprints/utility-site.md) |
+| YouTube | 4.0 | First pass | [youtube](blueprints/youtube.md) |
 
 Statuses describe confidence, not business maturity:
 
@@ -41,7 +41,9 @@ Blueprint phases are evidence-gated maturity states, never dates or mandatory pr
 
 ## Experiment ladders
 
-An experiment ladder is the pre-unit evidence contract for one business type. It is declared by `experiment_ladder: level-trigger` in blueprint frontmatter and by an `## Experiment Ladder` section. Level `0` is admission to a real running experiment; every higher level defines a metric, numeric trigger, observation window, and what the evidence unlocks. Exactly one level is marked as graduation, and that trigger must demonstrate real revenue before the bet becomes a unit.
+An experiment ladder is the pre-unit evidence contract for one business type. It is declared by `experiment_ladder: level-trigger` and `experiment_plan_grammar: levels` in blueprint frontmatter and by an `## Experiment Ladder` section. Level `0` is admission to a real running experiment; every higher level defines a metric, numeric trigger, observation window, and what the evidence unlocks. Exactly one level is marked as graduation, and that trigger must demonstrate real revenue before the bet becomes a unit.
+
+The ladder is also the private experiment's roadmap. Its plan uses `L0`, `L1`, ... as the only work containers, with no parallel round numbering. The Current container always matches the recorded current level. To advance, the capability owed at the current level must be verified and the next numeric trigger must be met; an early trigger stays ready until the level's required work closes.
 
 Every ladder also carries a `## Progressive Automation` section. Level `0` starts with one verified autonomous capability; each earned non-graduation level unlocks at least one more capability chosen from the experiment's evidence. The public blueprint publishes default capability categories and selection guidance, while the private experiment records its concrete choice, proof, operating boundary and health source. A new evidence trigger stays gated until the newly unlocked capability is verified.
 

@@ -1,10 +1,11 @@
 ---
 type: content
-version: 1.0
+version: 2.0
 updated: 2026-09-03
 status: first-pass
 plan_grammar: version
 experiment_ladder: level-trigger
+experiment_plan_grammar: levels
 ---
 
 # Blueprint — Content / SEO business
@@ -26,10 +27,12 @@ A content/SEO bet is an **experiment before it is a unit**. Admission requires a
 
 Each higher level is earned only from verified production evidence. The experiment record keeps the exact Search Console property and metric definition; this public blueprint defines only the reusable ladder. An unavailable, stale, or broken measurement source is not a zero result: keep the last supported level, expose source health separately, and repair or verify the source before making a level decision. Only the revenue level is a graduation trigger.
 
+The private experiment uses these same levels as its only roadmap containers: `L0`, `L1`, and so on, never a parallel round sequence. The Current container equals the recorded current level. Each level holds its unlocked capability and the work needed to reach the next trigger; advancement requires both that capability to be verified and the next numeric trigger to be met. An early trigger remains ready until the level work closes.
+
 | Level | Name | Metric | Trigger | Window | Unlocks |
 | --- | --- | --- | --- | --- | --- |
 | 1 | Search demand | Google Search Console web clicks to the content site's verified property | `>= 100` | Trailing 90 days | Establish a measurable search-demand base and continue testing the content loop |
-| 2 | Repeatable search demand | Google Search Console web clicks to the content site's verified property | `>= 500` | Trailing 30 days | Open the monetization round against demonstrated search demand |
+| 2 | Repeatable search demand | Google Search Console web clicks to the content site's verified property | `>= 500` | Trailing 30 days | Begin Level 2 monetization work against demonstrated search demand |
 | 3 | Revenue | Settled attributable external revenue from the content asset | `>0` | Trailing 30 days | Graduate the experiment into a content unit at stage `Revenue` |
 
 Graduation is a repository transition, not a forecast: create the unit only after the Level 3 revenue is verified from its source. The new unit inherits the content version planning grammar and continues through `Revenue → Profit → Self-running`; the experiment record remains in Git history rather than being duplicated as a second live source.

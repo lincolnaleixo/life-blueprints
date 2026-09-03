@@ -8,6 +8,7 @@ export interface BlueprintMetadata {
   status: string;
   planGrammar?: string;
   experimentLadder?: string;
+  experimentPlanGrammar?: string;
 }
 
 export interface ValidationProblem {
@@ -44,7 +45,8 @@ export function parseBlueprint(content: string): { metadata: BlueprintMetadata |
         updated: raw.updated!,
         status: raw.status!,
         ...(raw.plan_grammar ? { planGrammar: raw.plan_grammar } : {}),
-        ...(raw.experiment_ladder ? { experimentLadder: raw.experiment_ladder } : {})
+        ...(raw.experiment_ladder ? { experimentLadder: raw.experiment_ladder } : {}),
+        ...(raw.experiment_plan_grammar ? { experimentPlanGrammar: raw.experiment_plan_grammar } : {})
       }
     : null;
   return { metadata, body: match[2]! };
@@ -98,6 +100,9 @@ export function validateBlueprintContent(
     if (metadata.experimentLadder !== "level-trigger") {
       add(`unsupported experiment_ladder: ${metadata.experimentLadder}`);
     }
+    if (metadata.experimentPlanGrammar !== "levels") {
+      add("experiment_ladder requires experiment_plan_grammar: levels");
+    }
     const ladder = body.match(/^## Experiment Ladder\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/m)?.[1] || "";
     if (!ladder) {
       add("experiment_ladder requires an ## Experiment Ladder section");
@@ -131,6 +136,9 @@ export function validateBlueprintContent(
         add("progressive automation must use the Earned level, Default automation frontier, Selection guidance table contract");
       }
     }
+  }
+  if (!metadata.experimentLadder && metadata.experimentPlanGrammar) {
+    add("experiment_plan_grammar requires experiment_ladder");
   }
 
   const titles = [...body.matchAll(/^#\s+.+$/gm)];

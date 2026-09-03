@@ -54,7 +54,7 @@ describe("blueprint validator", () => {
 
   test("accepts the level-trigger experiment ladder contract", () => {
     const withLadder = validBlueprint
-      .replace("status: draft", "status: draft\nexperiment_ladder: level-trigger")
+      .replace("status: draft", "status: draft\nexperiment_ladder: level-trigger\nexperiment_plan_grammar: levels")
       .replace("## Phases", `## Experiment Ladder
 
 Level \`0\` is admission to a running experiment.
@@ -75,9 +75,33 @@ Level \`0\` requires one verified autonomous capability. The next evidence trigg
     expect(validateBlueprintContent("example.md", withLadder, "`example@1.0`")).toEqual([]);
   });
 
-  test("rejects an experiment ladder without one graduation trigger", () => {
+  test("rejects a level-trigger ladder without level containers", () => {
     const withLadder = validBlueprint
       .replace("status: draft", "status: draft\nexperiment_ladder: level-trigger")
+      .replace("## Phases", `## Experiment Ladder
+
+Level 0 is admission.
+
+| Level | Name | Metric | Trigger | Window | Unlocks |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Signal | External conversions | \`>= 10\` | Trailing 30 days | Graduate into a unit |
+
+## Progressive Automation
+
+Level 0 requires one verified autonomous capability. The next evidence trigger remains gated until the unlocked capability is verified.
+
+| Earned level | Default automation frontier | Selection guidance |
+| --- | --- | --- |
+| 0 | Core test | Automate the running test. |
+
+## Phases`);
+    const problems = validateBlueprintContent("example.md", withLadder, "`example@1.0`");
+    expect(problems.some((problem) => problem.message.includes("experiment_plan_grammar: levels"))).toBe(true);
+  });
+
+  test("rejects an experiment ladder without one graduation trigger", () => {
+    const withLadder = validBlueprint
+      .replace("status: draft", "status: draft\nexperiment_ladder: level-trigger\nexperiment_plan_grammar: levels")
       .replace("## Phases", `## Experiment Ladder
 
 Level 0 is admission.
@@ -101,7 +125,7 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
 
   test("rejects a level-trigger ladder without progressive automation", () => {
     const withLadder = validBlueprint
-      .replace("status: draft", "status: draft\nexperiment_ladder: level-trigger")
+      .replace("status: draft", "status: draft\nexperiment_ladder: level-trigger\nexperiment_plan_grammar: levels")
       .replace("## Phases", `## Experiment Ladder
 
 Level 0 is admission.
