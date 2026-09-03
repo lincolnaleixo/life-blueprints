@@ -16,7 +16,7 @@ A blueprint is reusable reference material, not a task list or a promise of resu
 | Newsletter | 1.4 | Written | [newsletter](blueprints/newsletter.md) |
 | SaaS | 3.0 | Pilot | [saas](blueprints/saas.md) |
 | Social media | 0.7 | First pass | [social media](blueprints/social-media.md) |
-| Utility site | 0.2 | Draft | [utility site](blueprints/utility-site.md) |
+| Utility site | 0.3 | Draft | [utility site](blueprints/utility-site.md) |
 | YouTube | 1.2 | First pass | [youtube](blueprints/youtube.md) |
 
 Statuses describe confidence, not business maturity:

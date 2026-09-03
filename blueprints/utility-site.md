@@ -1,9 +1,10 @@
 ---
 type: utility-site
-version: 0.2
-updated: 2026-09-02
+version: 0.3
+updated: 2026-09-03
 status: draft
 plan_grammar: version
+experiment_ladder: level-trigger
 ---
 
 # Blueprint — Utility Site
@@ -22,6 +23,20 @@ plan_grammar: version
 - A version closes only after the shipped utility, its usage and economics evidence, and the unit's own operating record agree. Deploying the tool alone does not close a version.
 - Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
 - Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
+
+## Experiment Ladder
+
+A utility-site bet is an **experiment before it is a unit**. Admission requires a live automated utility or test, a falsifiable hypothesis, a measurable trigger, a bounded observation window, a reproducible metric source, and no routine operator work before the next decision. Level `0` means the bet has entered that running state; it is not an evidence claim and has no trigger of its own.
+
+Each higher level is earned only from verified production evidence. The experiment record keeps the exact metric definition and source; this public blueprint defines only the reusable ladder. An unavailable, stale, or broken measurement source is not a zero result: keep the last supported level, expose source health separately, and repair or verify the source before making a level decision. Only the revenue level is a graduation trigger.
+
+| Level | Name | Metric | Trigger | Window | Unlocks |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Search demand | Google Search Console web clicks to the utility's verified property | `>= 100` | Trailing 90 days | Establish a measurable search-demand base and test repeated use |
+| 2 | Repeated utility use | Completed human utility uses, from a reproducible bot-filtered event | `>= 100` | Trailing 30 days | Open the monetization round against demonstrated human use |
+| 3 | Revenue | Settled attributable external revenue from the utility | `>= 1` | Trailing 30 days | Graduate the experiment into a utility-site unit at stage `Revenue` |
+
+Graduation is a repository transition, not a forecast: create the unit only after the Level 3 revenue is verified from its source. The new unit inherits the utility-site version planning grammar and continues through `Revenue → Profit → Self-running`; the experiment record remains in Git history rather than being duplicated as a second live source.
 
 ## Operating model
 
