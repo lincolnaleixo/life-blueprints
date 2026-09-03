@@ -6,6 +6,7 @@ All notable changes to the public blueprint collection are documented here.
 
 ### Changed
 
+- `utility-site@0.3` (minor, backward-compatible experiment guidance): adds a public level-trigger ladder for utility-site experiments: Google Search Console web clicks, bot-filtered completed human utility uses, and settled attributable external revenue, with revenue as the sole graduation trigger. Clarifies that a missing or broken measurement source is not zero evidence.
 - `youtube@1.2` (minor, backward-compatible experiment guidance): adds a universal long-form and Shorts level-trigger experiment ladder using reproducible public-view signals and settled channel-attributable revenue, with revenue as the sole graduation trigger into a Revenue-stage unit. Keeps CTR/AVD as an operating diagnostic rather than a ladder level.
 - `ecommerce@4.1` (minor, backward-compatible planning guidance): corrects the time-grammar project caps. A month container holds at most three top-level projects and a quarter at most five, replacing the previous "at most five bounded projects each"; nested execution tasks are uncapped and every cap is overridable per unit with a recorded reason.
 - `youtube@1.1` (minor, backward-compatible planning guidance): adds a planning contract declaring that a YouTube unit plans by phase, with at most five top-level projects per phase, uncapped nested execution tasks, and per-unit cap overrides. Adds the machine-readable `plan_grammar: phases` metadata.
