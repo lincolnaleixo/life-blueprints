@@ -6,6 +6,7 @@ All notable changes to the public blueprint collection are documented here.
 
 ### Changed
 
+- `youtube@3.0` (major, breaking experiment contract): replaces the Level 1 lifetime-per-video test with total valid public channel views that actually occurred in the trailing 30 days (`>= 1,000`). A date-bounded YouTube Analytics or Reporting aggregate is required; Data API lifetime counters cannot satisfy this trigger. Level 2 repeatable reach and Level 3 revenue remain unchanged.
 - `saas@4.0` (major, breaking experiment contract): adds progressive automation to the level ladder. Level 0 requires a verified autonomous product or test, Level 1 defaults to acquisition or activation, Level 2 defaults to paid conversion or retention, and the next evidence trigger remains gated until the newly unlocked capability is verified.
 - `youtube@2.0` (major, breaking experiment contract): adds a production-and-publication capability at Level 0, social distribution and repurposing after Level 1, and owned-audience broadcast or monetization after Level 2, with experiment-specific provider choices and a verified-automation gate before the next trigger.
 - `utility-site@1.0` (major, breaking experiment contract): adds progressive automation around governed adjacent-utility expansion or acquisition after Level 1 and monetization after Level 2, with deterministic correctness, smoke and rollback requirements before a generated utility is verified.

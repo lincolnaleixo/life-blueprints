@@ -1,6 +1,6 @@
 ---
 type: youtube
-version: 2.0
+version: 3.0
 updated: 2026-09-03
 status: first-pass
 plan_grammar: phases
@@ -22,12 +22,12 @@ experiment_ladder: level-trigger
 
 ## Experiment Ladder
 
-This ladder applies to both the long-form and Shorts lanes. Level `0` is admission to an experiment that is running autonomously until its next trigger; it claims no traction. The view metric is the count of distinct public videos published during the stated window that reach at least 1,000 valid public views. Views may be read from the YouTube Analytics or Reporting API. Revenue is counted only once it is settled and externally attributable to the channel, using an aggregate from YouTube, checkout, or billing systems; do not include viewer or buyer identities.
+This ladder applies to both the long-form and Shorts lanes. Level `0` is admission to an experiment that is running autonomously until its next trigger; it claims no traction. The first audience signal is total valid public views that actually occurred across the channel during the trailing 30 days, read from a date-bounded YouTube Analytics or Reporting API aggregate; a video's lifetime counter is not a substitute. Repeatable reach then requires several distinct public videos to cross the per-video threshold in the longer catalog window. Revenue is counted only once it is settled and externally attributable to the channel, using an aggregate from YouTube, checkout, or billing systems; do not include viewer or buyer identities.
 
 | Level | Name | Metric | Trigger | Window | Unlocks |
 | --- | --- | --- | --- | --- | --- |
 | 0 | Admission | Experiment is running with its hypothesis, metric, source, and decisions defined | Admission; no traction claim | Until the next trigger | Begin evidence collection |
-| 1 | Audience signal | Number of distinct public long-form or Shorts videos published in the window with at least 1,000 valid public views | >=1 qualifying video | Trailing 90 days | Continue testing reach |
+| 1 | Audience signal | Total valid public views that occurred across the channel during the window | >=1,000 views | Trailing 30 days | Continue testing reach |
 | 2 | Repeatable reach | Number of distinct public long-form or Shorts videos published in the window with at least 1,000 valid public views | >=3 qualifying videos | Trailing 90 days | Continue testing toward revenue |
 | 3 | Revenue | Settled external channel-attributable revenue (numeric currency amount) | >0 | Trailing 30 days | Graduate into a unit at stage Revenue |
 
