@@ -1,10 +1,11 @@
 ---
 type: youtube
-version: 3.0
+version: 4.0
 updated: 2026-09-03
 status: first-pass
 plan_grammar: phases
 experiment_ladder: level-trigger
+experiment_plan_grammar: levels
 ---
 
 # Blueprint — Faceless YouTube business
@@ -23,6 +24,8 @@ experiment_ladder: level-trigger
 ## Experiment Ladder
 
 This ladder applies to both the long-form and Shorts lanes. Level `0` is admission to an experiment that is running autonomously until its next trigger; it claims no traction. The first audience signal is total valid public views that actually occurred across the channel during the trailing 30 days, read from a date-bounded YouTube Analytics or Reporting API aggregate; a video's lifetime counter is not a substitute. Repeatable reach then requires several distinct public videos to cross the per-video threshold in the longer catalog window. Revenue is counted only once it is settled and externally attributable to the channel, using an aggregate from YouTube, checkout, or billing systems; do not include viewer or buyer identities.
+
+The private experiment uses these same levels as its only roadmap containers: `L0`, `L1`, and so on, never a parallel round sequence. The Current container equals the recorded current level. Each level holds its unlocked capability and the work needed to reach the next trigger; advancement requires both that capability to be verified and the next numeric trigger to be met. An early trigger remains ready until the level work closes.
 
 | Level | Name | Metric | Trigger | Window | Unlocks |
 | --- | --- | --- | --- | --- | --- |
