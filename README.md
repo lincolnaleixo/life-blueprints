@@ -9,7 +9,7 @@ A blueprint is reusable reference material, not a task list or a promise of resu
 | Type | Version | Status | Blueprint |
 | --- | --- | --- | --- |
 | Affiliate / CPA | 0.7 | First pass | [affiliates](blueprints/affiliates.md) |
-| Content / SEO | 0.6 | First pass | [content](blueprints/content.md) |
+| Content / SEO | 0.7 | First pass | [content](blueprints/content.md) |
 | Ebooks / KDP | 0.3 | First pass | [ebooks](blueprints/ebooks.md) |
 | Ecommerce | 4.1 | Pilot | [ecommerce](blueprints/ecommerce.md) |
 | Mobile app | 1.2 | Written | [mobile app](blueprints/mobile-app.md) |

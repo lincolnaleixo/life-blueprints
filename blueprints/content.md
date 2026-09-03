@@ -1,9 +1,10 @@
 ---
 type: content
-version: 0.6
-updated: 2026-09-02
+version: 0.7
+updated: 2026-09-03
 status: first-pass
 plan_grammar: version
+experiment_ladder: level-trigger
 ---
 
 # Blueprint — Content / SEO business
@@ -18,6 +19,20 @@ plan_grammar: version
 - A version closes only after the shipped site, its traffic and revenue evidence, and the unit's own operating record agree. Publishing more articles alone does not close a version.
 - Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
 - Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
+
+## Experiment Ladder
+
+A content/SEO bet is an **experiment before it is a unit**. Admission requires a live automated content stream or test, a falsifiable hypothesis, a measurable trigger, a bounded observation window, a reproducible metric source, and no routine operator work before the next decision. Level `0` means the bet has entered that running state; it is not an evidence claim and has no trigger of its own.
+
+Each higher level is earned only from verified production evidence. The experiment record keeps the exact Search Console property and metric definition; this public blueprint defines only the reusable ladder. An unavailable, stale, or broken measurement source is not a zero result: keep the last supported level, expose source health separately, and repair or verify the source before making a level decision. Only the revenue level is a graduation trigger.
+
+| Level | Name | Metric | Trigger | Window | Unlocks |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Search demand | Google Search Console web clicks to the content site's verified property | `>= 100` | Trailing 90 days | Establish a measurable search-demand base and continue testing the content loop |
+| 2 | Repeatable search demand | Google Search Console web clicks to the content site's verified property | `>= 500` | Trailing 30 days | Open the monetization round against demonstrated search demand |
+| 3 | Revenue | Settled attributable external revenue from the content asset | `>0` | Trailing 30 days | Graduate the experiment into a content unit at stage `Revenue` |
+
+Graduation is a repository transition, not a forecast: create the unit only after the Level 3 revenue is verified from its source. The new unit inherits the content version planning grammar and continues through `Revenue → Profit → Self-running`; the experiment record remains in Git history rather than being duplicated as a second live source.
 
 ---
 
