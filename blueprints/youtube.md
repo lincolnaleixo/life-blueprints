@@ -1,7 +1,7 @@
 ---
 type: youtube
-version: 1.2
-updated: 2026-09-02
+version: 2.0
+updated: 2026-09-03
 status: first-pass
 plan_grammar: phases
 experiment_ladder: level-trigger
@@ -32,6 +32,18 @@ This ladder applies to both the long-form and Shorts lanes. Level `0` is admissi
 | 3 | Revenue | Settled external channel-attributable revenue (numeric currency amount) | >0 | Trailing 30 days | Graduate into a unit at stage Revenue |
 
 The existing CTR/AVD gate remains a packaging and retention diagnostic for operating decisions; it is not an experiment-ladder level.
+
+## Progressive Automation
+
+Level `0` requires a verified autonomous production-and-publishing capability, which may span research, scripting, rendering, upload and community jobs. Each earned non-graduation level unlocks at least one additional business capability. The experiment chooses it from the evidenced bottleneck and confirms it before adding it to the private plan; the next evidence trigger remains gated until the capability is proven in production and monitored. Revenue graduation adds no final experiment automation.
+
+| Earned level | Default automation frontier | Selection guidance |
+| --- | --- | --- |
+| 0 | Production and publication | Run the chosen long-form or Shorts format without per-video operator work while preserving originality, rights and policy gates. |
+| 1 | Social distribution and repurposing | Turn each eligible release into platform-appropriate distribution without hard-coding one social provider for every channel. |
+| 2 | Owned-audience broadcast and monetization | Build a low-labor direct audience or monetization path, such as an owned broadcast channel, selected from demonstrated audience behavior. |
+
+The public sequence names capability categories, not providers. A private experiment may commit to a specific network or broadcast service, or choose a different frontier, when its evidence and operating boundaries justify that decision.
 
 ---
 

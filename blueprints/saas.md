@@ -1,7 +1,7 @@
 ---
 type: saas
-version: 3.0
-updated: 2026-09-01
+version: 4.0
+updated: 2026-09-03
 status: pilot
 supersedes: 2.1
 plan_grammar: version
@@ -33,6 +33,18 @@ Each higher level is earned only from production evidence. Seeded fixtures and m
 | 3 | Revenue | External customers with a successfully captured recurring subscription payment | `>= 1` | Trailing 30 days | Graduate the experiment into a SaaS unit at stage `Revenue` |
 
 Graduation is a repository transition, not a forecast: the experiment becomes a unit only after the Level 3 payment is verified from the billing source. The new unit then inherits the SaaS version planning grammar and continues through `Revenue → Profit → Self-running`; the experiment record remains in Git history rather than being duplicated as a second live source.
+
+## Progressive Automation
+
+Evidence levels and automation growth are separate. Level `0` requires one verified autonomous capability. Each earned non-graduation level unlocks at least one additional meaningful capability, selected from the experiment's measured bottleneck and confirmed before it enters the private plan. The next evidence trigger remains gated until that capability runs without routine operator work, has a production proof and exposes a health signal. The revenue level graduates the experiment and does not force one final experiment automation.
+
+| Earned level | Default automation frontier | Selection guidance |
+| --- | --- | --- |
+| 0 | Core product or test execution | Automate the narrow product job, measurement boundary and genuine escalation path before admitting the experiment. |
+| 1 | Acquisition or activation | Prefer the largest evidenced constraint between discovery, account creation and first value; organic content, onboarding and lifecycle loops are candidates, not a fixed provider sequence. |
+| 2 | Paid conversion or retention | Automate the smallest billing, offer, lifecycle or retention capability that can produce and preserve attributable recurring revenue. |
+
+The default is guidance, not a private roadmap. A specific SaaS experiment may choose another capability when its aggregate evidence supports the choice and records the rationale, operating boundary and approval gates.
 
 ---
 

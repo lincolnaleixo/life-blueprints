@@ -1,6 +1,6 @@
 ---
 type: content
-version: 0.7
+version: 1.0
 updated: 2026-09-03
 status: first-pass
 plan_grammar: version
@@ -33,6 +33,18 @@ Each higher level is earned only from verified production evidence. The experime
 | 3 | Revenue | Settled attributable external revenue from the content asset | `>0` | Trailing 30 days | Graduate the experiment into a content unit at stage `Revenue` |
 
 Graduation is a repository transition, not a forecast: create the unit only after the Level 3 revenue is verified from its source. The new unit inherits the content version planning grammar and continues through `Revenue → Profit → Self-running`; the experiment record remains in Git history rather than being duplicated as a second live source.
+
+## Progressive Automation
+
+Level `0` requires one verified source-grounded publishing capability. Each earned non-graduation level unlocks at least one additional capability selected from the measured discovery, distribution or monetization bottleneck and confirmed before it enters the private plan. The next evidence trigger remains gated until the capability publishes without routine operator work, fails closed on uncertain evidence and exposes a health signal. The revenue level graduates the experiment without demanding one final automation.
+
+| Earned level | Default automation frontier | Selection guidance |
+| --- | --- | --- |
+| 0 | Research, production and publication | Produce useful, deduplicated, source-grounded content under the niche's factual and safety gates. |
+| 1 | Social distribution and repurposing | Adapt each eligible publication to the audience's real discovery surfaces without turning distribution into undifferentiated spam. |
+| 2 | Commercial content and owned conversion | Automate evidence-backed comparisons, buying guides, roundups, capture or another monetization-aligned format suited to the demonstrated intent. |
+
+Commercial automation must preserve source freshness, clear comparison criteria, disclosures, affiliate-link policy, smoke checks and rollback. A private experiment decides the exact format and providers from its own evidence.
 
 ---
 

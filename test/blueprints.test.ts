@@ -63,6 +63,14 @@ Level \`0\` is admission to a running experiment.
 | --- | --- | --- | --- | --- | --- |
 | 1 | Signal | External conversions | \`>= 10\` | Trailing 30 days | Graduate into a unit |
 
+## Progressive Automation
+
+Level \`0\` requires one verified autonomous capability. The next evidence trigger remains gated until the unlocked capability is verified.
+
+| Earned level | Default automation frontier | Selection guidance |
+| --- | --- | --- |
+| 0 | Core test | Automate the running test. |
+
 ## Phases`);
     expect(validateBlueprintContent("example.md", withLadder, "`example@1.0`")).toEqual([]);
   });
@@ -78,8 +86,32 @@ Level 0 is admission.
 | --- | --- | --- | --- | --- | --- |
 | 1 | Signal | External conversions | \`>= 10\` | Trailing 30 days | Continue testing |
 
+## Progressive Automation
+
+Level 0 requires one verified autonomous capability. The next evidence trigger remains gated until the unlocked capability is verified.
+
+| Earned level | Default automation frontier | Selection guidance |
+| --- | --- | --- |
+| 0 | Core test | Automate the running test. |
+
 ## Phases`);
     const problems = validateBlueprintContent("example.md", withLadder, "`example@1.0`");
     expect(problems.some((problem) => problem.message.includes("exactly one graduation"))).toBe(true);
+  });
+
+  test("rejects a level-trigger ladder without progressive automation", () => {
+    const withLadder = validBlueprint
+      .replace("status: draft", "status: draft\nexperiment_ladder: level-trigger")
+      .replace("## Phases", `## Experiment Ladder
+
+Level 0 is admission.
+
+| Level | Name | Metric | Trigger | Window | Unlocks |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Signal | External conversions | \`>= 10\` | Trailing 30 days | Graduate into a unit |
+
+## Phases`);
+    const problems = validateBlueprintContent("example.md", withLadder, "`example@1.0`");
+    expect(problems.some((problem) => problem.message.includes("Progressive Automation"))).toBe(true);
   });
 });

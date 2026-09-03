@@ -117,6 +117,20 @@ export function validateBlueprintContent(
         }
       }
     }
+    const automation = body.match(/^## Progressive Automation\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/m)?.[1] || "";
+    if (!automation) {
+      add("experiment_ladder requires a ## Progressive Automation section");
+    } else {
+      if (!/level\s+`?0`?/i.test(automation) || !/verified[^.\n]*capability/i.test(automation)) {
+        add("progressive automation must require one verified autonomous capability at Level 0");
+      }
+      if (!/next evidence trigger[^.\n]*gated/i.test(automation)) {
+        add("progressive automation must gate the next evidence trigger until the unlocked capability is verified");
+      }
+      if (!/^\| Earned level \| Default automation frontier \| Selection guidance \|$/m.test(automation)) {
+        add("progressive automation must use the Earned level, Default automation frontier, Selection guidance table contract");
+      }
+    }
   }
 
   const titles = [...body.matchAll(/^#\s+.+$/gm)];

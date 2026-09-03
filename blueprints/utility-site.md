@@ -1,6 +1,6 @@
 ---
 type: utility-site
-version: 0.3
+version: 1.0
 updated: 2026-09-03
 status: draft
 plan_grammar: version
@@ -37,6 +37,18 @@ Each higher level is earned only from verified production evidence. The experime
 | 3 | Revenue | Settled attributable external revenue from the utility | `>= 1` | Trailing 30 days | Graduate the experiment into a utility-site unit at stage `Revenue` |
 
 Graduation is a repository transition, not a forecast: create the unit only after the Level 3 revenue is verified from its source. The new unit inherits the utility-site version planning grammar and continues through `Revenue → Profit → Self-running`; the experiment record remains in Git history rather than being duplicated as a second live source.
+
+## Progressive Automation
+
+Level `0` requires one verified autonomous capability that serves the utility and preserves a trustworthy measurement boundary. Each earned non-graduation level unlocks at least one additional capability chosen from the observed discovery, completion or economics constraint. The next evidence trigger stays gated until the new capability has deterministic correctness checks, a production proof and a health signal. Revenue graduation requires no additional experiment automation.
+
+| Earned level | Default automation frontier | Selection guidance |
+| --- | --- | --- |
+| 0 | Utility delivery and measurement | Keep the narrow tool available, correct and measurable without routine operator work. |
+| 1 | Adjacent utility expansion or acquisition | Prefer a governed factory for adjacent tools when search evidence supports a cluster; otherwise automate the strongest discovery or completion constraint. |
+| 2 | Monetization | Automate the least intrusive evidence-backed rail — advertising, affiliate, lead generation or paid functionality — without degrading the utility. |
+
+Automated expansion must fail closed: every generated utility needs an explicit input/output specification, deterministic fixtures, edge-case checks, deployment smoke and rollback. Volume alone is never capability evidence.
 
 ## Operating model
 

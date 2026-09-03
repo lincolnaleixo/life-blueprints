@@ -43,6 +43,8 @@ Blueprint phases are evidence-gated maturity states, never dates or mandatory pr
 
 An experiment ladder is the pre-unit evidence contract for one business type. It is declared by `experiment_ladder: level-trigger` in blueprint frontmatter and by an `## Experiment Ladder` section. Level `0` is admission to a real running experiment; every higher level defines a metric, numeric trigger, observation window, and what the evidence unlocks. Exactly one level is marked as graduation, and that trigger must demonstrate real revenue before the bet becomes a unit.
 
+Every ladder also carries a `## Progressive Automation` section. Level `0` starts with one verified autonomous capability; each earned non-graduation level unlocks at least one more capability chosen from the experiment's evidence. The public blueprint publishes default capability categories and selection guidance, while the private experiment records its concrete choice, proof, operating boundary and health source. A new evidence trigger stays gated until the newly unlocked capability is verified.
+
 Private experiment records hold the specific hypothesis, metric definition, source, current level, and decisions. The public blueprint never contains a private bet's name, customer data, infrastructure, or result.
 
 ## Development

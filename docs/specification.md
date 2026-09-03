@@ -36,6 +36,14 @@ A blueprint may also declare `experiment_ladder: level-trigger`. It then has an 
 - for each evidence level, one metric, numeric trigger, observation window, and unlock;
 - exactly one graduation level whose trigger proves real revenue.
 
+It must also have an `## Progressive Automation` section with:
+
+- one verified autonomous capability required at Level `0`;
+- at least one additional capability unlocked by each non-graduation level;
+- a default frontier and selection guidance for each non-graduation level;
+- the next evidence trigger gated until the newly unlocked capability is verified;
+- no additional automation requirement at the revenue graduation level.
+
 The reusable ladder belongs here. A specific experiment's hypothesis, metric source, current result, and private identifiers do not.
 
 ## Meaning
