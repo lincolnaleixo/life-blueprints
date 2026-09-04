@@ -1,12 +1,13 @@
 ---
 type: youtube
-version: 5.1
-updated: 2026-09-04
+version: 6.0
+updated: 2026-09-05
 status: first-pass
 plan_grammar: phases
 experiment_ladder: level-trigger
 experiment_plan_grammar: levels
-build_path: stage-gate
+level_contract: trigger-plan
+graduation_gate: revenue
 ---
 
 # Blueprint — Faceless YouTube business
@@ -15,8 +16,13 @@ build_path: stage-gate
 
 ## Planning Contract
 
-- The **Build Path** is the default creation sequence from a blank channel through Revenue. Its rows connect bounded work, observable evidence, pass/miss decisions, and the next automation frontier. A private experiment adapts those rows to its lane, niche, evidence, and operating limits; it never copies the table as a second tracker.
-- Pre-admission rows happen before `new-experiment`. Once admitted, the public `L0`, `L1`, ... scopes map to the private plan's only roadmap containers; their numeric ladder triggers remain authoritative.
+- This blueprint opts into the `level_contract: trigger-plan` experiment contract. The numbered ladder is intentionally small: each published level supplies one observable trigger, while the private experiment plan supplies the bounded work for that level.
+- Once admitted, `L0`, `L1`, ... are the private plan's only roadmap containers. The Current container equals the recorded level, and the public trigger table remains authoritative for evidence.
+- `L0` prepares the channel shell and the first representative video. Starting `L0` does not require a public seed, an existing public artifact, or an autonomous capability.
+- `L1` is earned when one representative video is public and passes the same ownership, channel-health, and rights checks whether the video is newly produced by the experiment or an existing public video owned by the experiment.
+- `L2` through `L5` measure total valid public channel views in a trailing 30-day window. `L6` and later levels are intentionally undefined until this blueprint publishes them.
+- To advance, the private plan at the current level must be complete and the target level's trigger must be met. A trigger that arrives early stays ready while the current-level plan closes; neither condition alone advances the level.
+- This contract does not require an Experiment Bootstrap, Progressive Automation, or staged build-path section. Automation is not owed at every level; any implementation that claims an automated capability still needs production proof, safe correction or rollback, health evidence, and operating limits.
 - The maturity phases below describe the generic business. A unit's roadmap phases are its own and are independent from them: several unit phases may build capabilities from one blueprint phase, and matching numbers never imply a one-to-one mapping.
 - A YouTube unit plans by **phase** because a channel advances through meaningful state changes — a validated niche, a production engine that runs without the operator, monetization surfaces enabled, an owned funnel that earns — rather than by product releases or a monthly buying rhythm. A phase takes as long as its state change needs and is never attached to a date, a month, or an estimated duration.
 - Keep exactly one incomplete phase marked Current and order later phases by priority; that order expresses priority, not mandatory dependency. Every phase declares its purpose, focus, and `Done when` condition.
@@ -24,53 +30,31 @@ build_path: stage-gate
 - Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
 - Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
 
-## Experiment Bootstrap
-
-YouTube v5 permits one manual public seed before an experiment is admitted. The seed can be a video or another public channel artifact created with operator involvement; it is a bootstrap input, not an autonomous capability and not evidence of traction. The private manifest records the seed type, public URL, seed date, operator involvement, and an anchor in `built.md` under `bootstrap`.
-
-Admission begins only after the seed is public and a read-only observer can confirm its availability, channel health, ownership, and aggregate measurement without routine operator work. A private, deleted, inaccessible, or unmeasured seed cannot admit an experiment. The seed's manual creation must never be presented as routine production automation.
-
-## Build Path
-
-This is the default order, not a universal script. Long-form and Shorts adapt the format, cadence, and quality evidence, but neither may skip the gate between a manual seed and an admitted observable experiment. The audience trigger may arrive from the seed; only then does Level `1` open the second-video production process and its automation proof.
-
-| Order | Step | Scope | Build now | Gate | Pass | Miss | Automation |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | `niche-and-channel-thesis` | `pre-admission` | Choose long-form or Shorts; score a bounded niche on demand, competition, money path, policy risk, and format fit; prewrite the kill and continuation decisions. | One niche has observable demand, a credible monetization path, policy-safe framing, and an accessible aggregate metric source. | Lock the channel promise and configure the shell. | Reject the niche or narrow it before creating channel assets. | None; judgment is still being learned. |
-| 2 | `manual-public-seed` | `pre-admission` | Configure identity, channel safety settings, ownership, and measurement; then produce and upload one representative video manually while preserving the research, script, assets, rights trail, packaging choices, review result, and operator involvement. | The seed is public, policy and rights checks pass, ownership and channel health are observable, and the aggregate metric receives real data. | Record the bootstrap evidence and admit Level 0 with a read-only observer. | Rework or stop; a private, unhealthy, inaccessible, or unmeasured seed cannot become an experiment. | None; the seed teaches the golden path and is never claimed as automation. |
-| 3 | `observe-audience-signal` | `L0` | Run the read-only observer while the public seed remains unchanged; protect source freshness and the prewritten decision boundary. | At least 1,000 valid public channel views in a trailing 30-day window, with the observer capability healthy. | Earn Level 1 and open the second-video process. | Keep observing only within the prewritten boundary, then reframe or stop rather than manufacturing activity. | Seed availability, channel health, ownership, and aggregate measurement stay observable without routine operator work. |
-| 4 | `automate-second-video` | `L1` | Translate the manual golden path into the smallest safe, resumable production process and use it to make the second video; preserve originality, rights, policy, and accountable human approval gates without routine owner work. | The process completes a real production exercise with smoke, failure/resume, rollback or safe correction, and live health evidence; Level 2 still requires at least three distinct public videos with 1,000 valid views each in 90 days. | Verify the Level 1 capability and continue the measured catalog toward repeatable reach. | Repair the failed stage or revise the format; do not call a one-off manual rescue an automated capability. | Second-video production becomes delegable or automated. |
-| 5 | `prove-repeatable-reach` | `L2` | Continue the verified publishing process across distinct topics or formats and add the lowest-labor distribution or owned-audience monetization path justified by observed behavior. | At least three distinct qualifying public videos in the trailing 90-day window, the Level 2 capability is verified, and settled attributable revenue is measured separately. | Continue until settled external channel-attributable revenue is greater than zero in 30 days. | Diagnose packaging, retention, topic selection, or money-path fit and continue, reframe, or stop at the prewritten boundary. | Distribution and owned-audience monetization become low-labor and monitored. |
-| 6 | `resolve-revenue-graduation` | `L3` | Verify the aggregate revenue evidence and resolve the explicit graduation decision; do not add a final experiment automation requirement. | Settled external channel-attributable revenue is greater than zero in a trailing 30-day window. | With explicit approval, create a Unit at Revenue and translate only the relevant capabilities into its phase plan. | Leave the bet as an experiment, preserve the evidence, and continue or stop under its decision contract. | None; graduation is a decision, not another automation frontier. |
-
 ## Experiment Ladder
 
-This ladder applies to both the long-form and Shorts lanes. Level `0` is admission after the manual bootstrap has become a public, healthy, measurable seed; it claims no traction. The first audience signal is total valid public views that actually occurred across the channel during the trailing 30 days, read from a date-bounded YouTube Analytics or Reporting API aggregate; a video's lifetime counter is not a substitute. Repeatable reach then requires several distinct public videos to cross the per-video threshold in the longer catalog window. Revenue is counted only once it is settled and externally attributable to the channel, using an aggregate from YouTube, AdSense payments, checkout, or billing systems; do not include viewer or buyer identities.
+This ladder applies to both the long-form and Shorts lanes. `L0` is the preparation container and claims no public traction. It prepares the channel shell and first representative video; no public seed or autonomous capability is required to start it. `L1` begins once one representative video is public and passes ownership, channel-health, and rights checks. The representative video may be newly produced by the experiment or an existing public video with the same checks. `L2` through `L5` are total valid public channel views actually observed in a trailing 30-day window, read from a date-bounded YouTube Analytics or Reporting API aggregate rather than a video's lifetime counter.
 
-The private experiment uses these same levels as its only roadmap containers: `L0`, `L1`, and so on, never a parallel round sequence. The Current container equals the recorded current level. Each level holds its unlocked capability and the work needed to reach the next trigger; advancement requires both that capability to be verified and the next numeric trigger to be met. An early trigger remains ready until the level work closes. A numeric trigger never permits advancement past unfinished work owed by the current level.
+| Level | Name | Metric | Trigger | Window |
+| --- | --- | --- | --- | --- |
+| 0 | Preparation | Channel shell and first representative video readiness | Channel setup and the first-video plan are ready | Until the first representative video is public |
+| 1 | Representative video | One valid public representative video | One representative video is public; ownership, channel-health, and rights checks pass | Point-in-time |
+| 2 | Early reach | Total valid public channel views | >=10 views | Trailing 30 days |
+| 3 | Growing reach | Total valid public channel views | >=100 views | Trailing 30 days |
+| 4 | Established reach | Total valid public channel views | >=200 views | Trailing 30 days |
+| 5 | Expanding reach | Total valid public channel views | >=500 views | Trailing 30 days |
 
-| Level | Name | Metric | Trigger | Window | Unlocks |
-| --- | --- | --- | --- | --- | --- |
-| 0 | Admission | Public seed availability, channel health, ownership, and aggregate measurement | Admission; no traction claim | Until the next trigger | Observe the seed without routine operator work |
-| 1 | Audience signal | Total valid public views that occurred across the channel during the window | >=1,000 views | Trailing 30 days | Open the second-video process |
-| 2 | Repeatable reach | Number of distinct public long-form or Shorts videos published in the window with at least 1,000 valid public views | >=3 qualifying videos | Trailing 90 days | Continue testing toward settled revenue |
-| 3 | Revenue | Settled external channel-attributable revenue (numeric currency amount) | >0 | Trailing 30 days | Graduate into a unit at stage Revenue |
+Private-plan guidance (the plan itself remains private):
 
-The existing CTR/AVD gate remains a packaging and retention diagnostic for operating decisions; it is not an experiment-ladder level.
+- `L0`: prepare the channel shell, measurement, policy and rights checks, and produce the first representative video (or identify an existing public video that can qualify at `L1`).
+- `L1`: keep the bounded plan focused on reaching 10 total valid public channel views in the trailing 30-day window.
+- `L2`: keep the bounded plan focused on reaching 100 total valid public channel views in the trailing 30-day window.
+- `L3`: keep the bounded plan focused on reaching 200 total valid public channel views in the trailing 30-day window.
+- `L4`: keep the bounded plan focused on reaching 500 total valid public channel views in the trailing 30-day window.
+- `L5`: keep a bounded measurement and revenue-decision plan; no `L6` view target is defined.
 
-## Progressive Automation
+To advance, the private plan at the current level must be complete and the target trigger must be met. A target trigger that arrives early remains ready until the plan closes. The CTR/AVD gate remains a packaging and retention diagnostic, not a ladder level.
 
-The manual seed is not automation. Level `0` requires one verified autonomous observation capability: the public seed remains available, the channel's health and ownership can be checked, and the aggregate metric can be read and recorded without routine operator work until the next trigger. The observer must fail closed when its source is stale, unavailable, or inconsistent; it must not publish or alter the channel at Level `0`.
-
-Level `1` opens the second-video process. Before the experiment can advance beyond Level `1`, that process must be delegable or automated, monitored, and proven through a safe production exercise. Each earned non-graduation level unlocks at least one additional business capability. The experiment chooses it from the evidenced bottleneck and confirms it before adding it to the private plan; the next evidence trigger remains gated until the newly unlocked capability is proven in production and monitored. Revenue graduation adds no final experiment automation.
-
-| Earned level | Default automation frontier | Selection guidance |
-| --- | --- | --- |
-| 0 | Seed observation and measurement | Keep the public seed observable through availability, health, ownership, and aggregate measurement checks without publishing or routine operator work. |
-| 1 | Second-video production | Make the next video process delegable or automated, with originality, rights, policy, human-review, smoke, rollback or safe-correction, and health gates. |
-| 2 | Distribution and owned-audience monetization | Add a low-labor audience or monetization path, such as platform-native distribution or an owned broadcast channel, selected from demonstrated audience behavior. |
-
-The public sequence names capability categories, not providers. A private experiment may commit to a specific network or broadcast service, or choose a different frontier, when its evidence and operating boundaries justify that decision.
+Graduation is independent of the numbered views ladder and is never an `L6` trigger. With `graduation_gate: revenue`, graduation requires actual settled externally attributable revenue from the channel and explicit owner approval; views alone never graduate an experiment. The revenue evidence remains aggregate-only and must not include viewer or buyer identities.
 
 ---
 
@@ -356,13 +340,13 @@ Extra monetization paths that fit the model once the catalog works:
 - **Translations/dubs:** only after proof in English; clone format into another language with a distinct voice/identity and policy-safe localization.
 - **Asset sale:** a channel with revenue, email list, products, and clean rights is more sellable than a view-only channel. Keep rights/evidence clean from day 1.
 
-## 13. Applying the Build Path
+## 13. Applying the trigger-plan ladder
 
-The table at the top is the one creation sequence. The sections above provide the operating detail used to adapt each row; they do not create another roadmap or attach work to arbitrary weeks.
+The level table at the top is the one experiment ladder. The sections above provide the operating detail used to shape each private level plan; they do not create another roadmap or attach work to arbitrary weeks.
 
-**Long-form adaptation:** the manual seed should exercise the final intended quality bar — research, originality delta, voice, visual grammar, thumbnail, rights trail, description, pinned comment, end screen, disclosure, and aggregate measurement. At Level 1, automate or delegate that learned path one stage at a time; do not expand into a large batch, product catalog, or second channel before the evidence gates justify it.
+**Long-form adaptation:** the `L0` plan should prepare and publish (or qualify an existing) representative video at the final intended quality bar — research, originality delta, voice, visual grammar, thumbnail, rights trail, description, pinned comment, end screen, disclosure, and aggregate measurement. At `L1`, work toward 10 valid public channel views; then continue through `L2`–`L4` toward 100, 200, and 500 respectively, only when the current private plan is complete and the next trailing-30-day view trigger is met. `L5` has no invented `L6` view target; keep its plan bounded to valid measurement and the independent revenue decision.
 
-**Shorts adaptation:** the manual seed should prove one representative hook/payoff/edit pattern and its transformation boundary. At Level 1, the second-video process may become a small pattern-driven batch only when the operator can still identify each piece's originality and rights basis. Cadence is an input to learning, never a substitute for the Level 2 repeatability gate.
+**Shorts adaptation:** the `L0` plan should prepare and publish (or qualify an existing) representative hook/payoff/edit pattern and its transformation boundary. At `L1`, work toward 10 valid public channel views; then continue through `L2`–`L4` toward 100, 200, and 500 respectively, only when the current private plan is complete and the next trailing-30-day view trigger is met. `L5` has no invented `L6` view target. Cadence is an input to learning, never a substitute for the trailing-30-day view triggers.
 
 ## 14. Benchmarks
 
@@ -427,7 +411,7 @@ Run this before YPP application, after any warning, and immediately after a demo
 
 ## Phases
 
-The Build Path above is the creation roadmap from zero through experiment graduation. These four maturity phases remain the generic capability grouping a Revenue-or-higher Unit consults afterward; they are not a second launch sequence. Each capability below sits where it becomes the focus, and phases gate on evidence rather than time.
+The trigger-plan ladder above is the experiment evidence contract from preparation through the last published view level. These four maturity phases remain the generic capability grouping a Revenue-or-higher Unit consults afterward; they are not a second launch sequence. Each capability below sits where it becomes the focus, and phases gate on evidence rather than time.
 
 - **Phase 0 · Publish & Wire** — get the engine running and every video pointing home: the production pipeline shipping on cadence, the funnel link on every upload, the live P&L from day one, and the Shorts lane if the bet runs one. *Focus: a publishing machine wired to an owned destination.*
 - **Phase 1 · Monetize on-platform** — YPP unlocks the native rails: ad revenue, Shopping, memberships, Supers. Turn every eligible Earn surface on, but keep it the small money. *Gate in: a catalog earning expanding impressions (CTR ≥5% + AVD ≥35%). Focus: every native surface live.*

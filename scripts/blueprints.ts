@@ -10,6 +10,8 @@ export interface BlueprintMetadata {
   experimentLadder?: string;
   experimentPlanGrammar?: string;
   buildPath?: string;
+  levelContract?: string;
+  graduationGate?: string;
 }
 
 export interface ValidationProblem {
@@ -48,7 +50,9 @@ export function parseBlueprint(content: string): { metadata: BlueprintMetadata |
         ...(raw.plan_grammar ? { planGrammar: raw.plan_grammar } : {}),
         ...(raw.experiment_ladder ? { experimentLadder: raw.experiment_ladder } : {}),
         ...(raw.experiment_plan_grammar ? { experimentPlanGrammar: raw.experiment_plan_grammar } : {}),
-        ...(raw.build_path ? { buildPath: raw.build_path } : {})
+        ...(raw.build_path ? { buildPath: raw.build_path } : {}),
+        ...(raw.level_contract ? { levelContract: raw.level_contract } : {}),
+        ...(raw.graduation_gate ? { graduationGate: raw.graduation_gate } : {})
       }
     : null;
   return { metadata, body: match[2]! };
@@ -70,6 +74,193 @@ function rawCapabilitySlugs(body: string): string[] {
     ...body.matchAll(/^\|\s*\d+\s*\|\s*P[1-4]\s*\|\s*`([^`]+)`\s*\|/gm),
     ...body.matchAll(/^\|\s*`([^`]+)`\s*\|/gm)
   ].map((match) => match[1]!);
+}
+
+interface TriggerPlanRow {
+  level: number;
+  cells: string[];
+  line: string;
+}
+
+function pipeCells(line: string): string[] | null {
+  if (!/^\s*\|/.test(line)) return null;
+  const cells = line.split("|").slice(1, -1).map((cell) => cell.trim());
+  return cells.length ? cells : null;
+}
+
+function experimentLadderSection(body: string): string {
+  return body.match(/^## Experiment Ladder\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/m)?.[1] || "";
+}
+
+function triggerPlanTable(ladder: string): { headers: string[]; rows: TriggerPlanRow[]; invalidRows: string[] } | null {
+  const lines = ladder.split("\n");
+  const headerIndex = lines.findIndex((line) => {
+    const cells = pipeCells(line)?.map((cell) => cell.toLowerCase());
+    return Boolean(cells?.includes("level") && cells.includes("metric") && cells.includes("trigger") && cells.includes("window"));
+  });
+  if (headerIndex < 0) return null;
+
+  const headers = pipeCells(lines[headerIndex]!)!;
+  const levelIndex = headers.findIndex((header) => header.toLowerCase() === "level");
+  const rows: TriggerPlanRow[] = [];
+  const invalidRows: string[] = [];
+  for (const line of lines.slice(headerIndex + 1)) {
+    const cells = pipeCells(line);
+    if (!cells) break;
+    if (cells.every((cell) => /^:?-{3,}:?$/.test(cell))) continue;
+    const levelCell = cells[levelIndex] || "";
+    if (!/^\d+$/.test(levelCell)) {
+      invalidRows.push(line);
+      continue;
+    }
+    const level = Number(levelCell);
+    rows.push({ level, cells, line });
+  }
+  return { headers, rows, invalidRows };
+}
+
+function normalizedCell(value: string | undefined): string {
+  return (value || "").replace(/\s+/g, " ").trim();
+}
+
+function validateTriggerPlanContract(
+  filename: string,
+  body: string,
+  add: (message: string) => void
+): void {
+  const ladder = experimentLadderSection(body);
+  if (!ladder) {
+    add("level_contract: trigger-plan requires an ## Experiment Ladder section");
+    return;
+  }
+
+  const table = triggerPlanTable(ladder);
+  if (!table) {
+    add("trigger-plan ladder must use a table with Level, Metric, Trigger, and Window columns");
+    return;
+  }
+
+  const levelIndex = table.headers.findIndex((header) => header.toLowerCase() === "level");
+  const metricIndex = table.headers.findIndex((header) => header.toLowerCase() === "metric");
+  const triggerIndex = table.headers.findIndex((header) => header.toLowerCase() === "trigger");
+  const windowIndex = table.headers.findIndex((header) => header.toLowerCase() === "window");
+  if (levelIndex < 0 || metricIndex < 0 || triggerIndex < 0 || windowIndex < 0) return;
+
+  if (!table.rows.length) {
+    add("trigger-plan ladder must define at least one level row");
+    return;
+  }
+  if (table.invalidRows.length) {
+    add("trigger-plan level rows must use non-negative integer Level values");
+  }
+
+  const levels = table.rows.map((row) => row.level);
+  const uniqueLevels = [...new Set(levels)].sort((a, b) => a - b);
+  if (uniqueLevels[0] !== 0) add("trigger-plan ladder must start at Level 0");
+  for (const [index, level] of uniqueLevels.entries()) {
+    if (level !== index) add(`trigger-plan ladder levels must be contiguous from 0 (missing Level ${index})`);
+  }
+  if (levels.some((level, index) => level !== index)) add("trigger-plan ladder rows must be ordered contiguously from Level 0");
+  const duplicates = levels.filter((level, index) => levels.indexOf(level) !== index);
+  if (duplicates.length) add(`duplicate trigger-plan levels: ${[...new Set(duplicates)].join(", ")}`);
+
+  const maxLevel = uniqueLevels.at(-1);
+
+  for (const row of table.rows) {
+    const metric = normalizedCell(row.cells[metricIndex]);
+    const trigger = normalizedCell(row.cells[triggerIndex]);
+    const window = normalizedCell(row.cells[windowIndex]);
+    if (!metric) add(`trigger-plan Level ${row.level} must declare a metric`);
+    if (!trigger) add(`trigger-plan Level ${row.level} must declare a trigger`);
+    if (!window) add(`trigger-plan Level ${row.level} must declare a window`);
+    if (/(?:^|\s)graduate(?:s|d)?\b|\bgraduation\b/i.test(row.line)) {
+      add("trigger-plan graduation must remain independent of numbered levels; do not add a graduation row");
+    }
+  }
+
+  if (filename === "youtube.md") {
+    if (maxLevel !== undefined && maxLevel > 5) {
+      add("youtube trigger-plan ladder must leave Level 6 and later undefined");
+    }
+    for (let level = 0; level <= 5; level += 1) {
+      if (!uniqueLevels.includes(level)) add(`youtube trigger-plan ladder must define Level ${level}`);
+    }
+
+    const rowFor = (level: number): TriggerPlanRow | undefined => table.rows.find((row) => row.level === level);
+    const l0 = rowFor(0);
+    const l1 = rowFor(1);
+    const l0Text = l0 ? l0.cells.map(normalizedCell).join(" ") : "";
+    const l1Text = l1 ? l1.cells.map(normalizedCell).join(" ") : "";
+    if (l0 && !/channel.{0,80}first[- ]video|first[- ]video.{0,80}channel/i.test(l0Text)) {
+      add("youtube trigger-plan Level 0 must prepare the channel and first representative video");
+    }
+    if (l0 && /(?:require|must|needed|depends).{0,50}(?:public seed|autonom)/i.test(l0Text)) {
+      add("youtube trigger-plan Level 0 must not require a public seed or autonomous capability");
+    }
+    if (!/(?:L0[^.\n]*(?:does not require|without)[^.\n]*(?:public seed|autonom)|(?:no|without)[^.\n]*(?:public seed|autonom)[^.\n]*start(?:ing)?[^.\n]*L0)/i.test(body)) {
+      add("youtube trigger-plan must state that starting Level 0 does not require a public seed or autonomous capability");
+    }
+    if (l1 && !/representative.{0,60}public.{0,30}video|public.{0,60}representative.{0,30}video/i.test(l1Text)) {
+      add("youtube trigger-plan Level 1 must trigger on one representative public video");
+    }
+    if (l1 && !/ownership/i.test(l1Text)) add("youtube trigger-plan Level 1 must check ownership");
+    if (l1 && !/channel[- ]health|health/i.test(l1Text)) add("youtube trigger-plan Level 1 must check channel health");
+    if (l1 && !/rights?/i.test(l1Text)) add("youtube trigger-plan Level 1 must check rights");
+    if (!/(?:new(?:ly)? produced[^.\n]*existing public video|existing public video[^.\n]*new(?:ly)? produced)/i.test(body)) {
+      add("youtube trigger-plan must allow a new or existing public representative video at Level 1");
+    }
+
+    const levelPlanGuidance = (level: number): string => {
+      const match = body.match(new RegExp(`^[-*]\\s*\\x60L${level}\\x60:[^\\n]*$`, "m"));
+      return match?.[0] || "";
+    };
+    if (!/first representative video/i.test(levelPlanGuidance(0))) {
+      add("youtube trigger-plan private-plan guidance must map Level 0 to first-video preparation");
+    }
+    const nextViewTargets: Record<number, number> = { 1: 10, 2: 100, 3: 200, 4: 500 };
+    for (const [levelText, target] of Object.entries(nextViewTargets)) {
+      const level = Number(levelText);
+      const guidance = levelPlanGuidance(level);
+      if (!new RegExp(`\\b${target}\\s+total valid public channel views\\b`, "i").test(guidance)) {
+        add(`youtube trigger-plan private-plan guidance must map Level ${level} to ${target} total valid public channel views`);
+      }
+    }
+    if (!/no `L6` view target is defined/i.test(levelPlanGuidance(5))) {
+      add("youtube trigger-plan private-plan guidance must leave Level 6 undefined");
+    }
+
+    const expectedViews: Record<number, number> = { 2: 10, 3: 100, 4: 200, 5: 500 };
+    for (const [levelText, expected] of Object.entries(expectedViews)) {
+      const level = Number(levelText);
+      const row = rowFor(level);
+      if (!row) continue;
+      const metric = normalizedCell(row.cells[metricIndex]);
+      const trigger = normalizedCell(row.cells[triggerIndex]);
+      const window = normalizedCell(row.cells[windowIndex]);
+      if (!/^total valid public channel views$/i.test(metric)) {
+        add(`youtube trigger-plan Level ${level} metric must be total valid public channel views`);
+      }
+      if (!new RegExp(`^>=\\s*${expected}\\s+views?$`, "i").test(trigger)) {
+        add(`youtube trigger-plan Level ${level} trigger must be >=${expected} views`);
+      }
+      if (!/^trailing 30 days$/i.test(window)) {
+        add(`youtube trigger-plan Level ${level} window must be Trailing 30 days`);
+      }
+    }
+  }
+
+  const planCompletion = /private plan[^.\n]*\b(?:must be|is) complete\b/i.test(body)
+    && /(?:target|next)[^.\n]*\btrigger\b[^.\n]*\b(?:must be )?(?:met|reached|satisfied)\b/i.test(body);
+  if (!planCompletion) {
+    add("trigger-plan contract must require the current private plan to be complete and the target trigger to be met");
+  }
+
+  if (!/settled[^.\n]*externally attributable[^.\n]*revenue|externally attributable[^.\n]*settled[^.\n]*revenue/i.test(body)) {
+    add("trigger-plan graduation must require settled externally attributable revenue");
+  }
+  if (!/explicit[^.\n]*owner approval|owner approval[^.\n]*explicit/i.test(body)) {
+    add("trigger-plan graduation must require explicit owner approval");
+  }
 }
 
 export function validateBlueprintContent(
@@ -98,6 +289,26 @@ export function validateBlueprintContent(
   }
   if (!allowedStatuses.has(metadata.status)) add(`unsupported status: ${metadata.status}`);
 
+  if (metadata.levelContract && metadata.levelContract !== "trigger-plan") {
+    add(`unsupported level_contract: ${metadata.levelContract}`);
+  }
+  if (metadata.graduationGate && metadata.graduationGate !== "revenue") {
+    add(`unsupported graduation_gate: ${metadata.graduationGate}`);
+  }
+  if (metadata.levelContract && !metadata.experimentLadder) {
+    add("level_contract requires experiment_ladder");
+  }
+  if (metadata.graduationGate && !metadata.experimentLadder) {
+    add("graduation_gate requires experiment_ladder");
+  }
+  const triggerPlan = metadata.levelContract === "trigger-plan";
+  if (triggerPlan && metadata.graduationGate !== "revenue") {
+    add("level_contract: trigger-plan requires graduation_gate: revenue");
+  }
+  if (metadata.graduationGate === "revenue" && metadata.levelContract !== "trigger-plan") {
+    add("graduation_gate: revenue requires level_contract: trigger-plan");
+  }
+
   if (metadata.experimentLadder) {
     if (metadata.experimentLadder !== "level-trigger") {
       add(`unsupported experiment_ladder: ${metadata.experimentLadder}`);
@@ -105,37 +316,41 @@ export function validateBlueprintContent(
     if (metadata.experimentPlanGrammar !== "levels") {
       add("experiment_ladder requires experiment_plan_grammar: levels");
     }
-    const ladder = body.match(/^## Experiment Ladder\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/m)?.[1] || "";
-    if (!ladder) {
-      add("experiment_ladder requires an ## Experiment Ladder section");
+    if (triggerPlan) {
+      validateTriggerPlanContract(filename, body, add);
     } else {
-      if (!/level\s+`?0`?/i.test(ladder)) add("experiment ladder must define Level 0 admission");
-      if (!/^\| Level \| Name \| Metric \| Trigger \| Window \| Unlocks \|$/m.test(ladder)) {
-        add("experiment ladder must use the Level, Name, Metric, Trigger, Window, Unlocks table contract");
-      }
-      const rows = [...ladder.matchAll(/^\|\s*(\d+)\s*\|[^\n]+$/gm)]
-        .map((match) => ({ level: Number(match[1]), row: match[0] }));
-      if (!rows.some(({ level }) => level > 0)) add("experiment ladder must define at least one triggered level above 0");
-      const graduations = rows.filter(({ row }) => /\bgraduate\b/i.test(row));
-      if (graduations.length !== 1) add(`experiment ladder must define exactly one graduation level, found ${graduations.length}`);
-      for (const { level, row } of rows) {
-        if (level > 0 && !/(?:>=|<=|>|<|=)\s*\d+/.test(row)) {
-          add(`experiment ladder level ${level} must declare a numeric trigger`);
+      const ladder = experimentLadderSection(body);
+      if (!ladder) {
+        add("experiment_ladder requires an ## Experiment Ladder section");
+      } else {
+        if (!/level\s+`?0`?/i.test(ladder)) add("experiment ladder must define Level 0 admission");
+        if (!/^\| Level \| Name \| Metric \| Trigger \| Window \| Unlocks \|$/m.test(ladder)) {
+          add("experiment ladder must use the Level, Name, Metric, Trigger, Window, Unlocks table contract");
+        }
+        const rows = [...ladder.matchAll(/^\|\s*(\d+)\s*\|[^\n]+$/gm)]
+          .map((match) => ({ level: Number(match[1]), row: match[0] }));
+        if (!rows.some(({ level }) => level > 0)) add("experiment ladder must define at least one triggered level above 0");
+        const graduations = rows.filter(({ row }) => /\bgraduate\b/i.test(row));
+        if (graduations.length !== 1) add(`experiment ladder must define exactly one graduation level, found ${graduations.length}`);
+        for (const { level, row } of rows) {
+          if (level > 0 && !/(?:>=|<=|>|<|=)\s*\d+/.test(row)) {
+            add(`experiment ladder level ${level} must declare a numeric trigger`);
+          }
         }
       }
-    }
-    const automation = body.match(/^## Progressive Automation\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/m)?.[1] || "";
-    if (!automation) {
-      add("experiment_ladder requires a ## Progressive Automation section");
-    } else {
-      if (!/level\s+`?0`?/i.test(automation) || !/verified[^.\n]*capability/i.test(automation)) {
-        add("progressive automation must require one verified autonomous capability at Level 0");
-      }
-      if (!/next evidence trigger[^.\n]*gated/i.test(automation)) {
-        add("progressive automation must gate the next evidence trigger until the unlocked capability is verified");
-      }
-      if (!/^\| Earned level \| Default automation frontier \| Selection guidance \|$/m.test(automation)) {
-        add("progressive automation must use the Earned level, Default automation frontier, Selection guidance table contract");
+      const automation = body.match(/^## Progressive Automation\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/m)?.[1] || "";
+      if (!automation) {
+        add("experiment_ladder requires a ## Progressive Automation section");
+      } else {
+        if (!/level\s+`?0`?/i.test(automation) || !/verified[^.\n]*capability/i.test(automation)) {
+          add("progressive automation must require one verified autonomous capability at Level 0");
+        }
+        if (!/next evidence trigger[^.\n]*gated/i.test(automation)) {
+          add("progressive automation must gate the next evidence trigger until the unlocked capability is verified");
+        }
+        if (!/^\| Earned level \| Default automation frontier \| Selection guidance \|$/m.test(automation)) {
+          add("progressive automation must use the Earned level, Default automation frontier, Selection guidance table contract");
+        }
       }
     }
   }
@@ -177,6 +392,9 @@ export function validateBlueprintContent(
     }
   } else if (buildPath) {
     add("## Build Path requires build_path frontmatter");
+  }
+  if (triggerPlan && metadata.buildPath) {
+    add("level_contract: trigger-plan cannot be combined with build_path");
   }
 
   const titles = [...body.matchAll(/^#\s+.+$/gm)];

@@ -29,16 +29,24 @@ Every blueprint declares `plan_grammar` and explains it in a `## Planning Contra
 
 Execution tasks nested under a project are never capped. Every cap is a generic default that a unit may override in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary. Changing a declared grammar is a breaking planning-contract change; adding the declaration and its caps to a blueprint that had none is a backward-compatible guidance addition.
 
-A blueprint may also declare `experiment_ladder: level-trigger`. Every such blueprint must also declare `experiment_plan_grammar: levels`: the ladder's levels are the private experiment roadmap's only containers, and a second round numbering is invalid. It then has an `## Experiment Ladder` section with:
+A blueprint may also declare `experiment_ladder: level-trigger`. Every such blueprint must also declare `experiment_plan_grammar: levels`: the ladder's levels are the private experiment roadmap's only containers, and a second round numbering is invalid. Unless it opts into the alternative contract below, it then has an `## Experiment Ladder` section with:
 
 - level `0` defined as admission to a running experiment, never as achieved evidence;
 - numbered evidence levels above zero;
 - for each evidence level, one metric, numeric trigger, observation window, and unlock;
 - exactly one graduation level whose trigger proves real revenue.
 
+A blueprint may explicitly opt into the simpler `level_contract: trigger-plan` contract. It must also declare `graduation_gate: revenue`. Under this opt-in:
+
+- the `## Experiment Ladder` table publishes a contiguous prefix beginning at `L0`; every row has its own metric, trigger, and observation window, with no required unlock or automation fields. A row's trigger is the entry condition for that level, not work to repeat after entry;
+- the private experiment plan supplies the bounded work from the current level toward the next trigger. Advancing requires the current level's private plan to be complete and the target trigger to be met; an early trigger remains ready until that plan closes;
+- no `## Experiment Bootstrap`, `## Progressive Automation`, or `## Build Path` section is required, and a `build_path` stage-gate declaration must not be combined with this contract;
+- graduation is outside the numbered sequence and is never inferred from a future level. It requires actual settled externally attributable revenue and explicit owner approval; view or other non-revenue triggers cannot graduate the experiment;
+- future levels remain undefined until the blueprint publishes their metric, trigger, and window. An implementation may still claim automation, but each claim requires production proof, safe correction or rollback, health evidence, and operating limits.
+
 A blueprint may define an `## Experiment Bootstrap` contract for a public artifact that can exist before admission. When it does, the private experiment records the fields named by that contract — at minimum the artifact type, public location, date, operator involvement, and evidence anchor — without copying private evidence into the public blueprint. Bootstrap is provenance, not traction and not an autonomous capability: Level `0` still requires the blueprint's admission and observation bar, and a private, unavailable, or unmeasured artifact cannot admit the experiment.
 
-The level-container planning contract is:
+For the default (legacy) contract, the level-container planning contract is:
 
 - one `L0`, `L1`, ... roadmap container for every ladder level, with exactly one marked `Current`;
 - the Current container number equals the experiment manifest's recorded current level;
@@ -47,7 +55,7 @@ The level-container planning contract is:
 - if the numeric trigger arrives first, it remains ready while the current level's work closes;
 - the revenue graduation level requires no new automation and remains Current only until the explicit graduation decision is resolved.
 
-It must also have an `## Progressive Automation` section with:
+The default (legacy) contract must also have an `## Progressive Automation` section with:
 
 - one verified autonomous capability required at Level `0`;
 - at least one additional capability unlocked by each non-graduation level;
@@ -57,13 +65,13 @@ It must also have an `## Progressive Automation` section with:
 
 The reusable ladder belongs here. A specific experiment's hypothesis, metric source, current result, and private identifiers do not.
 
-A blueprint may additionally declare `build_path: stage-gate`. This publishes one ordered default route from pre-admission work through the experiment ladder without turning the blueprint into a private task list. It requires an `## Build Path` section with this table:
+A legacy blueprint may additionally declare `build_path: stage-gate`. This publishes one ordered default route from pre-admission work through the experiment ladder without turning the blueprint into a private task list. It requires an `## Build Path` section with this table:
 
 | Order | Step | Scope | Build now | Gate | Pass | Miss | Automation |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | `example-step` | `pre-admission` | Generic bounded work | Observable entry or exit evidence | What opens next | What to repeat, change, or stop | The capability frontier, or None |
 
-Orders are contiguous from `1`, step ids are unique kebab-case slugs, and scope is either `pre-admission` or one of the blueprint's published `L<number>` levels. At least one pre-admission step and every published level must appear. The path stitches build work, evidence, decisions, and progressive automation into one sequence; it does not replace the ladder's numeric triggers or the unit's post-graduation planning grammar. A private experiment adapts the relevant rows to its own evidence and records the concrete projects only in its plan.
+Orders are contiguous from `1`, step ids are unique kebab-case slugs, and scope is either `pre-admission` or one of the blueprint's published `L<number>` levels. At least one pre-admission step and every published level must appear. The path stitches build work, evidence, decisions, and progressive automation into one sequence; it does not replace the ladder's numeric triggers or the unit's post-graduation planning grammar. A private experiment adapts the relevant rows to its own evidence and records the concrete projects only in its plan. A `trigger-plan` blueprint does not declare this stage-gate path.
 
 ## Meaning
 

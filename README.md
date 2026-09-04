@@ -17,7 +17,7 @@ A blueprint is reusable reference material, not a task list or a promise of resu
 | SaaS | 5.0 | Pilot | [saas](blueprints/saas.md) |
 | Social media | 0.7 | First pass | [social media](blueprints/social-media.md) |
 | Utility site | 2.0 | Draft | [utility site](blueprints/utility-site.md) |
-| YouTube | 5.1 | First pass | [youtube](blueprints/youtube.md) |
+| YouTube | 6.0 | First pass | [youtube](blueprints/youtube.md) |
 
 Statuses describe confidence, not business maturity:
 
@@ -41,13 +41,13 @@ Blueprint phases are evidence-gated maturity states, never dates or mandatory pr
 
 ## Experiment ladders
 
-An experiment ladder is the pre-unit evidence contract for one business type. It is declared by `experiment_ladder: level-trigger` and `experiment_plan_grammar: levels` in blueprint frontmatter and by an `## Experiment Ladder` section. Level `0` is admission to a real running experiment; every higher level defines a metric, numeric trigger, observation window, and what the evidence unlocks. Exactly one level is marked as graduation, and that trigger must demonstrate real revenue before the bet becomes a unit.
+An experiment ladder is the pre-unit evidence contract for one business type. It is declared by `experiment_ladder: level-trigger` and `experiment_plan_grammar: levels` in blueprint frontmatter and by an `## Experiment Ladder` section. The default (legacy) contract treats Level `0` as admission to a real running experiment; every higher level defines a metric, numeric trigger, observation window, and what the evidence unlocks. Exactly one level is marked as graduation, and that trigger must demonstrate real revenue before the bet becomes a unit.
 
-The ladder is also the private experiment's roadmap. Its plan uses `L0`, `L1`, ... as the only work containers, with no parallel round numbering. The Current container always matches the recorded current level. To advance, the capability owed at the current level must be verified and the next numeric trigger must be met; an early trigger stays ready until the level's required work closes.
+The ladder is also the private experiment's roadmap. Its plan uses `L0`, `L1`, ... as the only work containers, with no parallel round numbering. The Current container always matches the recorded current level. Under the legacy contract, the capability owed at the current level must be verified and the next numeric trigger must be met; an early trigger stays ready until the level's required work closes.
 
-Every ladder also carries a `## Progressive Automation` section. Level `0` starts with one verified autonomous capability; each earned non-graduation level unlocks at least one more capability chosen from the experiment's evidence. The public blueprint publishes default capability categories and selection guidance, while the private experiment records its concrete choice, proof, operating boundary and health source. A new evidence trigger stays gated until the newly unlocked capability is verified.
+An alternative, explicitly opted-in contract uses `level_contract: trigger-plan` with `graduation_gate: revenue`. It publishes a contiguous prefix of numbered levels, each with a trigger, metric, and observation window; each trigger is an entry condition, while the private plan at the current level supplies the bounded work toward the next trigger and must be complete before that trigger can advance the experiment. This contract does not require a Progressive Automation, Bootstrap, or Build Path section, and it does not require a numbered graduation row. Graduation remains independent of the numbered ladder: it requires actual settled externally attributable revenue and explicit owner approval. Future levels stay undefined until the blueprint publishes their triggers. An implementation may still claim automation, but each such claim needs production proof, safe correction or rollback, health evidence, and operating limits.
 
-A blueprint with `build_path: stage-gate` also publishes one ordered path from pre-admission through graduation. Each step says what to build, what observable gate advances it, what pass and miss decisions mean, and which automation frontier opens next. The path supplies defaults for a new experiment plan; the private plan keeps only its adapted projects and evidence, never a copied tracker.
+A legacy blueprint with `build_path: stage-gate` also publishes one ordered path from pre-admission through graduation. Each step says what to build, what observable gate advances it, what pass and miss decisions mean, and which automation frontier opens next. The path supplies defaults for a new experiment plan; the private plan keeps only its adapted projects and evidence, never a copied tracker. A trigger-plan blueprint does not use this stage-gate contract.
 
 Private experiment records hold the specific hypothesis, metric definition, source, current level, and decisions. The public blueprint never contains a private bet's name, customer data, infrastructure, or result.
 

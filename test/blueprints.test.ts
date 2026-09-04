@@ -201,25 +201,110 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
     expect(problems.some((problem) => problem.message.includes("Level 0"))).toBe(true);
   });
 
-  test("publishes the YouTube v5 bootstrap and automation gates", async () => {
+  test("publishes the YouTube v6 trigger-plan ladder", async () => {
     const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
 
-    expect(content).toContain("version: 5.1");
-    expect(content).toContain("build_path: stage-gate");
-    expect(content).toContain("## Build Path");
-    expect(content).toContain("## Experiment Bootstrap");
-    expect(content).toContain("seed type");
-    expect(content).toContain("public URL");
-    expect(content).toContain("seed date");
-    expect(content).toContain("operator involvement");
-    expect(content).toContain("anchor in `built.md`");
-    expect(content).toContain("manual seed is not automation");
-    expect(content).toContain("| 0 | Admission | Public seed availability, channel health, ownership, and aggregate measurement |");
-    expect(content).toContain("| 1 | Audience signal | Total valid public views that occurred across the channel during the window | >=1,000 views |");
-    expect(content).toContain("| 1 | Audience signal | Total valid public views that occurred across the channel during the window | >=1,000 views | Trailing 30 days | Open the second-video process |");
-    expect(content).toContain("| 2 | Repeatable reach | Number of distinct public long-form or Shorts videos published in the window with at least 1,000 valid public views | >=3 qualifying videos | Trailing 90 days |");
-    expect(content).toContain("| 3 | Revenue | Settled external channel-attributable revenue (numeric currency amount) | >0 | Trailing 30 days | Graduate into a unit at stage Revenue |");
-    expect(content).toContain("delegable or automated");
-    expect(content).not.toContain("Level `0` requires a verified autonomous production-and-publishing capability");
+    expect(content).toContain("version: 6.0");
+    expect(content).toContain("level_contract: trigger-plan");
+    expect(content).toContain("graduation_gate: revenue");
+    expect(content).not.toMatch(/^build_path:/m);
+    expect(content).not.toMatch(/^## (Build Path|Experiment Bootstrap|Progressive Automation)$/m);
+    expect(content).toContain("| 0 | Preparation | Channel shell and first representative video readiness |");
+    expect(content).toContain("| 1 | Representative video | One valid public representative video |");
+    expect(content).toContain("| 2 | Early reach | Total valid public channel views | >=10 views | Trailing 30 days |");
+    expect(content).toContain("| 3 | Growing reach | Total valid public channel views | >=100 views | Trailing 30 days |");
+    expect(content).toContain("| 4 | Established reach | Total valid public channel views | >=200 views | Trailing 30 days |");
+    expect(content).toContain("| 5 | Expanding reach | Total valid public channel views | >=500 views | Trailing 30 days |");
+    expect(content).toContain("no public seed or autonomous capability is required to start it");
+    expect(content).toContain("newly produced by the experiment or an existing public video");
+    expect(content).toContain("private plan at the current level must be complete and the target trigger must be met");
+    expect(content).toContain("actual settled externally attributable revenue");
+    expect(content).toContain("explicit owner approval");
+    expect(content).toContain("never an `L6` trigger");
+    expect(content).toContain("`L0`: prepare the channel shell");
+    expect(content).toContain("`L1`: keep the bounded plan focused on reaching 10");
+    expect(content).toContain("`L2`: keep the bounded plan focused on reaching 100");
+    expect(content).toContain("`L3`: keep the bounded plan focused on reaching 200");
+    expect(content).toContain("`L4`: keep the bounded plan focused on reaching 500");
+    expect(content).toContain("`L5`: keep a bounded measurement and revenue-decision plan; no `L6` view target is defined");
+  });
+
+  test("requires both opt-in metadata fields for the trigger-plan contract", async () => {
+    const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
+    const withoutGate = content.replace("graduation_gate: revenue\n", "");
+    const gateProblems = validateBlueprintContent("youtube.md", withoutGate, "`youtube@6.0`");
+    expect(gateProblems.some((problem) => problem.message.includes("requires graduation_gate: revenue"))).toBe(true);
+
+    const withoutContract = content.replace("level_contract: trigger-plan\n", "");
+    const contractProblems = validateBlueprintContent("youtube.md", withoutContract, "`youtube@6.0`");
+    expect(contractProblems.some((problem) => problem.message.includes("requires level_contract: trigger-plan"))).toBe(true);
+  });
+
+  test("rejects a YouTube trigger-plan ladder that invents Level 6", async () => {
+    const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
+    const withFakeLevel = content.replace(
+      "| 5 | Expanding reach | Total valid public channel views | >=500 views | Trailing 30 days |",
+      "| 5 | Expanding reach | Total valid public channel views | >=500 views | Trailing 30 days |\n| 6 | More reach | Total valid public channel views | >=1000 views | Trailing 30 days |"
+    );
+    const problems = validateBlueprintContent("youtube.md", withFakeLevel, "`youtube@6.0`");
+    expect(problems.some((problem) => problem.message.includes("Level 6"))).toBe(true);
+  });
+
+  test("rejects malformed non-integer trigger-plan levels", async () => {
+    const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
+    const withMalformedLevel = content.replace(
+      "| 5 | Expanding reach | Total valid public channel views | >=500 views | Trailing 30 days |",
+      "| 5.5 | Expanding reach | Total valid public channel views | >=500 views | Trailing 30 days |"
+    );
+    const problems = validateBlueprintContent("youtube.md", withMalformedLevel, "`youtube@6.0`");
+    expect(problems.some((problem) => problem.message.includes("non-negative integer Level"))).toBe(true);
+  });
+
+  test("rejects a YouTube trigger-plan ladder with a views graduation row", async () => {
+    const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
+    const withViewsGraduation = content.replace(
+      "| 5 | Expanding reach | Total valid public channel views | >=500 views | Trailing 30 days |",
+      "| 5 | Graduation | Total valid public channel views | >=500 views to graduate | Trailing 30 days |"
+    );
+    const problems = validateBlueprintContent("youtube.md", withViewsGraduation, "`youtube@6.0`");
+    expect(problems.some((problem) => /graduation|graduate/i.test(problem.message))).toBe(true);
+  });
+
+  test("rejects gaps and out-of-order trigger-plan levels", async () => {
+    const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
+    const withoutLevel3 = content.replace(
+      "| 3 | Growing reach | Total valid public channel views | >=100 views | Trailing 30 days |\n",
+      ""
+    );
+    const gapProblems = validateBlueprintContent("youtube.md", withoutLevel3, "`youtube@6.0`");
+    expect(gapProblems.some((problem) => problem.message.includes("missing Level 3"))).toBe(true);
+
+    const swapped = content.replace(
+      "| 2 | Early reach | Total valid public channel views | >=10 views | Trailing 30 days |\n| 3 | Growing reach | Total valid public channel views | >=100 views | Trailing 30 days |",
+      "| 3 | Growing reach | Total valid public channel views | >=100 views | Trailing 30 days |\n| 2 | Early reach | Total valid public channel views | >=10 views | Trailing 30 days |"
+    );
+    const orderProblems = validateBlueprintContent("youtube.md", swapped, "`youtube@6.0`");
+    expect(orderProblems.some((problem) => problem.message.includes("ordered contiguously"))).toBe(true);
+  });
+
+  test("rejects wrong YouTube view thresholds and windows", async () => {
+    const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
+    const wrong = content.replace(
+      "| 3 | Growing reach | Total valid public channel views | >=100 views | Trailing 30 days |",
+      "| 3 | Growing reach | Total valid public channel views | >=90 views | Trailing 90 days |"
+    );
+    const problems = validateBlueprintContent("youtube.md", wrong, "`youtube@6.0`");
+    expect(problems.some((problem) => problem.message.includes("Level 3 trigger must be >=100 views"))).toBe(true);
+    expect(problems.some((problem) => problem.message.includes("Level 3 window must be Trailing 30 days"))).toBe(true);
+  });
+
+  test("rejects a trigger-plan ladder without the private-plan completion rule", async () => {
+    const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
+    const withoutRule = content
+      .replaceAll("private plan", "work notes")
+      .replaceAll("target trigger", "target signal")
+      .replaceAll("plan is complete", "work is ready");
+    const problems = validateBlueprintContent("youtube.md", withoutRule, "`youtube@6.0`");
+    expect(problems.some((problem) => problem.message.includes("private plan to be complete"))).toBe(true);
   });
 });
