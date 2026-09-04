@@ -36,6 +36,8 @@ A blueprint may also declare `experiment_ladder: level-trigger`. Every such blue
 - for each evidence level, one metric, numeric trigger, observation window, and unlock;
 - exactly one graduation level whose trigger proves real revenue.
 
+A blueprint may define an `## Experiment Bootstrap` contract for a public artifact that can exist before admission. When it does, the private experiment records the fields named by that contract — at minimum the artifact type, public location, date, operator involvement, and evidence anchor — without copying private evidence into the public blueprint. Bootstrap is provenance, not traction and not an autonomous capability: Level `0` still requires the blueprint's admission and observation bar, and a private, unavailable, or unmeasured artifact cannot admit the experiment.
+
 The level-container planning contract is:
 
 - one `L0`, `L1`, ... roadmap container for every ladder level, with exactly one marked `Current`;

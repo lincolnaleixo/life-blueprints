@@ -1,7 +1,7 @@
 ---
 type: youtube
-version: 4.0
-updated: 2026-09-03
+version: 5.0
+updated: 2026-09-04
 status: first-pass
 plan_grammar: phases
 experiment_ladder: level-trigger
@@ -21,30 +21,38 @@ experiment_plan_grammar: levels
 - Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
 - Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
 
+## Experiment Bootstrap
+
+YouTube v5 permits one manual public seed before an experiment is admitted. The seed can be a video or another public channel artifact created with operator involvement; it is a bootstrap input, not an autonomous capability and not evidence of traction. The private manifest records the seed type, public URL, seed date, operator involvement, and an anchor in `built.md` under `bootstrap`.
+
+Admission begins only after the seed is public and a read-only observer can confirm its availability, channel health, ownership, and aggregate measurement without routine operator work. A private, deleted, inaccessible, or unmeasured seed cannot admit an experiment. The seed's manual creation must never be presented as routine production automation.
+
 ## Experiment Ladder
 
-This ladder applies to both the long-form and Shorts lanes. Level `0` is admission to an experiment that is running autonomously until its next trigger; it claims no traction. The first audience signal is total valid public views that actually occurred across the channel during the trailing 30 days, read from a date-bounded YouTube Analytics or Reporting API aggregate; a video's lifetime counter is not a substitute. Repeatable reach then requires several distinct public videos to cross the per-video threshold in the longer catalog window. Revenue is counted only once it is settled and externally attributable to the channel, using an aggregate from YouTube, checkout, or billing systems; do not include viewer or buyer identities.
+This ladder applies to both the long-form and Shorts lanes. Level `0` is admission after the manual bootstrap has become a public, healthy, measurable seed; it claims no traction. The first audience signal is total valid public views that actually occurred across the channel during the trailing 30 days, read from a date-bounded YouTube Analytics or Reporting API aggregate; a video's lifetime counter is not a substitute. Repeatable reach then requires several distinct public videos to cross the per-video threshold in the longer catalog window. Revenue is counted only once it is settled and externally attributable to the channel, using an aggregate from YouTube, AdSense payments, checkout, or billing systems; do not include viewer or buyer identities.
 
-The private experiment uses these same levels as its only roadmap containers: `L0`, `L1`, and so on, never a parallel round sequence. The Current container equals the recorded current level. Each level holds its unlocked capability and the work needed to reach the next trigger; advancement requires both that capability to be verified and the next numeric trigger to be met. An early trigger remains ready until the level work closes.
+The private experiment uses these same levels as its only roadmap containers: `L0`, `L1`, and so on, never a parallel round sequence. The Current container equals the recorded current level. Each level holds its unlocked capability and the work needed to reach the next trigger; advancement requires both that capability to be verified and the next numeric trigger to be met. An early trigger remains ready until the level work closes. A numeric trigger never permits advancement past unfinished work owed by the current level.
 
 | Level | Name | Metric | Trigger | Window | Unlocks |
 | --- | --- | --- | --- | --- | --- |
-| 0 | Admission | Experiment is running with its hypothesis, metric, source, and decisions defined | Admission; no traction claim | Until the next trigger | Begin evidence collection |
-| 1 | Audience signal | Total valid public views that occurred across the channel during the window | >=1,000 views | Trailing 30 days | Continue testing reach |
-| 2 | Repeatable reach | Number of distinct public long-form or Shorts videos published in the window with at least 1,000 valid public views | >=3 qualifying videos | Trailing 90 days | Continue testing toward revenue |
+| 0 | Admission | Public seed availability, channel health, ownership, and aggregate measurement | Admission; no traction claim | Until the next trigger | Observe the seed without routine operator work |
+| 1 | Audience signal | Total valid public views that occurred across the channel during the window | >=1,000 views | Trailing 30 days | Open the second-video process |
+| 2 | Repeatable reach | Number of distinct public long-form or Shorts videos published in the window with at least 1,000 valid public views | >=3 qualifying videos | Trailing 90 days | Continue testing toward settled revenue |
 | 3 | Revenue | Settled external channel-attributable revenue (numeric currency amount) | >0 | Trailing 30 days | Graduate into a unit at stage Revenue |
 
 The existing CTR/AVD gate remains a packaging and retention diagnostic for operating decisions; it is not an experiment-ladder level.
 
 ## Progressive Automation
 
-Level `0` requires a verified autonomous production-and-publishing capability, which may span research, scripting, rendering, upload and community jobs. Each earned non-graduation level unlocks at least one additional business capability. The experiment chooses it from the evidenced bottleneck and confirms it before adding it to the private plan; the next evidence trigger remains gated until the capability is proven in production and monitored. Revenue graduation adds no final experiment automation.
+The manual seed is not automation. Level `0` requires one verified autonomous observation capability: the public seed remains available, the channel's health and ownership can be checked, and the aggregate metric can be read and recorded without routine operator work until the next trigger. The observer must fail closed when its source is stale, unavailable, or inconsistent; it must not publish or alter the channel at Level `0`.
+
+Level `1` opens the second-video process. Before the experiment can advance beyond Level `1`, that process must be delegable or automated, monitored, and proven through a safe production exercise. Each earned non-graduation level unlocks at least one additional business capability. The experiment chooses it from the evidenced bottleneck and confirms it before adding it to the private plan; the next evidence trigger remains gated until the newly unlocked capability is proven in production and monitored. Revenue graduation adds no final experiment automation.
 
 | Earned level | Default automation frontier | Selection guidance |
 | --- | --- | --- |
-| 0 | Production and publication | Run the chosen long-form or Shorts format without per-video operator work while preserving originality, rights and policy gates. |
-| 1 | Social distribution and repurposing | Turn each eligible release into platform-appropriate distribution without hard-coding one social provider for every channel. |
-| 2 | Owned-audience broadcast and monetization | Build a low-labor direct audience or monetization path, such as an owned broadcast channel, selected from demonstrated audience behavior. |
+| 0 | Seed observation and measurement | Keep the public seed observable through availability, health, ownership, and aggregate measurement checks without publishing or routine operator work. |
+| 1 | Second-video production | Make the next video process delegable or automated, with originality, rights, policy, human-review, smoke, rollback or safe-correction, and health gates. |
+| 2 | Distribution and owned-audience monetization | Add a low-labor audience or monetization path, such as platform-native distribution or an owned broadcast channel, selected from demonstrated audience behavior. |
 
 The public sequence names capability categories, not providers. A private experiment may commit to a specific network or broadcast service, or choose a different frontier, when its evidence and operating boundaries justify that decision.
 

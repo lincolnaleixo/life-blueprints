@@ -138,4 +138,24 @@ Level 0 is admission.
     const problems = validateBlueprintContent("example.md", withLadder, "`example@1.0`");
     expect(problems.some((problem) => problem.message.includes("Progressive Automation"))).toBe(true);
   });
+
+  test("publishes the YouTube v5 bootstrap and automation gates", async () => {
+    const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
+
+    expect(content).toContain("version: 5.0");
+    expect(content).toContain("## Experiment Bootstrap");
+    expect(content).toContain("seed type");
+    expect(content).toContain("public URL");
+    expect(content).toContain("seed date");
+    expect(content).toContain("operator involvement");
+    expect(content).toContain("anchor in `built.md`");
+    expect(content).toContain("manual seed is not automation");
+    expect(content).toContain("| 0 | Admission | Public seed availability, channel health, ownership, and aggregate measurement |");
+    expect(content).toContain("| 1 | Audience signal | Total valid public views that occurred across the channel during the window | >=1,000 views |");
+    expect(content).toContain("| 1 | Audience signal | Total valid public views that occurred across the channel during the window | >=1,000 views | Trailing 30 days | Open the second-video process |");
+    expect(content).toContain("| 2 | Repeatable reach | Number of distinct public long-form or Shorts videos published in the window with at least 1,000 valid public views | >=3 qualifying videos | Trailing 90 days |");
+    expect(content).toContain("| 3 | Revenue | Settled external channel-attributable revenue (numeric currency amount) | >0 | Trailing 30 days | Graduate into a unit at stage Revenue |");
+    expect(content).toContain("delegable or automated");
+    expect(content).not.toContain("Level `0` requires a verified autonomous production-and-publishing capability");
+  });
 });
