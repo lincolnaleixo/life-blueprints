@@ -17,7 +17,7 @@ A blueprint is reusable reference material, not a task list or a promise of resu
 | SaaS | 5.0 | Pilot | [saas](blueprints/saas.md) |
 | Social media | 0.7 | First pass | [social media](blueprints/social-media.md) |
 | Utility site | 2.0 | Draft | [utility site](blueprints/utility-site.md) |
-| YouTube | 5.0 | First pass | [youtube](blueprints/youtube.md) |
+| YouTube | 5.1 | First pass | [youtube](blueprints/youtube.md) |
 
 Statuses describe confidence, not business maturity:
 
@@ -46,6 +46,8 @@ An experiment ladder is the pre-unit evidence contract for one business type. It
 The ladder is also the private experiment's roadmap. Its plan uses `L0`, `L1`, ... as the only work containers, with no parallel round numbering. The Current container always matches the recorded current level. To advance, the capability owed at the current level must be verified and the next numeric trigger must be met; an early trigger stays ready until the level's required work closes.
 
 Every ladder also carries a `## Progressive Automation` section. Level `0` starts with one verified autonomous capability; each earned non-graduation level unlocks at least one more capability chosen from the experiment's evidence. The public blueprint publishes default capability categories and selection guidance, while the private experiment records its concrete choice, proof, operating boundary and health source. A new evidence trigger stays gated until the newly unlocked capability is verified.
+
+A blueprint with `build_path: stage-gate` also publishes one ordered path from pre-admission through graduation. Each step says what to build, what observable gate advances it, what pass and miss decisions mean, and which automation frontier opens next. The path supplies defaults for a new experiment plan; the private plan keeps only its adapted projects and evidence, never a copied tracker.
 
 Private experiment records hold the specific hypothesis, metric definition, source, current level, and decisions. The public blueprint never contains a private bet's name, customer data, infrastructure, or result.
 

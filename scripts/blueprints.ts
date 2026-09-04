@@ -9,6 +9,7 @@ export interface BlueprintMetadata {
   planGrammar?: string;
   experimentLadder?: string;
   experimentPlanGrammar?: string;
+  buildPath?: string;
 }
 
 export interface ValidationProblem {
@@ -46,7 +47,8 @@ export function parseBlueprint(content: string): { metadata: BlueprintMetadata |
         status: raw.status!,
         ...(raw.plan_grammar ? { planGrammar: raw.plan_grammar } : {}),
         ...(raw.experiment_ladder ? { experimentLadder: raw.experiment_ladder } : {}),
-        ...(raw.experiment_plan_grammar ? { experimentPlanGrammar: raw.experiment_plan_grammar } : {})
+        ...(raw.experiment_plan_grammar ? { experimentPlanGrammar: raw.experiment_plan_grammar } : {}),
+        ...(raw.build_path ? { buildPath: raw.build_path } : {})
       }
     : null;
   return { metadata, body: match[2]! };
@@ -139,6 +141,42 @@ export function validateBlueprintContent(
   }
   if (!metadata.experimentLadder && metadata.experimentPlanGrammar) {
     add("experiment_plan_grammar requires experiment_ladder");
+  }
+
+  const buildPath = body.match(/^## Build Path\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/m)?.[1] || "";
+  if (metadata.buildPath) {
+    if (metadata.buildPath !== "stage-gate") add(`unsupported build_path: ${metadata.buildPath}`);
+    if (!metadata.experimentLadder) add("build_path requires experiment_ladder");
+    if (!buildPath) {
+      add("build_path requires an ## Build Path section");
+    } else {
+      if (!/^\| Order \| Step \| Scope \| Build now \| Gate \| Pass \| Miss \| Automation \|$/m.test(buildPath)) {
+        add("build path must use the Order, Step, Scope, Build now, Gate, Pass, Miss, Automation table contract");
+      }
+      const rows = buildPath.split("\n").flatMap((line) => {
+        const cells = line.split("|").slice(1, -1).map((cell) => cell.trim());
+        if (cells.length !== 8 || !/^\d+$/.test(cells[0] || "")) return [];
+        return [{ order: Number(cells[0]), step: (cells[1] || "").replace(/^`|`$/g, ""), scope: (cells[2] || "").replace(/^`|`$/g, ""), cells }];
+      });
+      if (!rows.length) add("build path must define at least one stage-gate step");
+      if (rows.some((row, index) => row.order !== index + 1)) add("build path orders must be contiguous from 1");
+      const steps = rows.map((row) => row.step);
+      const duplicateSteps = steps.filter((step, index) => steps.indexOf(step) !== index);
+      if (duplicateSteps.length) add(`duplicate build path steps: ${[...new Set(duplicateSteps)].join(", ")}`);
+      for (const row of rows) {
+        if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(row.step)) add(`invalid build path step: ${row.step}`);
+        if (!row.cells.slice(3).every(Boolean)) add(`build path step ${row.step || row.order} has an empty stage-gate field`);
+        if (row.scope !== "pre-admission" && !/^L\d+$/.test(row.scope)) add(`invalid build path scope: ${row.scope}`);
+      }
+      if (!rows.some((row) => row.scope === "pre-admission")) add("build path must define at least one pre-admission step");
+      const ladder = body.match(/^## Experiment Ladder\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/m)?.[1] || "";
+      const levels = [...new Set([0, ...[...ladder.matchAll(/^\|\s*(\d+)\s*\|[^\n]+$/gm)].map((match) => Number(match[1]))])];
+      for (const level of levels) {
+        if (!rows.some((row) => row.scope === `L${level}`)) add(`build path must represent published Level ${level}`);
+      }
+    }
+  } else if (buildPath) {
+    add("## Build Path requires build_path frontmatter");
   }
 
   const titles = [...body.matchAll(/^#\s+.+$/gm)];

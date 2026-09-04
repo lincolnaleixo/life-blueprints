@@ -57,6 +57,14 @@ It must also have an `## Progressive Automation` section with:
 
 The reusable ladder belongs here. A specific experiment's hypothesis, metric source, current result, and private identifiers do not.
 
+A blueprint may additionally declare `build_path: stage-gate`. This publishes one ordered default route from pre-admission work through the experiment ladder without turning the blueprint into a private task list. It requires an `## Build Path` section with this table:
+
+| Order | Step | Scope | Build now | Gate | Pass | Miss | Automation |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | `example-step` | `pre-admission` | Generic bounded work | Observable entry or exit evidence | What opens next | What to repeat, change, or stop | The capability frontier, or None |
+
+Orders are contiguous from `1`, step ids are unique kebab-case slugs, and scope is either `pre-admission` or one of the blueprint's published `L<number>` levels. At least one pre-admission step and every published level must appear. The path stitches build work, evidence, decisions, and progressive automation into one sequence; it does not replace the ladder's numeric triggers or the unit's post-graduation planning grammar. A private experiment adapts the relevant rows to its own evidence and records the concrete projects only in its plan.
+
 ## Meaning
 
 - A phase is an evidence-gated maturity state, not a month, duration, or mandatory project sequence.

@@ -139,10 +139,74 @@ Level 0 is admission.
     expect(problems.some((problem) => problem.message.includes("Progressive Automation"))).toBe(true);
   });
 
+  test("accepts a stage-gate build path that covers pre-admission and every level", () => {
+    const withPath = validBlueprint
+      .replace("status: draft", "status: draft\nexperiment_ladder: level-trigger\nexperiment_plan_grammar: levels\nbuild_path: stage-gate")
+      .replace("## Phases", `## Experiment Ladder
+
+Level \`0\` is admission to a running experiment.
+
+| Level | Name | Metric | Trigger | Window | Unlocks |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Revenue | External revenue | \`> 0\` | Trailing 30 days | Graduate into a unit |
+
+## Progressive Automation
+
+Level \`0\` requires one verified autonomous capability. The next evidence trigger remains gated until the unlocked capability is verified.
+
+| Earned level | Default automation frontier | Selection guidance |
+| --- | --- | --- |
+| 0 | Core test | Automate the running test. |
+
+## Build Path
+
+| Order | Step | Scope | Build now | Gate | Pass | Miss | Automation |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | \`manual-proof\` | \`pre-admission\` | Create one manual proof | Public and measurable | Open admission | Rework or stop | None |
+| 2 | \`running-test\` | \`L0\` | Run the bounded test | Source remains healthy | Continue | Repair source | Core test |
+| 3 | \`revenue\` | \`L1\` | Resolve the revenue decision | Revenue is verified | Graduate | Continue or stop | None |
+
+## Phases`);
+    expect(validateBlueprintContent("example.md", withPath, "`example@1.0`")).toEqual([]);
+  });
+
+  test("rejects a build path that skips a published level", () => {
+    const withPath = validBlueprint
+      .replace("status: draft", "status: draft\nexperiment_ladder: level-trigger\nexperiment_plan_grammar: levels\nbuild_path: stage-gate")
+      .replace("## Phases", `## Experiment Ladder
+
+Level 0 is admission.
+
+| Level | Name | Metric | Trigger | Window | Unlocks |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Revenue | External revenue | \`> 0\` | Trailing 30 days | Graduate into a unit |
+
+## Progressive Automation
+
+Level 0 requires one verified autonomous capability. The next evidence trigger remains gated until the unlocked capability is verified.
+
+| Earned level | Default automation frontier | Selection guidance |
+| --- | --- | --- |
+| 0 | Core test | Automate the running test. |
+
+## Build Path
+
+| Order | Step | Scope | Build now | Gate | Pass | Miss | Automation |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | \`manual-proof\` | \`pre-admission\` | Create one manual proof | Public and measurable | Open admission | Rework or stop | None |
+| 2 | \`revenue\` | \`L1\` | Resolve the revenue decision | Revenue is verified | Graduate | Continue or stop | None |
+
+## Phases`);
+    const problems = validateBlueprintContent("example.md", withPath, "`example@1.0`");
+    expect(problems.some((problem) => problem.message.includes("Level 0"))).toBe(true);
+  });
+
   test("publishes the YouTube v5 bootstrap and automation gates", async () => {
     const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
 
-    expect(content).toContain("version: 5.0");
+    expect(content).toContain("version: 5.1");
+    expect(content).toContain("build_path: stage-gate");
+    expect(content).toContain("## Build Path");
     expect(content).toContain("## Experiment Bootstrap");
     expect(content).toContain("seed type");
     expect(content).toContain("public URL");
