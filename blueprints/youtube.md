@@ -1,11 +1,12 @@
 ---
 type: youtube
-version: 5.0
+version: 5.1
 updated: 2026-09-04
 status: first-pass
 plan_grammar: phases
 experiment_ladder: level-trigger
 experiment_plan_grammar: levels
+build_path: stage-gate
 ---
 
 # Blueprint — Faceless YouTube business
@@ -14,6 +15,8 @@ experiment_plan_grammar: levels
 
 ## Planning Contract
 
+- The **Build Path** is the default creation sequence from a blank channel through Revenue. Its rows connect bounded work, observable evidence, pass/miss decisions, and the next automation frontier. A private experiment adapts those rows to its lane, niche, evidence, and operating limits; it never copies the table as a second tracker.
+- Pre-admission rows happen before `new-experiment`. Once admitted, the public `L0`, `L1`, ... scopes map to the private plan's only roadmap containers; their numeric ladder triggers remain authoritative.
 - The maturity phases below describe the generic business. A unit's roadmap phases are its own and are independent from them: several unit phases may build capabilities from one blueprint phase, and matching numbers never imply a one-to-one mapping.
 - A YouTube unit plans by **phase** because a channel advances through meaningful state changes — a validated niche, a production engine that runs without the operator, monetization surfaces enabled, an owned funnel that earns — rather than by product releases or a monthly buying rhythm. A phase takes as long as its state change needs and is never attached to a date, a month, or an estimated duration.
 - Keep exactly one incomplete phase marked Current and order later phases by priority; that order expresses priority, not mandatory dependency. Every phase declares its purpose, focus, and `Done when` condition.
@@ -26,6 +29,19 @@ experiment_plan_grammar: levels
 YouTube v5 permits one manual public seed before an experiment is admitted. The seed can be a video or another public channel artifact created with operator involvement; it is a bootstrap input, not an autonomous capability and not evidence of traction. The private manifest records the seed type, public URL, seed date, operator involvement, and an anchor in `built.md` under `bootstrap`.
 
 Admission begins only after the seed is public and a read-only observer can confirm its availability, channel health, ownership, and aggregate measurement without routine operator work. A private, deleted, inaccessible, or unmeasured seed cannot admit an experiment. The seed's manual creation must never be presented as routine production automation.
+
+## Build Path
+
+This is the default order, not a universal script. Long-form and Shorts adapt the format, cadence, and quality evidence, but neither may skip the gate between a manual seed and an admitted observable experiment. The audience trigger may arrive from the seed; only then does Level `1` open the second-video production process and its automation proof.
+
+| Order | Step | Scope | Build now | Gate | Pass | Miss | Automation |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | `niche-and-channel-thesis` | `pre-admission` | Choose long-form or Shorts; score a bounded niche on demand, competition, money path, policy risk, and format fit; prewrite the kill and continuation decisions. | One niche has observable demand, a credible monetization path, policy-safe framing, and an accessible aggregate metric source. | Lock the channel promise and configure the shell. | Reject the niche or narrow it before creating channel assets. | None; judgment is still being learned. |
+| 2 | `manual-public-seed` | `pre-admission` | Configure identity, channel safety settings, ownership, and measurement; then produce and upload one representative video manually while preserving the research, script, assets, rights trail, packaging choices, review result, and operator involvement. | The seed is public, policy and rights checks pass, ownership and channel health are observable, and the aggregate metric receives real data. | Record the bootstrap evidence and admit Level 0 with a read-only observer. | Rework or stop; a private, unhealthy, inaccessible, or unmeasured seed cannot become an experiment. | None; the seed teaches the golden path and is never claimed as automation. |
+| 3 | `observe-audience-signal` | `L0` | Run the read-only observer while the public seed remains unchanged; protect source freshness and the prewritten decision boundary. | At least 1,000 valid public channel views in a trailing 30-day window, with the observer capability healthy. | Earn Level 1 and open the second-video process. | Keep observing only within the prewritten boundary, then reframe or stop rather than manufacturing activity. | Seed availability, channel health, ownership, and aggregate measurement stay observable without routine operator work. |
+| 4 | `automate-second-video` | `L1` | Translate the manual golden path into the smallest safe, resumable production process and use it to make the second video; preserve originality, rights, policy, and accountable human approval gates without routine owner work. | The process completes a real production exercise with smoke, failure/resume, rollback or safe correction, and live health evidence; Level 2 still requires at least three distinct public videos with 1,000 valid views each in 90 days. | Verify the Level 1 capability and continue the measured catalog toward repeatable reach. | Repair the failed stage or revise the format; do not call a one-off manual rescue an automated capability. | Second-video production becomes delegable or automated. |
+| 5 | `prove-repeatable-reach` | `L2` | Continue the verified publishing process across distinct topics or formats and add the lowest-labor distribution or owned-audience monetization path justified by observed behavior. | At least three distinct qualifying public videos in the trailing 90-day window, the Level 2 capability is verified, and settled attributable revenue is measured separately. | Continue until settled external channel-attributable revenue is greater than zero in 30 days. | Diagnose packaging, retention, topic selection, or money-path fit and continue, reframe, or stop at the prewritten boundary. | Distribution and owned-audience monetization become low-labor and monitored. |
+| 6 | `resolve-revenue-graduation` | `L3` | Verify the aggregate revenue evidence and resolve the explicit graduation decision; do not add a final experiment automation requirement. | Settled external channel-attributable revenue is greater than zero in a trailing 30-day window. | With explicit approval, create a Unit at Revenue and translate only the relevant capabilities into its phase plan. | Leave the bet as an experiment, preserve the evidence, and continue or stop under its decision contract. | None; graduation is a decision, not another automation frontier. |
 
 ## Experiment Ladder
 
@@ -340,33 +356,13 @@ Extra monetization paths that fit the model once the catalog works:
 - **Translations/dubs:** only after proof in English; clone format into another language with a distinct voice/identity and policy-safe localization.
 - **Asset sale:** a channel with revenue, email list, products, and clean rights is more sellable than a view-only channel. Keep rights/evidence clean from day 1.
 
-## 13. Launch Roadmap (Week 1 → Week N)
+## 13. Applying the Build Path
 
-The phased sequence to stand up a **new** faceless channel of this type from zero. These are **relative weeks**: when you commit to a real build, schedule them into the owning unit's `tasks.md` as the actual ISO weeks you'll work them.
+The table at the top is the one creation sequence. The sections above provide the operating detail used to adapt each row; they do not create another roadmap or attach work to arbitrary weeks.
 
-### Long-form documentary lane
+**Long-form adaptation:** the manual seed should exercise the final intended quality bar — research, originality delta, voice, visual grammar, thumbnail, rights trail, description, pinned comment, end screen, disclosure, and aggregate measurement. At Level 1, automate or delegate that learned path one stage at a time; do not expand into a large batch, product catalog, or second channel before the evidence gates justify it.
 
-| Week | Focus | Concrete output |
-|------|-------|-----------------|
-| **W1** | **Validate niche + channel** | Run `business-research`; score 3–5 candidate niches on Demand · Competition · Money · Risk-safe · Persona → one pick. Confirm policy-safe framing (folk-tradition, no medical claims) + a credible backend offer. **Gate: a viable niche or stop.** |
-| **W2** | **Lock identity + format** | Pin name pattern + a single AI persona portrait (locked seed/reference) + banner with offer/QR; grab `@handle` + matching `.com` + funnel subdomain. Run the **channel-setup checklist (§8)**: profile/bio/photo, branding + video watermark, layout, upload defaults, comment moderation, captions, advanced features + 2FA. Define 4–5 recurring formats + the title/thumbnail/hook template; configure the channel's `channel.yaml` (persona, voice, visual grammar, QA rubric). |
-| **W3** | **First batch of scripts + owned funnel** | Write the originality-delta brief + 3–4 researched `script.md` (1 pillar + 2–3 anchors), each with a real POV none of the top-5 results add. Build the product skeleton (3-vol bundle outline; chapters seeded from the scripts), landing page, checkout, lead magnet, email capture, legal pages, and CTA/pinned-comment templates. |
-| **W4** | **Produce + publish** | Run the `video-producer` pipeline (tts → stills → heroes → captions → assemble → thumbnail → **human review gate** → upload). Ship the pillar + first anchors; first description link + first pinned comment point to the funnel; AI-disclosure flag set. **Gate: first videos live with passing review packets and a working site.** |
-| **W5–W7** | **Cadence to the monetization gate** | Hold ~2 videos/week, rotating formats; one-variable CTR/AVD test per upload; run the 5-video authenticity audit. Toggle **Hype** on and ask viewers to Hype within the 7-day window (free small-channel reach). Build the 20-SKU digital/POD catalog in draft, but only surface the products that fit the videos. Grind toward the YPP thresholds (subs + watch hours). **Gate: catalog earning *expanding* impressions (CTR ≥5% + AVD ≥35%), or the reach moat isn't there.** |
-| **W8–W9** | **Prove or kill** | Hit the 90-day-style gate early: a video the algorithm chose to push **and** a funnel converting (low-single-digit outbound CTR + real sales per ~10k warm views). If eligible, apply to expanded YPP and enable Commerce Product Module/fan funding/Shopping; otherwise keep driving the owned funnel. **Scale** → keep publishing toward ~10 videos + full YPP; **kill** → every video stalls sub-3% CTR or warm viewers won't buy, cut before sinking more time. |
-| **W10+** | **Scale / clone** | Once the catalog earns organic reach + the funnel converts: turn on every eligible Earn feature, connect the official store, tag relevant products, launch memberships, test sponsor/affiliate partnerships, graduate to a `work/` unit, deepen the product line (print + audiobook editions, a course/community tier, a standalone newsletter, audio/podcast repurpose), and **clone the playbook into a second channel** — in an **aesthetically distinct** family (shared implementations read as one channel to YouTube). |
-
-> Not everything fits a week-by-week plan — the economics, niche-selection, authenticity gates, and kill criteria above are reference you consult throughout. The roadmap is just the **build sequence**; the rest is the **operating manual**.
-
-### Shorts automation lane
-
-| Week | Focus | Concrete output |
-|------|-------|-----------------|
-| **W1** | **Validate Shorts niche + account shell** | Collect 20-30 winning Shorts across 3-5 channels in the target lane. Confirm the clips can be transformed safely and the niche has demand plus a money path. Verify the channel, enable advanced features, set 2FA, and complete the basic shell. |
-| **W2** | **Pattern library + first batch** | Build a pattern board: hook types, payoff types, edit style, caption style, sound cues, and forbidden copycat examples. Produce 10-15 Shorts manually so the operator learns the eye before delegating. |
-| **W3-W4** | **Daily publishing test** | Publish daily or near-daily. Read viewed-vs-swiped-away, retention, and Shorts-feed reach after meaningful samples. Keep winners, kill weak patterns, and stop blaming the account when the edit or hook is the real issue. |
-| **W5-W6** | **Repeatability gate** | Pass only if at least one pattern repeatedly earns Shorts-feed tests and one or more videos breaks beyond the channel's normal range. If every upload stalls or the only winners are non-transformative copies, kill or reframe. |
-| **W7+** | **SOP + delegation** | Turn the winning pattern into an SOP, hire or train editors, and scale volume only while quality holds. Keep the operator on hook choice, pattern mining, analytics, and money path. |
+**Shorts adaptation:** the manual seed should prove one representative hook/payoff/edit pattern and its transformation boundary. At Level 1, the second-video process may become a small pattern-driven batch only when the operator can still identify each piece's originality and rights basis. Cadence is an input to learning, never a substitute for the Level 2 repeatability gate.
 
 ## 14. Benchmarks
 
@@ -386,7 +382,7 @@ The phased sequence to stand up a **new** faceless channel of this type from zer
 - **GO (Shorts Stage 1):** a pattern repeatedly earns Shorts-feed tests with strong viewed-vs-swiped-away and retention, not just one lucky spike.
 - **GO (Stage 2):** funnel outbound CTR in the low-single-digit %, and real sales (a handful per ~10k warm views).
 - **NO-GO (any one):** every long-form video stalls at seed impressions with **sub-3% CTR** (content can't earn free reach, no moat) · every Shorts test stalls without Shorts-feed distribution after account setup and format iteration · warm viewers won't click/buy · or only deceptive hooks move it.
-- **Scale:** once the catalog earns organic reach + the funnel converts, continue toward ~10 videos, turn on all eligible Earn surfaces, connect the store, launch a low-labor membership tier, then graduate to a `work/` unit or clone the playbook into a second (aesthetically distinct) channel.
+- **Scale:** once the catalog earns organic reach + the funnel converts, continue toward ~10 videos, turn on all eligible Earn surfaces, connect the store, launch a low-labor membership tier, then graduate to a Unit at Revenue after the explicit decision; clone the playbook only after the first channel is profitable and systematized.
 - **Calendar:** weeks, not days — organic distribution can't be rushed. That's the honest shape of the bet.
 
 ## 16. YPP defense & appeal playbook
@@ -431,7 +427,7 @@ Run this before YPP application, after any warning, and immediately after a demo
 
 ## Phases
 
-The manual runs in four phases: the maturity stages a channel of this type walks, from first uploads to a portfolio. Each capability below sits in the phase where it becomes the focus, and a unit's check shows which phase it is completing. Phases gate on traction, not time.
+The Build Path above is the creation roadmap from zero through experiment graduation. These four maturity phases remain the generic capability grouping a Revenue-or-higher Unit consults afterward; they are not a second launch sequence. Each capability below sits where it becomes the focus, and phases gate on evidence rather than time.
 
 - **Phase 0 · Publish & Wire** — get the engine running and every video pointing home: the production pipeline shipping on cadence, the funnel link on every upload, the live P&L from day one, and the Shorts lane if the bet runs one. *Focus: a publishing machine wired to an owned destination.*
 - **Phase 1 · Monetize on-platform** — YPP unlocks the native rails: ad revenue, Shopping, memberships, Supers. Turn every eligible Earn surface on, but keep it the small money. *Gate in: a catalog earning expanding impressions (CTR ≥5% + AVD ≥35%). Focus: every native surface live.*
