@@ -1,138 +1,193 @@
 ---
 type: youtube
-version: 6.2
+version: 7.0
 updated: 2026-09-05
 status: first-pass
 plan_grammar: phases
 experiment_ladder: level-trigger
 experiment_plan_grammar: levels
-level_contract: trigger-plan
+level_contract: stage-plan
 graduation_gate: revenue
 ---
 
 # YouTube Channel
 
-> **How to build a YouTube channel across long-form and Shorts lanes.** A channel may be faceless or on-camera. Long-form combines evergreen content with an owned product funnel. Shorts uses high-cadence, hook-and-payoff content for reach, then adds sponsors, products, or a funnel when the niche supports one. This is the **reusable methodology for any operator building this business type**; a specific bet adds its own niche, persona, voice, offer, and format mix. Run a separate niche-validation pass before committing. The operating gates draw on YouTube policy and creator post-mortems; treat single-creator claims as heuristics until independently verified.
+> **How to build a YouTube channel across long-form and Shorts lanes.** A channel may be faceless or on-camera. Long-form combines evergreen content with an owned product funnel. Shorts uses high-cadence, hook-and-payoff content for reach, then adds sponsors, products, or a funnel when the niche supports one. This is the **reusable methodology for any operator building this business type**; a specific bet adds its own niche, persona, voice, offer, and format mix. Validate and approve the niche, audience, and proposal before E0; the Stage Roadmap does not revalidate an approved idea. The operating gates draw on YouTube policy and creator post-mortems; treat single-creator claims as heuristics until independently verified.
 
 ## Planning Contract
 
-- This blueprint opts into the `level_contract: trigger-plan` experiment contract. The numbered ladder is intentionally small: each published level supplies one observable trigger, while the private experiment plan supplies the bounded work for that level.
-- Once admitted, `L0`, `L1`, ... are the private plan's only roadmap containers. The Current container equals the recorded level, and the public trigger table remains authoritative for evidence.
-- `L0` prepares the channel shell and the first representative video. Starting `L0` does not require a public seed, an existing public artifact, or an autonomous capability.
-- `L1` is earned when one representative video is public and passes the same ownership, channel-health, and rights checks whether the video is newly produced by the experiment or an existing public video owned by the experiment.
-- `L2` through `L5` measure total valid public channel views in a trailing 30-day window. `L6` and later levels are intentionally undefined until this blueprint publishes them.
-- To advance, the private plan at the current level must be complete and the target level's trigger must be met. A trigger that arrives early stays ready while the current-level plan closes; neither condition alone advances the level.
-- This contract does not require an Experiment Bootstrap, Progressive Automation, or staged build-path section. Automation is not owed at every level; any implementation that claims an automated capability still needs production proof, safe correction or rollback, health evidence, and operating limits.
-- The maturity phases below describe the generic business. A unit's roadmap phases are its own and are independent from them: several unit phases may build capabilities from one blueprint phase, and matching numbers never imply a one-to-one mapping.
-- A YouTube unit plans by **phase** because a channel advances through meaningful state changes — a validated niche, a production engine that runs without the operator, monetization surfaces enabled, an owned funnel that earns — rather than by product releases or a monthly buying rhythm. A phase takes as long as its state change needs and is never attached to a date, a month, or an estimated duration.
-- Keep exactly one incomplete phase marked Current and order later phases by priority; that order expresses priority, not mandatory dependency. Every phase declares its purpose, focus, and `Done when` condition.
-- Each phase holds at most five top-level projects. A project is a bounded change with an observable completion condition; its concrete execution tasks live directly underneath it and are uncapped.
-- Every cap here is a generic default. A unit may override it in its own manifest with a recorded reason, and an existing container keeps what it already holds until its next boundary.
-- Use the capability catalog as reference when choosing projects, but do not mirror the catalog into the unit plan or treat project completion as permanent capability evidence.
+- This blueprint opts into the `level_contract: stage-plan` experiment contract. The public roadmap is the ordered `E0`–`E5` Stage Roadmap; it is not a second level ladder or a date-based launch plan.
+- A stage is one bounded unit of work plus its expected result. The stage is complete only when its required work is complete **and** its own exit trigger is met. A later stage never borrows an earlier stage's trigger.
+- Idea validation, niche and audience selection, channel proposal, and fit approval happen before `E0`. The Stage Roadmap does not ask the operator to revalidate an already approved idea.
+- `E0`–`E5` use total valid public channel views from a date-bounded YouTube Analytics aggregate in a trailing 30-day window. The exact trigger is written on the stage whose result it proves.
+- Optional work can improve a stage but never blocks completion. An exception requires owner approval and a record in the private plan; the public blueprint does not invent an exception for a specific operator.
+- When required work and the stage's own result pass early, close the stage without waiting for the next 30-day review clock; the clock governs review, not completion.
+- The review clock is every 30 days from stage entry or the last review. It is separate from the trailing measurement window. A review can record falling evidence, but there is no automatic regression or automatic pause; retain completed work when graduation happens.
+- The maturity phases below are generic capability indexing for a later Revenue-or-higher unit. They are not an alternative experiment roadmap, and no catalog phase number maps to an E-stage.
+- A YouTube unit plans by **phase** because a channel advances through meaningful state changes. A phase takes as long as its state change needs and is never attached to a date, month, or estimated duration.
+- Keep exactly one incomplete phase marked Current and order later phases by priority. Every phase declares its purpose, focus, and `Done when` condition. Each phase holds at most five top-level projects; nested execution tasks are uncapped.
+- These caps are generic defaults. A unit may override them in its manifest with a recorded reason. Use the capability catalog as reference; do not mirror it into a unit plan or treat project completion as permanent capability evidence.
 
-## Experiment Ladder
+## Stage Policy
 
-This ladder applies to both the long-form and Shorts lanes. `L0` is the preparation container and claims no public traction. It prepares the channel shell and first representative video; no public seed or autonomous capability is required to start it. `L1` begins once one representative video is public and passes ownership, channel-health, and rights checks. The representative video may be newly produced by the experiment or an existing public video with the same checks. `L2` through `L5` are total valid public channel views actually observed in a trailing 30-day window, read from a date-bounded YouTube Analytics or Reporting API aggregate rather than a video's lifetime counter.
+The reusable policy for this and future stage-plan blueprints is defined in [`docs/stage-template.md`](../docs/stage-template.md). In brief: a stage combines work with an expected result; required work and the stage's own trigger are both mandatory; optional work is never a block; exceptions are owner-approved and recorded; reviews use the 30-day stage-entry/last-review clock independently of the trailing evidence window; falling evidence does not automatically regress or pause a stage; and completed work is retained after graduation.
 
-| Level | Name | Metric | Trigger | Window |
-| --- | --- | --- | --- | --- |
-| 0 | Preparation | Channel shell and first representative video readiness | Channel setup and the first-video plan are ready | Until the first representative video is public |
-| 1 | Representative video | One valid public representative video | One representative video is public; ownership, channel-health, and rights checks pass | Point-in-time |
-| 2 | Early reach | Total valid public channel views | >=10 views | Trailing 30 days |
-| 3 | Growing reach | Total valid public channel views | >=100 views | Trailing 30 days |
-| 4 | Established reach | Total valid public channel views | >=200 views | Trailing 30 days |
-| 5 | Expanding reach | Total valid public channel views | >=500 views | Trailing 30 days |
+## Stage Roadmap
 
-Private-plan guidance (the plan itself remains private):
+Each stage below is a private-plan reference. The entry condition points to the prior result; the exit trigger belongs to the stage itself. The operator adapts the required work to the approved channel and keeps unassigned catalog capabilities as future undecided options.
 
-- `L0`: prepare the channel shell, measurement, policy and rights checks, and produce the first representative video (or identify an existing public video that can qualify at `L1`).
-- `L1`: keep the bounded plan focused on reaching 10 total valid public channel views in the trailing 30-day window.
-- `L2`: keep the bounded plan focused on reaching 100 total valid public channel views in the trailing 30-day window.
-- `L3`: keep the bounded plan focused on reaching 200 total valid public channel views in the trailing 30-day window.
-- `L4`: keep the bounded plan focused on reaching 500 total valid public channel views in the trailing 30-day window.
-- `L5`: keep a bounded measurement and revenue-decision plan; no `L6` view target is defined.
+### E0 — Prepare the channel and first representative video
 
-To advance, the private plan at the current level must be complete and the target trigger must be met. A target trigger that arrives early remains ready until the plan closes. The CTR/AVD gate remains a packaging and retention diagnostic, not a ladder level.
+Objective: Prepare a measurable, owned, rights-safe channel and publish the first representative video with a semi-manual workflow.
 
-Graduation is independent of the numbered views ladder and is never an `L6` trigger. With `graduation_gate: revenue`, graduation requires actual settled externally attributable revenue from the channel and explicit owner approval; views alone never graduate an experiment. The revenue evidence remains aggregate-only and must not include viewer or buyer identities.
+Entry: Idea validation, niche and audience selection, channel proposal, and fit approval are complete before E0; do not revalidate the approved idea in E0.
 
-## Level Plans
+Required:
+- Set up channel measurement, ownership, channel health checks, and rights checks.
+- Produce and publish one representative video semi-manually with AI assistance under the owner or a designated responsible approver's editorial and safety approval.
+- Start reusable automation code that can reduce repeated production work; do not claim full automation at E0.
 
-Guidance for each level; select/adapt relevant capabilities in private plan, not automatic obligations/unlocks or extra gates. Earlier capabilities can be built/reused anytime; phase numbers aren't levels.
-
-### L0 — Prepare the channel and first representative video
-
-- Set up channel ownership, safety, rights, and aggregate measurement, and claim only relevant official profiles where the audience already looks for the channel.
-- Produce and publish (or qualify an existing) representative video through explicit human editorial and rights approval; preserve its research, originality, packaging, disclosure, and rights trail, and add end-screen routing only when an eligible destination exists.
+Optional:
+- Claim relevant official profiles and route the video to an eligible next video or destination.
 
 Capabilities: `official-profiles`, `end-screen-routing`
 
-Conditional capability: `shorts-lane` — use only when this experiment chooses a Shorts lane; keep its hook, payoff, and transformation model explicit.
+Conditional capability: `shorts-lane` — only when the approved experiment selects a Shorts lane and its transformation boundary is explicit.
 
-### L1 — Inspect the first public signal
+Exit trigger: >=10 valid public channel views
+Window: Trailing 30 days
+Evidence: YouTube Analytics aggregate channel views for the trailing 30 days, with source health retained separately.
+Review: Every 30 days from stage entry or last review
+If not met: Diagnose the blocker and simplify production; do not auto-kill the experiment.
 
-- Check the representative video's availability, ownership, rights, title, thumbnail, promise alignment, and measurement.
-- Fix one concrete discovery gap in the packaging or viewer route; use funnel wiring only when a real destination exists, and do not delay the representative video for checkout.
+### E1 — Produce the second video and extend the workflow
 
-Capabilities: `funnel-wiring`, `end-screen-routing`
+Objective: Produce a second representative video and prepare the reusable code to automate as much of the workflow as practical.
 
-### L2 — Learn from early audience behavior
+Entry: E0 required work is complete and E0's own >=10 valid public channel views trigger is met.
 
-- Review CTR and retention when the aggregate sample is meaningful, then identify one weak hook, payoff, or viewer route.
-- Collect topic feedback and make one small evidence-led packaging or content adjustment to observe.
+Required:
+- Produce and publish the second video semi-manually with AI assistance and explicit editorial, safety, and rights approval.
+- Extend the reusable automation code to automate as much of the repeatable workflow as practical; semi-manual operation remains allowed.
 
-Capabilities: `feedback-intake`, `end-screen-routing`
+Optional:
+- Improve one packaging or viewer-routing detail when aggregate evidence identifies a concrete gap.
 
-### L3 — Strengthen the best-fit owned path
+Capabilities: `feedback-intake`
 
-- Choose one audience or contact gap supported by observed behavior instead of adding a new channel by default.
-- Improve an existing destination, or add a relevant site, list, or direct-contact path only when audience fit and reply ownership are clear.
+Exit trigger: >=100 valid public channel views
+Window: Trailing 30 days
+Evidence: YouTube Analytics aggregate channel views for the trailing 30 days, with source health retained separately.
+Review: Every 30 days from stage entry or last review
+If not met: Review the stage bottleneck and adjust one focus; do not auto-kill the experiment.
+
+### E2 — Run one supervised video per day
+
+Objective: Move to one correctly produced and published video per day with supervision while the workflow proves repeatability.
+
+Entry: E1 required work is complete and E1's own >=100 valid public channel views trigger is met.
+
+Required:
+- Automate one video per day with supervision for the initial videos; keep editorial, safety, and rights approval boundaries explicit.
+- Before E2 can exit, THREE consecutive correctly produced and published videos must be approved by the owner or designated responsible approver.
+
+Optional:
+- Add one low-risk quality or routing improvement that does not weaken the approval boundary.
+
+Capabilities: None
+
+Exit trigger: >=200 valid public channel views
+Window: Trailing 30 days
+Evidence: YouTube Analytics aggregate channel views for the trailing 30 days, with production/publication records and owner or responsible-approver approvals for the three consecutive videos retained alongside source health.
+Review: Every 30 days from stage entry or last review
+If not met: Review the stage bottleneck and adjust one focus; do not auto-kill the experiment.
+
+### E3 — Maintain daily publishing without routine supervision
+
+Objective: Keep a one-video-per-day production and publication cadence without routine supervision while retaining safe exception handling.
+
+Entry: E2 required work is complete and E2's own >=200 valid public channel views trigger is met.
+
+Required:
+- Maintain one video per day without routine supervision.
+- Retain explicit exception-handling and safety-approval boundaries; routine autonomy does not remove those boundaries.
+
+Optional:
+- Improve the owned viewer route only when audience fit and accountable reply ownership are clear.
 
 Capabilities: `owned-site`, `email-list`, `direct-channel`
 
-Conditional capability: `whatsapp-group` — consider only when audience demand and accountable reply ownership support a group.
+Exit trigger: >=500 valid public channel views
+Window: Trailing 30 days
+Evidence: YouTube Analytics aggregate channel views for the trailing 30 days, with source health retained separately.
+Review: Every 30 days from stage entry or last review
+If not met: Review the stage bottleneck and adjust one focus; do not auto-kill the experiment.
 
-Conditional capability: `telegram-group` — consider only when audience demand and accountable reply ownership support an additional contact surface.
+### E4 — Improve the daily publishing engine
 
-### L4 — Test a bounded revenue path
+Objective: Maintain daily publishing while improving the automation, video, thumbnail, title, and description quality.
 
-- Inspect offer fit and audience intent, and select one bounded revenue-path test only when real interest and explicit approval support it.
-- Reuse working routing or product surfaces where possible, instrument the test, and prewrite a stop/continue decision before creating new spend or infrastructure.
+Entry: E3 required work is complete and E3's own >=500 valid public channel views trigger is met.
 
-Capabilities: `backend-product`, `funnel-wiring`
+Required:
+- Maintain the daily video cadence.
+- Improve one of the automation, video, thumbnail, title, or description quality dimensions at a time and observe the aggregate result.
 
-Conditional capability: `sponsors` — use only when sponsor or affiliate fit, disclosure, and explicit approval are in place.
+Optional:
+- Use a fit-based feedback or owned-audience surface when it supports the selected quality focus.
 
-Conditional capability: `merch` — test only when product and audience fit are evidenced and launch approval is explicit.
+Capabilities: None
 
-### L5 — Reconcile revenue and decide
+Exit trigger: >=5000 valid public channel views
+Window: Trailing 30 days
+Evidence: YouTube Analytics aggregate channel views for the trailing 30 days, with source health retained separately.
+Review: Every 30 days from stage entry or last review
+If not met: Review the stage bottleneck and adjust one focus; do not auto-kill the experiment.
 
-- Reconcile real receipts, costs, and channel-attributable revenue into the live P&L, preserving aggregate evidence and its source.
-- Use that evidence for the explicit graduation decision; keep YPP eligibility separate, and never treat 500 views alone as graduation evidence.
+### E5 — Measure one small commercial fit test
 
-Capabilities: `live-pnl`
+Objective: Maintain the daily engine and run one small, audience-fit commercial test; the specific offer remains private to the experiment and no store, product, or sponsor is presumed.
 
-Conditional capability: `ypp` — consider when the relevant platform eligibility and format fit are confirmed; YPP status stays independent of view levels and graduation.
+Entry: E4 required work is complete and E4's own >=5000 valid public channel views trigger is met.
 
-Conditional capability: `shopping` — consider only when store or product eligibility and format fit are confirmed; do not create a store solely for this level.
+Required:
+- Maintain the daily video cadence and safe exception boundaries.
+- Choose exactly one small niche- or audience-fit commercial test and measure interest and revenue.
 
-Conditional capability: `memberships` — consider only when platform eligibility and a sustainable member value and support model fit the audience.
+Optional:
+- Use one fit-appropriate owned or partner surface only when its audience fit, disclosure, and approval conditions are clear.
 
-Conditional capability: `supers` — consider only when platform eligibility and the selected fan-funding feature fit the channel and audience; live-specific features need a suitable live format.
+Capabilities: None
 
-Conditional capability: `second-channel` — consider only after the original channel is profitable and systematized; it is never a 500-view unlock.
+Conditional capability: `backend-product` — only if the selected commercial test uses an owned digital product; it is not an E5 obligation.
+
+Exit trigger: >=10000 valid public channel views
+Window: Trailing 30 days
+Evidence: YouTube Analytics aggregate channel views for the trailing 30 days, with source health retained separately; retain aggregate commercial-test interest and revenue evidence separately.
+Review: Every 30 days from stage entry or last review
+If not met: Review the stage bottleneck and adjust one focus; do not auto-kill the experiment.
+
+## Graduation
+
+Graduation is independent of the E0–E5 views sequence and may be decided at any stage. It requires settled channel-attributable external revenue and explicit owner approval; estimated revenue is not proof. Graduation is never automatic, and views alone do not graduate an experiment. Revenue can satisfy graduation earlier than E5; it does not replace the E5 stage trigger when the experiment continues the views sequence. E5 can close as soon as its required work and >=10000 result pass; the review clock does not delay completion, and no E6 work is invented.
+
+## Future Stages
+
+E6 is undefined until a deliberate public blueprint change defines it. Revenue stages `R0`, `R1`, and later, Profit stages `P0`, `P1`, and later, and Self-running stages `S0`, `S1`, and later are names reserved for future reviewed work only. No threshold or decision ladder for Profit or Self-running is defined. This section provides no thresholds, plans, or gates.
+
+The remaining sections are optional reference prose for operators adapting a private plan. They do not add required work, stage triggers, maturity gates, or automatic monetization obligations to E0–E5.
 
 ## 1. The model in one screen
 
 This has two distinct operating models. Do not manage Shorts like small long-form videos.
 
-**Long-form documentary lane:** direct-response info-product publishing wearing a YouTube costume. Don't be fooled by view counts, **AdSense is the small money.** The engine is a high-margin digital product bolted onto an evergreen content machine:
+**Long-form documentary lane (optional reference pattern):** direct-response info-product publishing wearing a YouTube costume. Don't be fooled by view counts, **AdSense is the small money.** This is one genre-specific model, not a Stage Roadmap requirement:
 
 1. **Persona + curiosity-gap content** → cheap, evergreen organic views from an older, high-trust audience (50+ skews high CPM *and* high buy-rate).
-2. **Owned asset from day 1 (model recommendation, not an admission requirement)** → matching `.com` domain + clean static site + email capture + checkout + legal pages. YouTube is rented distribution; the domain/email list is the asset.
-3. **Funnel everywhere once a real destination exists** → banner QR + pinned comment + description link → the channel site. First link in every description and first pinned comment points to the current product/lead magnet with per-video UTM tags.
-4. **The product** → a 3-volume "vault / field edition" ebook bundle ~$27–$37, pure digital (~100% margin), with an order-bump + upsell stacking AOV.
-5. **Earn surfaces fully enabled when eligible** → ads, YouTube Premium, Supers (incl. live-stream Gifts/Jewels), memberships, Shopping, affiliate Shopping, Hype, product drops, promos, and sponsor/partner inventory. Turn on every YouTube-native earning surface, but do not let them distract from the owned product funnel.
+2. **Owned asset from day 1 (optional model recommendation)** → matching `.com` domain + clean static site + email capture + checkout + legal pages. YouTube is rented distribution; the domain/email list is the asset.
+3. **Funnel when a real destination exists (optional)** → banner QR + pinned comment + description link → the channel site. Use only when the private plan has a fit-appropriate destination.
+4. **The product (optional)** → a 3-volume "vault / field edition" ebook bundle ~$27–$37, pure digital (~100% margin), with an order-bump + upsell stacking AOV.
+5. **Eligible earning surfaces (optional)** → ads, YouTube Premium, Supers, memberships, Shopping, Hype, product drops, promos, and sponsor/partner inventory may fit later; no stage requires turning on every surface.
 
 The acquisition channel is **free organic YouTube reach — that *is* the model and the moat.** Unit economics: ad RPM (~$4–20 «verify») **+** a ~$30 product at ~2–5% click→buy. A 200k-view video can move more in ebook sales than in ad revenue.
 
@@ -221,7 +276,7 @@ script.md ─▶ tts ──▶ stills ──▶ heroes ──▶ captions ──
 - **Thumbnail:** big yellow/white block caps top + bottom · the persona's face · one glowing hero object · a red ✗ or arrow · a price tag · the "they're trying to take this" motif. Run 5–10 variants, pick by CTR.
 - **Hook:** lands in the first ~5 seconds; the thumbnail + title must match the actual video (no bait-and-switch — it tanks retention and trust).
 - **Structure:** 30–60s hook → "they don't want you to know" stakes → numbered secrets (retention via open loops) → soft CTA to the vault.
-- **Length:** seed stage **10–12 min** (retention-first for a young channel — AVD ≥35% is the gate, shorter holds AVD better). Scale toward the genre's 17–33 min (more mid-rolls) only once retention proves out.
+- **Length:** an optional reference test is **10–12 min** (retention-first for a young channel). Adjust length only when private evidence supports it; no AVD threshold is a public stage gate.
 
 **Shorts packaging:**
 
@@ -235,12 +290,12 @@ script.md ─▶ tts ──▶ stills ──▶ heroes ──▶ captions ──
 
 - **Cadence:** ~2 videos/week minimum. Winners scale by **system reliability**, not per-video polish.
 - **Shorts cadence:** daily or near-daily reps during testing. Shorts rewards fast learning loops; a small sample of polished uploads is weaker than a disciplined batch of format tests.
-- **Distribution:** the funnel link goes in **every** video — banner QR + pinned comment + description (first link).
+- **Distribution (optional):** when a fit-appropriate destination exists, use the funnel link in the banner QR, pinned comment, and description.
 - **Hype (small-channel discovery):** for up-and-coming channels (~500–500,000 subs «verify», eligible countries), ask viewers in the first **7 days** after publish to **Hype** the video (the button beside Like). Free + paid (Jewels) hypes push top videos onto a **weekly leaderboard** YouTube can surface more widely — a free-reach lever that fits the moat, not a money line. It's on by default when eligible; keep **Let viewers hype** toggled on (Earn → Hype / Advanced).
 - **Off-platform entity batch:** same-name IG/FB/X/Pinterest, channel links, `sameAs` on the funnel domain (an entity signal).
 - **Launch sequence:** 1 pillar video (the broad "full map" of the niche), then 2-3 anchor videos on the most searched subtopics, then regular cluster videos with occasional broad "collision" or adjacent-audience "bridge" videos. This builds topical identity before chasing spikes.
-- **Growth QA gates:** every script brief must include originality delta, entity coverage, satisfaction payoff, and an anti-generic pass. Do not adopt an unverified mechanism as fact merely because one creator described it.
-- **Read loop:** a CTR/AVD one-variable test per video (change one thing, read the result) logged per upload. CTR <5% = packaging first; AVD <35% on 10-12 min = hook/pacing/audio/visual problem; high CTR + low AVD = packaging overpromised; low CTR + high AVD = strong video nobody opens.
+- **Growth QA checks (optional):** a script brief can include originality delta, entity coverage, satisfaction payoff, and an anti-generic pass. Do not adopt an unverified mechanism as fact merely because one creator described it.
+- **Read loop (optional diagnostic):** a CTR/AVD one-variable test per video can diagnose packaging, hook, pacing, audio, or visual issues. These signals are not public stage triggers.
 - **Shorts read loop:** use Studio for video diagnosis, not emotional real-time refreshing. Viewed-vs-swiped-away diagnoses the hook; retention curve diagnoses script, pacing, and payoff; sample size matters. A great metric at 200 views is not proof.
 - **Catalog audit:** every five uploads, run the authenticity gates above and private/rework the most repetitive pieces before applying for YPP or after any inauthentic-content warning. Prefer private/rework over deletion unless a policy violation demands removal, because deletion destroys evidence.
 
@@ -250,9 +305,9 @@ The channel's recommended operating model has a real owned destination before th
 
 - **Static site:** one fast landing page with the channel identity, embedded trailer or best video, product/lead magnet block, email capture, and a "watch on YouTube" link. Use Cloudflare Pages or equivalent static hosting; no backend unless checkout requires it.
 - **Commerce:** Stripe, Gumroad, Lemon Squeezy, Shopify, or FourthWall/Spring/Spreadshop depending on whether the first product is digital-only or merch/POD. The channel site links to the official store; YouTube Shopping can surface eligible connected-store products once available.
-- **Legal/trust:** footer links for contact, privacy policy, terms, refunds, affiliate/sponsor disclosure, and any topic-specific disclaimer. This is mandatory for older audiences and for YPP/Shopping review defensibility.
+- **Legal/trust (when a destination or commercial surface exists):** footer links for contact, privacy policy, terms, refunds, affiliate/sponsor disclosure, and any topic-specific disclaimer support trust and policy review.
 - **Entity layer:** same name/avatar across YouTube, site, IG/FB/X/Pinterest, and any store profile; add `sameAs` schema on the site; cross-link the channel and site.
-- **Tracking:** every video gets a unique UTM link (`utm_source=youtube&utm_medium=description|pinned&utm_campaign=<video_slug>`). Description, pinned comment, channel banner QR, channel links, and site all point to the same current offer.
+- **Tracking (optional):** when a destination exists, use a unique UTM link (`utm_source=youtube&utm_medium=description|pinned&utm_campaign=<video_slug>`) for selected descriptions or pinned comments.
 
 **Default CTA stack per upload:**
 
@@ -300,9 +355,9 @@ The one-time **channel shell** — configure it all at identity-lock (Week 2), b
 **Account & advanced** (Settings → Channel → Feature eligibility)
 - Verify phone → enable **advanced features** (external links · custom thumbnails · longer uploads); turn on **2-Step Verification**; set **"made for kids" = No** (channel + per video); link **one** AdSense account; know the **AI-disclosure** flag (set it when a video has realistic synthetic people/voice/events — §3).
 
-## 9. Earn surface activation
+## 9. Optional earn-surface reference
 
-Treat YouTube Studio's **Earn** tab as a setup checklist, not as the business model. The sequence:
+Treat YouTube Studio's **Earn** tab as optional reference, not as a stage checklist or the business model. Select only fit-appropriate surfaces in the private plan; the sequence below does not add E-stage obligations:
 
 | Stage | Threshold / trigger | Turn on |
 |---|---|---|
@@ -341,7 +396,7 @@ Treat YouTube Studio's **Earn** tab as a setup checklist, not as the business mo
 | **Sponsors / partnerships** | after repeatable views | Direct sponsor slots, product integrations, affiliate campaigns, product drops, and brand-boost opportunities. Must use disclosure and keep sponsor fit tight. |
 | **Own products / scale** | as the catalog proves | Capture email at checkout → simple sequence → repeat buyers; expand into printables, audio, courses, bundles, merch drops, and seasonal kits. |
 
-**Funnel mechanics:** static landing page on **Cloudflare Pages** (near-zero cost, instant), single buy button, payments via Stripe/Gumroad/Lemon Squeezy, a **free sample PDF as the lead magnet** (ship a free Vol I sample; gate checkout until reach proves out). Product is AI-drafted, **human-edited for real value** so it's not a refund magnet. Once an offer or lead magnet exists, every video description and first pinned comment should include its relevant link; the representative video does not wait on checkout.
+**Funnel mechanics (optional reference):** a static landing page on a suitable host, single buy button, payments via an appropriate provider, and a **free sample PDF as a lead magnet** can fit a private plan. Do not gate a stage on checkout or force an offer; when an approved offer or lead magnet exists, add its relevant link to selected descriptions or pinned comments. The representative video does not wait on checkout.
 
 **Digital product menu:** a faceless documentary channel should default to low-support, downloadable products: ebook bundles, printable checklists, field cards, recipe/process cards, planners, annotated public-domain source packs, audio editions, a KDP print paperback, an Audible/ACX audiobook, mini-courses, a course/cohort or paid community, templates, and "seasonal packs." If the niche touches health, finance, survival, legal, or safety, keep the product educational/documentary and avoid professional-advice claims.
 
@@ -404,36 +459,24 @@ Extra monetization paths that fit the model once the catalog works:
 - **Translations/dubs:** only after proof in English; clone format into another language with a distinct voice/identity and policy-safe localization.
 - **Asset sale:** a channel with revenue, email list, products, and clean rights is more sellable than a view-only channel. Keep rights/evidence clean from day 1.
 
-## 13. Applying the trigger-plan ladder
+## 13. Applying the Stage Roadmap
 
-The level table at the top is the one experiment ladder. The sections above provide the operating detail used to shape each private level plan; they do not create another roadmap or attach work to arbitrary weeks.
+The Stage Roadmap is the one public experiment path. A private plan adapts its required work to the approved channel and records aggregate evidence; the catalog and operating notes below are reference material, not extra stage gates or a second roadmap.
 
-**Long-form adaptation:** the `L0` plan should prepare and publish (or qualify an existing) representative video at the final intended quality bar — research, originality delta, voice, visual grammar, thumbnail, rights trail, description, pinned comment, end screen, disclosure, and aggregate measurement. At `L1`, work toward 10 valid public channel views; then continue through `L2`–`L4` toward 100, 200, and 500 respectively, only when the current private plan is complete and the next trailing-30-day view trigger is met. `L5` has no invented `L6` view target; keep its plan bounded to valid measurement and the independent revenue decision.
-
-**Shorts adaptation:** the `L0` plan should prepare and publish (or qualify an existing) representative hook/payoff/edit pattern and its transformation boundary. At `L1`, work toward 10 valid public channel views; then continue through `L2`–`L4` toward 100, 200, and 500 respectively, only when the current private plan is complete and the next trailing-30-day view trigger is met. `L5` has no invented `L6` view target. Cadence is an input to learning, never a substitute for the trailing-30-day view triggers.
+Long-form and Shorts experiments may use different production choices, but both still use the same stage contract and the stage's own trailing-30-day view trigger. Cadence, CTR, retention, packaging, and funnel signals are diagnostics for the private review; they do not create an additional public threshold.
 
 ## 14. Benchmarks
 
-- **Leading (per video):** CTR >5% · avg view duration / AVD >40% (>35% is the Stage 1 gate) · subs/week.
+- **Leading (per video):** CTR >5% · avg view duration / AVD >40% (operating diagnostic only) · subs/week.
 - **Shorts leading:** viewed-vs-swiped-away around 80%+ at meaningful sample «creator heuristic» · retention >100% on compact Shorts where possible · no sharp retention cliff before payoff · repeat Shorts-feed tests across multiple uploads.
 - **Money:** landing-page click-rate · click→buy >2% · AOV · RPM.
 - **Owned funnel:** description CTR · pinned-comment CTR · email opt-in rate · checkout conversion · refund rate · revenue per 1,000 warm views.
 - **Shop:** product impressions · product clicks · product CTR · sales by SKU · shipping/refund issues · tagged-product compliance notices.
-- **90-day gate:** ≥10k subs **and** a funnel converting ≥2% → decide graduate / clone / kill.
 - **Shorts YPP gates:** expanded YPP can use 3M Shorts views in 90 days; full ad revenue can use 10M Shorts views in 90 days. Treat these as milestones, not proof that the business works.
 - **Reach reality:** a brand-new 0-sub channel may sit at near-zero impressions for the first few videos (a first upload pulling ~single-digit views at day 3 is normal) — judge the *catalog* (3–5 videos) over ~1–2 weeks, not a single upload.
 - **Where to read reach:** impressions + CTR live in the **YouTube Reporting API, not Studio** — Studio shows *n/a* for the gate metrics, so a builder checking only Studio thinks they're blind when the data exists (the Reporting API backfills over ~30 days). Pull the gate numbers from the Reporting API; never kill or continue a channel off missing Studio figures.
 
-## 15. Kill / scale criteria
-
-- **GO (Stage 1):** ≥1 video earns *expanding* impressions at **CTR ≥5% + AVD ≥35%** — the algorithm chose to push it.
-- **GO (Shorts Stage 1):** a pattern repeatedly earns Shorts-feed tests with strong viewed-vs-swiped-away and retention, not just one lucky spike.
-- **GO (Stage 2):** funnel outbound CTR in the low-single-digit %, and real sales (a handful per ~10k warm views).
-- **NO-GO (any one):** every long-form video stalls at seed impressions with **sub-3% CTR** (content can't earn free reach, no moat) · every Shorts test stalls without Shorts-feed distribution after account setup and format iteration · warm viewers won't click/buy · or only deceptive hooks move it.
-- **Scale:** once the catalog earns organic reach + the funnel converts, continue toward ~10 videos, turn on all eligible Earn surfaces, connect the store, launch a low-labor membership tier, then graduate to a Unit at Revenue after the explicit decision; clone the playbook only after the first channel is profitable and systematized.
-- **Calendar:** weeks, not days — organic distribution can't be rushed. That's the honest shape of the bet.
-
-## 16. YPP defense & appeal playbook
+## 15. YPP defense & appeal playbook
 
 Run this before YPP application, after any warning, and immediately after a demonetization event:
 
@@ -444,21 +487,21 @@ Run this before YPP application, after any warning, and immediately after a demo
 5. **Escalation options:** MCNs or creator-support routes may help once a channel has real revenue, but joining one is a money/control decision for the operator. Do not treat "join an MCN" as default operating procedure.
 6. **Public pressure/legal angle:** if an appeal is rejected and the channel materially matters, consider a public appeal and a request that YouTube identify the specific videos/policy basis. This is high-exposure positioning; the operator decides first.
 
-## 17. Common mistakes
+## 16. Common mistakes
 
-1. **Treating it as an ad-revenue play** — AdSense is the small money; without the backend product the economics don't work.
+1. **Treating it as an ad-revenue play (genre heuristic)** — AdSense may be a small line for this model; a backend product can matter, but E5 does not require a product and the private plan chooses its one commercial test.
 2. **Shipping raw AI slop** — no editorial pass = YouTube's inauthentic-content policy demonetizes it. Always add real research + a POV.
 3. **Medical/health claims** — the "doctors won't tell you / cure" framing is the #1 ban + FTC risk. Folk-tradition framing only.
 4. **Letting the persona drift** — the consistent voice + avatar *is* the brand. Lock one voice + one avatar seed; reuse identically on every video.
-5. **Judging the niche on one video** — a 0-sub channel needs a 3–5 video catalog read over ~1–2 weeks before GO/kill.
+5. **Judging the niche on one video (optional heuristic)** — a 3–5 video catalog read may help a private review, but it does not replace the E0–E5 triggers, add a waiting period, or create an automatic kill decision.
 6. **Underpricing opportunity cost** — months of $0 against any proven higher-leverage lever you already run. It only earns a place in the portfolio if production is hands-off and the catalog can hit real scale.
 7. **Believing guru mechanism claims without proof** — "Gemini scans X" and "GIST kills Y" can be useful metaphors, but the operating truth is simpler: YouTube monetization requires original, non-repetitive, non-mass-produced work with a human fingerprint.
-8. **Waiting for YPP to monetize** — the owned domain, lead magnet, product, checkout, and email list must exist before YPP. YouTube Earn is upside; the business starts on the site.
+8. **Waiting for YPP to monetize** — an owned domain, lead magnet, product, checkout, or email list can be tested before YPP when the private plan supports it. YouTube Earn is upside; the business does not require every surface.
 9. **Creating a merch store with no relevance** — a generic 20-SKU POD catalog is not enough. Products need channel-language, episode relevance, and clean tagging.
 10. **Accepting every sponsor/affiliate** — weak-fit partnerships dilute trust and can create policy risk. A trusted channel monetizes better by saying no.
-11. **Leaving the channel half-set-up** — no watermark, default profile, comments unmoderated, no upload defaults. The shell (§8) is a one-time hour that compounds on every upload; skipping it leaks subs, funnel clicks, and trust.
+11. **Leaving the channel half-set-up (optional reference)** — a watermark, profile, moderation, and upload defaults can improve consistency. The shell (§8) is reference guidance, not an extra E-stage gate.
 
-## 18. Current source notes (2026-07-08)
+## 17. Current source notes (2026-07-08)
 
 - [YouTube Partner Program overview & eligibility](https://support.google.com/youtube/answer/72851): full ad revenue still requires 1,000 subscribers plus either 4,000 valid public watch hours in 12 months or 10M valid Shorts views in 90 days; YPP also requires monetization-policy compliance, eligible region, no active strikes, 2FA, advanced features, and AdSense for YouTube.
 - [Expanded YPP overview](https://support.google.com/youtube/answer/13429240): in eligible countries, earlier access starts at 500 subscribers + 3 public uploads in 90 days + either 3,000 valid public watch hours in 12 months or 3M valid Shorts views in 90 days; it unlocks fan funding and select Shopping features before full ad revenue.
@@ -475,12 +518,12 @@ Run this before YPP application, after any warning, and immediately after a demo
 
 ## Phases
 
-The trigger-plan ladder above is the experiment evidence contract from preparation through the last published view level. The Level Plans section above is the UI-facing sequential home for capability guidance. These four maturity phases remain the generic capability grouping a Revenue-or-higher Unit consults afterward; they are retained as source reference, not a second UI roadmap or launch sequence. Each capability below sits where it becomes the focus, and phases gate on evidence rather than time.
+The Stage Roadmap above is the experiment evidence contract. These four maturity phases are generic capability indexing for a Revenue-or-higher Unit and are retained as source reference only, not as an experiment roadmap, launch sequence, or gate. Phase numbers do not map to E-stages, and no capability is inferred from a stage. Each capability remains available for private-plan assessment.
 
-- **Phase 0 · Publish & Wire** — get the engine running and every video pointing home: the production pipeline shipping on cadence, the funnel link on every upload, the live P&L from day one, and the Shorts lane if the bet runs one. *Focus: a publishing machine wired to an owned destination.*
-- **Phase 1 · Monetize on-platform** — YPP unlocks the native rails: ad revenue, Shopping, memberships, Supers. Turn every eligible Earn surface on, but keep it the small money. *Gate in: a catalog earning expanding impressions (CTR ≥5% + AVD ≥35%). Focus: every native surface live.*
-- **Phase 2 · Own the funnel** — the real revenue: the backend product converting warm viewers, sponsors sold on repeatable reach, the email list and owned site compounding off-platform, merch once identity has pull. *Gate in: repeatable reach plus a converting funnel. Focus: off-platform revenue on an owned audience.*
-- **Phase 3 · Scale** — clone the proven playbook into a second, aesthetically distinct channel. *Gate in: channel #1 profitable and systematized. Focus: portfolio leverage.*
+- **Phase 0 · Publish & Wire** — catalog the possible publishing, routing, P&L, and Shorts capabilities. Select only what the private unit evidence supports; this grouping is not an E-stage gate.
+- **Phase 1 · Monetize on-platform** — YPP, Shopping, memberships, and Supers are possible native surfaces. Eligibility and fit remain private decisions; this grouping is not an E-stage gate.
+- **Phase 2 · Own the funnel** — backend products, sponsors, email, owned sites, and merch are possible owned paths. Use only the surface that fits the evidence; this grouping is not an E-stage gate.
+- **Phase 3 · Scale** — a second, aesthetically distinct channel is a future capability option, not an automatic stage unlock.
 
 ## Capabilities
 

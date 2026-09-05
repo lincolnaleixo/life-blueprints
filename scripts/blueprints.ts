@@ -92,6 +92,246 @@ function experimentLadderSection(body: string): string {
   return body.match(/^## Experiment Ladder\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/m)?.[1] || "";
 }
 
+function namedSection(body: string, heading: string): string {
+  const escaped = heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return body.match(new RegExp(`^## ${escaped}\\s*$([\\s\\S]*?)(?=^##\\s|(?![\\s\\S]))`, "m"))?.[1] || "";
+}
+
+interface StageBlock {
+  stage: number;
+  title: string;
+  body: string;
+}
+
+function stageRoadmapBlocks(body: string): { section: string; blocks: StageBlock[] } {
+  const section = namedSection(body, "Stage Roadmap");
+  if (!section) return { section, blocks: [] };
+  const headings = [...section.matchAll(/^### E(\d+)\s+—\s+(.+?)\s*$/gm)];
+  const blocks = headings.map((match, index) => {
+    const start = (match.index || 0) + match[0].length;
+    const end = index + 1 < headings.length ? headings[index + 1]!.index || section.length : section.length;
+    return { stage: Number(match[1]), title: match[2]!.trim(), body: section.slice(start, end).trim() };
+  });
+  return { section, blocks };
+}
+
+function stageFieldLines(block: StageBlock): { lines: string[]; indexes: Map<string, number[]> } {
+  const lines = block.body.split("\n");
+  const indexes = new Map<string, number[]>();
+  const labels = ["Objective", "Entry", "Required", "Optional", "Capabilities", "Exit trigger", "Window", "Evidence", "Review", "If not met"];
+  for (const [index, line] of lines.entries()) {
+    for (const label of labels) {
+      if (new RegExp(`^${label.replace(/[.*+?^${}()|[\\]\\]/g, "\\\\$&")}:`).test(line.trim())) {
+        indexes.set(label, [...(indexes.get(label) || []), index]);
+        break;
+      }
+    }
+  }
+  return { lines, indexes };
+}
+
+function validateStagePlanContract(
+  filename: string,
+  body: string,
+  add: (message: string) => void
+): void {
+  const { section, blocks } = stageRoadmapBlocks(body);
+  if (!section) {
+    add("level_contract: stage-plan requires an ## Stage Roadmap section");
+    return;
+  }
+  if (!blocks.length) {
+    add("stage-plan roadmap must define at least one ### E<number> stage");
+    return;
+  }
+  for (const heading of section.matchAll(/^###\s+(.+)$/gm)) {
+    if (!/^E\d+\s+—\s+\S.*$/.test(heading[1]!.trim())) {
+      add(`stage-plan roadmap has an invalid stage heading: ${heading[1]!.trim()}`);
+    }
+  }
+
+  const stages = blocks.map((block) => block.stage);
+  const uniqueStages = [...new Set(stages)].sort((a, b) => a - b);
+  if (uniqueStages[0] !== 0) add("stage-plan roadmap must start at E0");
+  for (const [index, stage] of uniqueStages.entries()) {
+    if (stage !== index) add(`stage-plan roadmap stages must be contiguous from E0 (missing E${index})`);
+  }
+  if (stages.some((stage, index) => stage !== index)) add("stage-plan roadmap stages must be ordered contiguously from E0");
+  const duplicates = stages.filter((stage, index) => stages.indexOf(stage) !== index);
+  if (duplicates.length) add(`duplicate stage-plan stages: ${[...new Set(duplicates)].map((stage) => `E${stage}`).join(", ")}`);
+
+  const catalog = new Set(capabilitySlugs(body));
+  const expectedFields = ["Objective", "Entry", "Required", "Optional", "Capabilities", "Exit trigger", "Window", "Evidence", "Review", "If not met"];
+  const expectedYoutubeTriggers: Record<number, string> = {
+    0: ">=10 valid public channel views",
+    1: ">=100 valid public channel views",
+    2: ">=200 valid public channel views",
+    3: ">=500 valid public channel views",
+    4: ">=5000 valid public channel views",
+    5: ">=10000 valid public channel views"
+  };
+
+  for (const block of blocks) {
+    const { lines, indexes } = stageFieldLines(block);
+    const label = `stage-plan E${block.stage}`;
+    const firstIndex = (field: string): number | undefined => indexes.get(field)?.[0];
+    for (const field of expectedFields) {
+      const occurrences = indexes.get(field) || [];
+      if (!occurrences.length) {
+        add(`${label} must declare ${field}:`);
+      } else if (occurrences.length > 1) {
+        add(`${label} must declare ${field}: exactly once`);
+      }
+    }
+    const ordered = expectedFields.map(firstIndex);
+    if (ordered.some((index) => index === undefined)) continue;
+    if (ordered.some((index, position) => position > 0 && (index as number) <= (ordered[position - 1] as number))) {
+      add(`${label} fields must appear in Objective, Entry, Required, Optional, Capabilities, trigger, evidence, and review order`);
+      continue;
+    }
+
+    const fieldLine = (field: string): string => lines[firstIndex(field)!] || "";
+    const objective = fieldLine("Objective").trim().replace(/^Objective:\s*/, "");
+    const entry = fieldLine("Entry").trim().replace(/^Entry:\s*/, "");
+    if (!objective) add(`${label} Objective must contain text`);
+    if (!entry) add(`${label} Entry must contain text`);
+
+    const requiredStart = firstIndex("Required")!;
+    const optionalStart = firstIndex("Optional")!;
+    const requiredLine = lines[requiredStart]!.trim();
+    if (requiredLine !== "Required:") add(`${label} Required: must be followed by checklist bullets, not inline text`);
+    const requiredLines = lines.slice(requiredStart + 1, optionalStart).map((line) => line.trim()).filter(Boolean);
+    if (!requiredLines.length || requiredLines.some((line) => !/^-\s+\S/.test(line))) {
+      add(`${label} Required: must contain one or more '- ' bullets`);
+    }
+
+    const optionalEnd = firstIndex("Capabilities")!;
+    const optionalLine = lines[optionalStart]!.trim();
+    if (optionalLine !== "Optional:") add(`${label} Optional: must be followed by checklist bullets or None.`);
+    const optionalLines = lines.slice(optionalStart + 1, optionalEnd).map((line) => line.trim()).filter(Boolean);
+    if (!optionalLines.length || optionalLines.some((line) => line !== "None." && !/^-\s+\S/.test(line))) {
+      add(`${label} Optional: must contain '- ' bullets or exactly None.`);
+    }
+    if (optionalLines.includes("None.") && optionalLines.length !== 1) {
+      add(`${label} Optional: None. cannot be combined with bullets`);
+    }
+
+    const capabilitiesLine = fieldLine("Capabilities").trim();
+    const capabilitiesValue = capabilitiesLine.replace(/^Capabilities:\s*/, "").trim();
+    if (!capabilitiesValue) {
+      add(`${label} Capabilities: must use None or backtick-wrapped catalog slugs`);
+    }
+    const directCapabilities = [...capabilitiesValue.matchAll(/`([^`]+)`/g)].map((match) => match[1]!);
+    if (capabilitiesValue !== "None" && !/^`[a-z0-9]+(?:-[a-z0-9]+)*`(?:,\s*`[a-z0-9]+(?:-[a-z0-9]+)*`)*$/.test(capabilitiesValue)) {
+      add(`${label} Capabilities: must use None or backtick-wrapped catalog slugs`);
+    }
+    const duplicateDirect = directCapabilities.filter((capability, index) => directCapabilities.indexOf(capability) !== index);
+    if (duplicateDirect.length) add(`${label} cannot repeat direct capability slugs: ${[...new Set(duplicateDirect)].join(", ")}`);
+    for (const capability of directCapabilities) {
+      if (!catalog.has(capability)) add(`${label} references unknown capability slug: ${capability}`);
+    }
+
+    const exitStart = firstIndex("Exit trigger")!;
+    const conditionalLines = lines.slice(firstIndex("Capabilities")! + 1, exitStart).map((line) => line.trim()).filter(Boolean);
+    const conditionalCapabilities: string[] = [];
+    for (const line of conditionalLines) {
+      const match = line.match(/^Conditional capability:\s+`([^`]+)`\s+—\s+(\S.*)$/);
+      if (!match) {
+        add(`${label} has an invalid Conditional capability line`);
+        continue;
+      }
+      conditionalCapabilities.push(match[1]!);
+      if (!catalog.has(match[1]!)) add(`${label} references unknown conditional capability slug: ${match[1]}`);
+    }
+    for (const capability of conditionalCapabilities) {
+      if (directCapabilities.includes(capability)) add(`${label} cannot list ${capability} as both direct and conditional capability`);
+    }
+    const duplicateConditional = conditionalCapabilities.filter((capability, index) => conditionalCapabilities.indexOf(capability) !== index);
+    if (duplicateConditional.length) add(`${label} cannot repeat conditional capability slugs: ${[...new Set(duplicateConditional)].join(", ")}`);
+
+    const exit = fieldLine("Exit trigger").trim().replace(/^Exit trigger:\s*/, "");
+    const window = fieldLine("Window").trim().replace(/^Window:\s*/, "");
+    const evidence = fieldLine("Evidence").trim().replace(/^Evidence:\s*/, "");
+    const review = fieldLine("Review").trim().replace(/^Review:\s*/, "");
+    const ifNotMet = fieldLine("If not met").trim().replace(/^If not met:\s*/, "");
+    if (!exit) add(`${label} Exit trigger must contain text`);
+    if (!window) add(`${label} Window must contain text`);
+    if (!evidence) add(`${label} Evidence must contain text`);
+    if (!review) add(`${label} Review must contain text`);
+    if (!ifNotMet) add(`${label} If not met must contain text`);
+    const trailingLines = lines.slice(firstIndex("If not met")! + 1).map((line) => line.trim()).filter(Boolean);
+    if (trailingLines.length) add(`${label} must not contain prose after If not met:`);
+
+    if (filename === "youtube.md") {
+      const expectedTrigger = expectedYoutubeTriggers[block.stage];
+      if (expectedTrigger && exit !== expectedTrigger) add(`youtube stage E${block.stage} Exit trigger must be ${expectedTrigger}`);
+      if (window !== "Trailing 30 days") add(`youtube stage E${block.stage} Window must be Trailing 30 days`);
+      if (!/^YouTube Analytics aggregate\b/i.test(evidence)) add(`youtube stage E${block.stage} Evidence must name a YouTube Analytics aggregate`);
+      if (review !== "Every 30 days from stage entry or last review") add(`youtube stage E${block.stage} Review must be every 30 days from stage entry or last review`);
+      const expectedMiss = block.stage === 0
+        ? /diagnos[^.\n]*blocker|simplif[^.\n]*production/i
+        : /bottleneck|adjust[^.\n]*focus/i;
+      if (!expectedMiss.test(ifNotMet)) add(`youtube stage E${block.stage} If not met must use the stage-specific review guidance`);
+    }
+  }
+
+  if (filename === "youtube.md") {
+    if (uniqueStages.length !== 6 || uniqueStages.some((stage, index) => stage !== index) || blocks.some((block) => block.stage > 5)) {
+      add("youtube stage-plan roadmap must contain exactly E0 through E5 and no E6");
+    }
+    const e2 = blocks.find((block) => block.stage === 2);
+    if (e2) {
+      const required = e2.body.match(/^Required:\s*$([\s\S]*?)(?=^Optional:\s*$)/m)?.[1] || "";
+      if (!/one video per day[^\n]*supervision/i.test(required)) add("youtube stage E2 must require one supervised video per day");
+      if (!/THREE consecutive correctly produced and published videos[^\n]*approved by (?:the )?owner or designated responsible approver/i.test(required)) {
+        add("youtube stage E2 must require three consecutive correctly produced and published videos approved by the owner or responsible approver");
+      }
+      const evidence = e2.body.match(/^Evidence:\s*(.+)$/m)?.[1] || "";
+      if (!/production\/publication records/i.test(evidence) || !/owner or responsible-approver approvals/i.test(evidence)) {
+        add("youtube stage E2 Evidence must retain production/publication records and owner or responsible-approver approvals");
+      }
+    }
+
+    const graduation = namedSection(body, "Graduation");
+    if (!graduation) {
+      add("stage-plan YouTube blueprint requires an ## Graduation section");
+    } else {
+      if (!/settled[^.\n]*channel-attributable external revenue/i.test(graduation)) add("stage-plan graduation must require settled channel-attributable external revenue");
+      if (!/explicit owner approval/i.test(graduation)) add("stage-plan graduation must require explicit owner approval");
+      if (!/independent[^.\n]*(?:E0|E5|views sequence)|at any stage/i.test(graduation)) add("stage-plan graduation must be independent of the numbered stages");
+      if (!/estimated revenue is not proof|estimated[^.\n]*not proof/i.test(graduation)) add("stage-plan graduation must reject estimated revenue as proof");
+    }
+
+    const future = namedSection(body, "Future Stages");
+    if (!future) {
+      add("stage-plan YouTube blueprint requires an ## Future Stages section");
+    } else {
+      if (!/E6 is undefined/i.test(future)) add("stage-plan Future Stages must leave E6 undefined");
+      if (!/Revenue[^.\n]*R0[^.\n]*R1/i.test(future) || !/Profit[^.\n]*P0[^.\n]*P1/i.test(future) || !/Self-running[^.\n]*S0[^.\n]*S1/i.test(future)) {
+        add("stage-plan Future Stages must reserve Revenue R0/R1, Profit P0/P1, and Self-running S0/S1 names");
+      }
+      if (/^###\s+(?:E6|R\d+|P\d+|S\d+)\b/m.test(future) || /^(?:Objective|Entry|Required|Optional|Capabilities|Exit trigger|Window|Evidence|Review|If not met):/m.test(future)) {
+        add("stage-plan Future Stages may reserve names but must not publish future stage plans or thresholds");
+      }
+    }
+    if (/^## (?:Experiment Ladder|Level Plans)\s*$/m.test(body) || /^### L\d+\b/m.test(body)) {
+      add("stage-plan YouTube blueprint must not retain the old L0-L5 roadmap");
+    }
+    if (/^###\s+(?:E6|R\d+|P\d+|S\d+)\b/m.test(body)) {
+      add("stage-plan YouTube blueprint must not publish E6, Revenue, Profit, or Self-running stage plans");
+    }
+    const policyChecks: Array<[RegExp, string]> = [
+      [/required work[^.\n]*own exit trigger[^.\n]*(?:mandatory|met)|both[^.\n]*required work[^.\n]*trigger/i, "stage policy must require both work and the stage's own trigger"],
+      [/optional work[^.\n]*(?:never|not)[^.\n]*block/i, "stage policy must make optional work non-blocking"],
+      [/owner approval[^.\n]*record/i, "stage policy must require owner-approved recorded exceptions"],
+      [/no automatic regression|does not automatically regress/i, "stage policy must forbid automatic regressions"],
+      [/no automatic pause|does not automatically pause|automatic regression or automatic pause/i, "stage policy must forbid automatic pauses"],
+      [/retain[^.\n]*work[^.\n]*graduation/i, "stage policy must retain built work after graduation"]
+    ];
+    for (const [pattern, message] of policyChecks) if (!pattern.test(body)) add(message);
+  }
+}
+
 function triggerPlanTable(ladder: string): { headers: string[]; rows: TriggerPlanRow[]; invalidRows: string[] } | null {
   const lines = ladder.split("\n");
   const headerIndex = lines.findIndex((line) => {
@@ -191,7 +431,7 @@ function validateTriggerPlanContract(
     const l1 = rowFor(1);
     const l0Text = l0 ? l0.cells.map(normalizedCell).join(" ") : "";
     const l1Text = l1 ? l1.cells.map(normalizedCell).join(" ") : "";
-    if (l0 && !/channel.{0,80}first[- ]video|first[- ]video.{0,80}channel/i.test(l0Text)) {
+    if (l0 && !/channel.{0,80}first(?:[- ]representative)?[- ]video|first(?:[- ]representative)?[- ]video.{0,80}channel/i.test(l0Text)) {
       add("youtube trigger-plan Level 0 must prepare the channel and first representative video");
     }
     if (l0 && /(?:require|must|needed|depends).{0,50}(?:public seed|autonom)/i.test(l0Text)) {
@@ -206,7 +446,7 @@ function validateTriggerPlanContract(
     if (l1 && !/ownership/i.test(l1Text)) add("youtube trigger-plan Level 1 must check ownership");
     if (l1 && !/channel[- ]health|health/i.test(l1Text)) add("youtube trigger-plan Level 1 must check channel health");
     if (l1 && !/rights?/i.test(l1Text)) add("youtube trigger-plan Level 1 must check rights");
-    if (!/(?:new(?:ly)? produced[^.\n]*existing public video|existing public video[^.\n]*new(?:ly)? produced)/i.test(body)) {
+    if (!/(?:new(?:ly)? produced[^.\n]*existing public(?: representative)? video|existing public(?: representative)? video[^.\n]*new(?:ly)? produced)/i.test(body)) {
       add("youtube trigger-plan must allow a new or existing public representative video at Level 1");
     }
 
@@ -289,7 +529,7 @@ export function validateBlueprintContent(
   }
   if (!allowedStatuses.has(metadata.status)) add(`unsupported status: ${metadata.status}`);
 
-  if (metadata.levelContract && metadata.levelContract !== "trigger-plan") {
+  if (metadata.levelContract && !new Set(["trigger-plan", "stage-plan"]).has(metadata.levelContract)) {
     add(`unsupported level_contract: ${metadata.levelContract}`);
   }
   if (metadata.graduationGate && metadata.graduationGate !== "revenue") {
@@ -302,11 +542,15 @@ export function validateBlueprintContent(
     add("graduation_gate requires experiment_ladder");
   }
   const triggerPlan = metadata.levelContract === "trigger-plan";
+  const stagePlan = metadata.levelContract === "stage-plan";
   if (triggerPlan && metadata.graduationGate !== "revenue") {
     add("level_contract: trigger-plan requires graduation_gate: revenue");
   }
-  if (metadata.graduationGate === "revenue" && metadata.levelContract !== "trigger-plan") {
-    add("graduation_gate: revenue requires level_contract: trigger-plan");
+  if (stagePlan && metadata.graduationGate !== "revenue") {
+    add("level_contract: stage-plan requires graduation_gate: revenue");
+  }
+  if (metadata.graduationGate === "revenue" && !triggerPlan && !stagePlan) {
+    add("graduation_gate: revenue requires level_contract: trigger-plan or stage-plan");
   }
 
   if (metadata.experimentLadder) {
@@ -318,6 +562,8 @@ export function validateBlueprintContent(
     }
     if (triggerPlan) {
       validateTriggerPlanContract(filename, body, add);
+    } else if (stagePlan) {
+      validateStagePlanContract(filename, body, add);
     } else {
       const ladder = experimentLadderSection(body);
       if (!ladder) {
@@ -393,8 +639,8 @@ export function validateBlueprintContent(
   } else if (buildPath) {
     add("## Build Path requires build_path frontmatter");
   }
-  if (triggerPlan && metadata.buildPath) {
-    add("level_contract: trigger-plan cannot be combined with build_path");
+  if ((triggerPlan || stagePlan) && metadata.buildPath) {
+    add(`level_contract: ${metadata.levelContract} cannot be combined with build_path`);
   }
 
   const titles = [...body.matchAll(/^#\s+.+$/gm)];

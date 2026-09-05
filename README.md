@@ -17,7 +17,7 @@ A blueprint is reusable reference material, not a task list or a promise of resu
 | SaaS | 5.0 | Pilot | [saas](blueprints/saas.md) |
 | Social media | 0.7 | First pass | [social media](blueprints/social-media.md) |
 | Utility site | 2.0 | Draft | [utility site](blueprints/utility-site.md) |
-| YouTube | 6.2 | First pass | [youtube](blueprints/youtube.md) |
+| YouTube | 7.0 | First pass | [youtube](blueprints/youtube.md) |
 
 Statuses describe confidence, not business maturity:
 
@@ -46,6 +46,8 @@ An experiment ladder is the pre-unit evidence contract for one business type. It
 The ladder is also the private experiment's roadmap. Its plan uses `L0`, `L1`, ... as the only work containers, with no parallel round numbering. The Current container always matches the recorded current level. Under the legacy contract, the capability owed at the current level must be verified and the next numeric trigger must be met; an early trigger stays ready until the level's required work closes.
 
 An alternative, explicitly opted-in contract uses `level_contract: trigger-plan` with `graduation_gate: revenue`. It publishes a contiguous prefix of numbered levels, each with a trigger, metric, and observation window; each trigger is an entry condition, while the private plan at the current level supplies the bounded work toward the next trigger and must be complete before that trigger can advance the experiment. This contract does not require a Progressive Automation, Bootstrap, or Build Path section, and it does not require a numbered graduation row. Graduation remains independent of the numbered ladder: it requires actual settled externally attributable revenue and explicit owner approval. Future levels stay undefined until the blueprint publishes their triggers. An implementation may still claim automation, but each such claim needs production proof, safe correction or rollback, health evidence, and operating limits.
+
+An explicitly opted-in `level_contract: stage-plan` is a breaking alternative for staged experiments. It publishes one contiguous `## Stage Roadmap`, where every stage combines bounded work with its own expected result and trigger. A stage closes only when required work and its own trigger pass; optional work never blocks completion. The review clock starts at stage entry or the last review and is separate from the evidence window. Exceptions require owner approval and a private record; falling evidence does not automatically regress or pause a stage, and built work is retained after graduation. The reusable block shape is documented in [`docs/stage-template.md`](docs/stage-template.md). YouTube 7.0 uses E0–E5 and leaves later stages undefined until a reviewed blueprint version publishes them.
 
 A trigger-plan blueprint may optionally publish an `## Level Plans` section for UI-facing guidance. Its `### L<number>` entries contain two or three concise action bullets and one ``Capabilities: `slug`, ...`` reference line, followed by optional ``Conditional capability: `slug` — <condition>`` lines; every published level appears exactly once in order. Conditional references use existing catalog slugs and describe fit, eligibility, or approval context rather than adding obligations, unlocks, or gates. The guidance is adapted in the private plan, earlier capabilities can be reused at any level, and phase numbers are not experiment levels.
 
