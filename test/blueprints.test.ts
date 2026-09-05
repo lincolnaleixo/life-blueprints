@@ -201,10 +201,10 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
     expect(problems.some((problem) => problem.message.includes("Level 0"))).toBe(true);
   });
 
-  test("publishes the YouTube v6 trigger-plan ladder", async () => {
+  test("publishes the YouTube v6.1 trigger-plan ladder", async () => {
     const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
 
-    expect(content).toContain("version: 6.0");
+    expect(content).toContain("version: 6.1");
     expect(content).toContain("level_contract: trigger-plan");
     expect(content).toContain("graduation_gate: revenue");
     expect(content).not.toMatch(/^build_path:/m);
@@ -227,6 +227,54 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
     expect(content).toContain("`L3`: keep the bounded plan focused on reaching 200");
     expect(content).toContain("`L4`: keep the bounded plan focused on reaching 500");
     expect(content).toContain("`L5`: keep a bounded measurement and revenue-decision plan; no `L6` view target is defined");
+  });
+
+  test("publishes six optional YouTube level plans with existing capability references", async () => {
+    const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
+    const levelPlansMatch = content.match(/^## Level Plans\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/m);
+    expect(levelPlansMatch).not.toBeNull();
+    const levelPlans = levelPlansMatch?.[1] || "";
+    expect(levelPlans).toContain(
+      "Guidance for each level; select/adapt relevant capabilities in private plan, not automatic obligations/unlocks or extra gates. Earlier capabilities can be built/reused anytime; phase numbers aren't levels."
+    );
+
+    const headings = [...levelPlans.matchAll(/^### (L[0-5])(?:\s+—[^\n]*)?\s*$/gm)].map((match) => match[1]!);
+    expect(headings).toEqual(["L0", "L1", "L2", "L3", "L4", "L5"]);
+    expect(levelPlans).not.toMatch(/^### L6\b/m);
+
+    const expectedCapabilities: Record<string, string[]> = {
+      L0: ["official-profiles", "end-screen-routing"],
+      L1: ["funnel-wiring", "end-screen-routing"],
+      L2: ["feedback-intake", "end-screen-routing"],
+      L3: ["owned-site", "email-list", "direct-channel"],
+      L4: ["backend-product", "funnel-wiring"],
+      L5: ["live-pnl"]
+    };
+
+    for (const level of headings) {
+      const section = levelPlans.match(
+        new RegExp(`^### ${level}(?:\\s+—[^\\n]*)?\\s*$([\\s\\S]*?)(?=^### L|(?![\\s\\S]))`, "m")
+      )?.[1] || "";
+      const actions = section.match(/^- .+$/gm) || [];
+      expect(actions.length).toBeGreaterThanOrEqual(2);
+      expect(actions.length).toBeLessThanOrEqual(3);
+      const capabilityLine = section.match(/^Capabilities:\s*(.+)$/m)?.[1] || "";
+      const capabilities = [...capabilityLine.matchAll(/`([^`]+)`/g)].map((match) => match[1]!);
+      expect(capabilities).toEqual(expectedCapabilities[level]!);
+      for (const capability of capabilities) {
+        expect(content).toContain(`| \`${capability}\` |`);
+      }
+    }
+  });
+
+  test("documents the YouTube v6.1 source and keeps the trigger-plan contract explicit", async () => {
+    const readme = await Bun.file(resolve(root, "README.md")).text();
+    const specification = await Bun.file(resolve(root, "docs/specification.md")).text();
+    const changelog = await Bun.file(resolve(root, "CHANGELOG.md")).text();
+    expect(readme).toContain("| YouTube | 6.1 | First pass |");
+    expect(specification).toContain("A trigger-plan blueprint may optionally publish an `## Level Plans` section");
+    expect(changelog).toContain("`youtube@6.1` (minor, backward-compatible level-plan guidance)");
+    expect(changelog).toContain("does not change ladder thresholds, graduation gates, capability slugs, or private-plan requirements");
   });
 
   test("requires both opt-in metadata fields for the trigger-plan contract", async () => {

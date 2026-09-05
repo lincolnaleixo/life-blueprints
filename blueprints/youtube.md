@@ -1,6 +1,6 @@
 ---
 type: youtube
-version: 6.0
+version: 6.1
 updated: 2026-09-05
 status: first-pass
 plan_grammar: phases
@@ -56,7 +56,51 @@ To advance, the private plan at the current level must be complete and the targe
 
 Graduation is independent of the numbered views ladder and is never an `L6` trigger. With `graduation_gate: revenue`, graduation requires actual settled externally attributable revenue from the channel and explicit owner approval; views alone never graduate an experiment. The revenue evidence remains aggregate-only and must not include viewer or buyer identities.
 
----
+## Level Plans
+
+Guidance for each level; select/adapt relevant capabilities in private plan, not automatic obligations/unlocks or extra gates. Earlier capabilities can be built/reused anytime; phase numbers aren't levels.
+
+### L0 — Prepare the channel and first representative video
+
+- Set up channel ownership, safety, rights, and aggregate measurement, and claim only relevant official profiles where the audience already looks for the channel.
+- Produce and publish (or qualify an existing) representative video through explicit human editorial and rights approval; preserve its research, originality, packaging, disclosure, and rights trail, and add end-screen routing only when an eligible destination exists.
+
+Capabilities: `official-profiles`, `end-screen-routing`
+
+### L1 — Inspect the first public signal
+
+- Check the representative video's availability, ownership, rights, title, thumbnail, promise alignment, and measurement.
+- Fix one concrete discovery gap in the packaging or viewer route; use funnel wiring only when a real destination exists, and do not delay the representative video for checkout.
+
+Capabilities: `funnel-wiring`, `end-screen-routing`
+
+### L2 — Learn from early audience behavior
+
+- Review CTR and retention when the aggregate sample is meaningful, then identify one weak hook, payoff, or viewer route.
+- Collect topic feedback and make one small evidence-led packaging or content adjustment to observe.
+
+Capabilities: `feedback-intake`, `end-screen-routing`
+
+### L3 — Strengthen the best-fit owned path
+
+- Choose one audience or contact gap supported by observed behavior instead of adding a new channel by default.
+- Improve an existing destination, or add a relevant site, list, or direct-contact path only when audience fit and reply ownership are clear.
+
+Capabilities: `owned-site`, `email-list`, `direct-channel`
+
+### L4 — Test a bounded revenue path
+
+- Inspect offer fit and audience intent, and select one bounded revenue-path test only when real interest and explicit approval support it.
+- Reuse working routing or product surfaces where possible, instrument the test, and prewrite a stop/continue decision before creating new spend or infrastructure.
+
+Capabilities: `backend-product`, `funnel-wiring`
+
+### L5 — Reconcile revenue and decide
+
+- Reconcile real receipts, costs, and channel-attributable revenue into the live P&L, preserving aggregate evidence and its source.
+- Use that evidence for the explicit graduation decision; keep YPP eligibility separate, and never treat 500 views alone as graduation evidence.
+
+Capabilities: `live-pnl`
 
 ## 1. The model in one screen
 
@@ -65,8 +109,8 @@ This has two distinct operating models. Do not manage Shorts like small long-for
 **Long-form documentary lane:** direct-response info-product publishing wearing a YouTube costume. Don't be fooled by view counts, **AdSense is the small money.** The engine is a high-margin digital product bolted onto an evergreen content machine:
 
 1. **Persona + curiosity-gap content** → cheap, evergreen organic views from an older, high-trust audience (50+ skews high CPM *and* high buy-rate).
-2. **Owned asset from day 1** → matching `.com` domain + clean static site + email capture + checkout + legal pages. YouTube is rented distribution; the domain/email list is the asset.
-3. **Funnel everywhere** → banner QR + pinned comment + description link → the channel site. First link in every description and first pinned comment points to the current product/lead magnet with per-video UTM tags.
+2. **Owned asset from day 1 (model recommendation, not an admission requirement)** → matching `.com` domain + clean static site + email capture + checkout + legal pages. YouTube is rented distribution; the domain/email list is the asset.
+3. **Funnel everywhere once a real destination exists** → banner QR + pinned comment + description link → the channel site. First link in every description and first pinned comment points to the current product/lead magnet with per-video UTM tags.
 4. **The product** → a 3-volume "vault / field edition" ebook bundle ~$27–$37, pure digital (~100% margin), with an order-bump + upsell stacking AOV.
 5. **Earn surfaces fully enabled when eligible** → ads, YouTube Premium, Supers (incl. live-stream Gifts/Jewels), memberships, Shopping, affiliate Shopping, Hype, product drops, promos, and sponsor/partner inventory. Turn on every YouTube-native earning surface, but do not let them distract from the owned product funnel.
 
@@ -182,7 +226,7 @@ script.md ─▶ tts ──▶ stills ──▶ heroes ──▶ captions ──
 
 ## 7. Funnel, domain & site
 
-The channel needs a real owned destination before the first public push. **Buy the matching `.com` during identity lock** (channel name, persona name, or product/brand name; ideally one primary domain plus defensive redirects if cheap). Park it on Cloudflare with:
+The channel's recommended operating model has a real owned destination before the first public push. This is a model recommendation, not an experiment admission requirement; do not block the representative video on a checkout or funnel. **Buy the matching `.com` during identity lock** (channel name, persona name, or product/brand name; ideally one primary domain plus defensive redirects if cheap). Park it on Cloudflare with:
 
 - **Static site:** one fast landing page with the channel identity, embedded trailer or best video, product/lead magnet block, email capture, and a "watch on YouTube" link. Use Cloudflare Pages or equivalent static hosting; no backend unless checkout requires it.
 - **Commerce:** Stripe, Gumroad, Lemon Squeezy, Shopify, or FourthWall/Spring/Spreadshop depending on whether the first product is digital-only or merch/POD. The channel site links to the official store; YouTube Shopping can surface eligible connected-store products once available.
@@ -277,7 +321,7 @@ Treat YouTube Studio's **Earn** tab as a setup checklist, not as the business mo
 | **Sponsors / partnerships** | after repeatable views | Direct sponsor slots, product integrations, affiliate campaigns, product drops, and brand-boost opportunities. Must use disclosure and keep sponsor fit tight. |
 | **Own products / scale** | as the catalog proves | Capture email at checkout → simple sequence → repeat buyers; expand into printables, audio, courses, bundles, merch drops, and seasonal kits. |
 
-**Funnel mechanics:** static landing page on **Cloudflare Pages** (near-zero cost, instant), single buy button, payments via Stripe/Gumroad/Lemon Squeezy, a **free sample PDF as the lead magnet** (ship a free Vol I sample; gate checkout until reach proves out). Product is AI-drafted, **human-edited for real value** so it's not a refund magnet. Every video description and first pinned comment must include the offer link from day 1.
+**Funnel mechanics:** static landing page on **Cloudflare Pages** (near-zero cost, instant), single buy button, payments via Stripe/Gumroad/Lemon Squeezy, a **free sample PDF as the lead magnet** (ship a free Vol I sample; gate checkout until reach proves out). Product is AI-drafted, **human-edited for real value** so it's not a refund magnet. Once an offer or lead magnet exists, every video description and first pinned comment should include its relevant link; the representative video does not wait on checkout.
 
 **Digital product menu:** a faceless documentary channel should default to low-support, downloadable products: ebook bundles, printable checklists, field cards, recipe/process cards, planners, annotated public-domain source packs, audio editions, a KDP print paperback, an Audible/ACX audiobook, mini-courses, a course/cohort or paid community, templates, and "seasonal packs." If the niche touches health, finance, survival, legal, or safety, keep the product educational/documentary and avoid professional-advice claims.
 
