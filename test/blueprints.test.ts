@@ -244,6 +244,9 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
     const headings = [...levelPlans.matchAll(/^### (L[0-5])(?:\s+—[^\n]*)?\s*$/gm)].map((match) => match[1]!);
     expect(headings).toEqual(["L0", "L1", "L2", "L3", "L4", "L5"]);
     expect(levelPlans).not.toMatch(/^### L6\b/m);
+    expect(levelPlans).toContain(
+      "Conditional capability: `supers` — consider only when platform eligibility and the selected fan-funding feature fit the channel and audience; live-specific features need a suitable live format."
+    );
 
     const expectedCapabilities: Record<string, string[]> = {
       L0: ["official-profiles", "end-screen-routing"],

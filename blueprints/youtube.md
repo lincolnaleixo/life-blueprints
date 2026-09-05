@@ -118,7 +118,7 @@ Conditional capability: `shopping` — consider only when store or product eligi
 
 Conditional capability: `memberships` — consider only when platform eligibility and a sustainable member value and support model fit the audience.
 
-Conditional capability: `supers` — consider only when platform eligibility and a live or premiere format genuinely fit the channel.
+Conditional capability: `supers` — consider only when platform eligibility and the selected fan-funding feature fit the channel and audience; live-specific features need a suitable live format.
 
 Conditional capability: `second-channel` — consider only after the original channel is profitable and systematized; it is never a 500-view unlock.
 
