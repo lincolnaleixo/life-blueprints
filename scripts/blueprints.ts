@@ -118,10 +118,11 @@ function stageRoadmapBlocks(body: string): { section: string; blocks: StageBlock
 function stageFieldLines(block: StageBlock): { lines: string[]; indexes: Map<string, number[]> } {
   const lines = block.body.split("\n");
   const indexes = new Map<string, number[]>();
-  const labels = ["Objective", "Entry", "Required", "Optional", "Capabilities", "Exit trigger", "Window", "Evidence", "Review", "If not met"];
+  const labels = ["Objective", "Entry", "Required", "Optional", "Capabilities", "Conditional capability", "Exit trigger", "Window", "Evidence", "Review", "If not met"];
   for (const [index, line] of lines.entries()) {
     for (const label of labels) {
-      if (new RegExp(`^${label.replace(/[.*+?^${}()|[\\]\\]/g, "\\\\$&")}:`).test(line.trim())) {
+      const escaped = label.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&");
+      if (new RegExp(`^${escaped}:`).test(line.trim())) {
         indexes.set(label, [...(indexes.get(label) || []), index]);
         break;
       }
@@ -161,7 +162,7 @@ function validateStagePlanContract(
   if (duplicates.length) add(`duplicate stage-plan stages: ${[...new Set(duplicates)].map((stage) => `E${stage}`).join(", ")}`);
 
   const catalog = new Set(capabilitySlugs(body));
-  const expectedFields = ["Objective", "Entry", "Required", "Optional", "Capabilities", "Exit trigger", "Window", "Evidence", "Review", "If not met"];
+  const expectedFields = ["Objective", "Entry", "Required", "Optional", "Exit trigger", "Window", "Evidence", "Review", "If not met"];
   const expectedYoutubeTriggers: Record<number, string> = {
     0: ">=10 valid public channel views",
     1: ">=100 valid public channel views",
@@ -186,7 +187,7 @@ function validateStagePlanContract(
     const ordered = expectedFields.map(firstIndex);
     if (ordered.some((index) => index === undefined)) continue;
     if (ordered.some((index, position) => position > 0 && (index as number) <= (ordered[position - 1] as number))) {
-      add(`${label} fields must appear in Objective, Entry, Required, Optional, Capabilities, trigger, evidence, and review order`);
+      add(`${label} fields must appear in Objective, Entry, Required, Optional, trigger, evidence, and review order`);
       continue;
     }
 
@@ -205,7 +206,20 @@ function validateStagePlanContract(
       add(`${label} Required: must contain one or more '- ' bullets`);
     }
 
-    const optionalEnd = firstIndex("Capabilities")!;
+    const exitStart = firstIndex("Exit trigger")!;
+    const legacyCapabilityIndexes = [
+      ...(indexes.get("Capabilities") || []),
+      ...(indexes.get("Conditional capability") || [])
+    ].sort((a, b) => a - b);
+    const legacyCapabilityStart = legacyCapabilityIndexes[0] ?? exitStart;
+    for (const index of legacyCapabilityIndexes) {
+      if (index <= optionalStart || index >= exitStart) {
+        add(`${label} legacy capability declarations must appear after Optional: and before Exit trigger:`);
+      }
+    }
+    const legacyCapabilitiesIndexes = indexes.get("Capabilities") || [];
+    if (legacyCapabilitiesIndexes.length > 1) add(`${label} Capabilities: must be declared at most once for backward compatibility`);
+    const optionalEnd = legacyCapabilityStart;
     const optionalLine = lines[optionalStart]!.trim();
     if (optionalLine !== "Optional:") add(`${label} Optional: must be followed by checklist bullets or None.`);
     const optionalLines = lines.slice(optionalStart + 1, optionalEnd).map((line) => line.trim()).filter(Boolean);
@@ -216,37 +230,68 @@ function validateStagePlanContract(
       add(`${label} Optional: None. cannot be combined with bullets`);
     }
 
-    const capabilitiesLine = fieldLine("Capabilities").trim();
-    const capabilitiesValue = capabilitiesLine.replace(/^Capabilities:\s*/, "").trim();
-    if (!capabilitiesValue) {
-      add(`${label} Capabilities: must use None or backtick-wrapped catalog slugs`);
-    }
-    const directCapabilities = [...capabilitiesValue.matchAll(/`([^`]+)`/g)].map((match) => match[1]!);
-    if (capabilitiesValue !== "None" && !/^`[a-z0-9]+(?:-[a-z0-9]+)*`(?:,\s*`[a-z0-9]+(?:-[a-z0-9]+)*`)*$/.test(capabilitiesValue)) {
-      add(`${label} Capabilities: must use None or backtick-wrapped catalog slugs`);
-    }
-    const duplicateDirect = directCapabilities.filter((capability, index) => directCapabilities.indexOf(capability) !== index);
-    if (duplicateDirect.length) add(`${label} cannot repeat direct capability slugs: ${[...new Set(duplicateDirect)].join(", ")}`);
-    for (const capability of directCapabilities) {
-      if (!catalog.has(capability)) add(`${label} references unknown capability slug: ${capability}`);
+    const taskLines = [...requiredLines, ...optionalLines.filter((line) => line !== "None.")];
+    const inlineSlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+    for (const line of taskLines) {
+      const inlineCapabilities: string[] = [];
+      for (const match of line.matchAll(/`([^`]+)`/g)) {
+        const capability = match[1]!;
+        if (!inlineSlugPattern.test(capability)) {
+          add(`${label} has an invalid inline capability slug: ${capability}`);
+          continue;
+        }
+        if (!catalog.has(capability)) {
+          add(`${label} references unknown capability slug: ${capability}`);
+        }
+        inlineCapabilities.push(capability);
+      }
+      const duplicateInline = inlineCapabilities.filter((capability, index) => inlineCapabilities.indexOf(capability) !== index);
+      if (duplicateInline.length) {
+        add(`${label} cannot repeat inline capability slugs in one task: ${[...new Set(duplicateInline)].join(", ")}`);
+      }
     }
 
-    const exitStart = firstIndex("Exit trigger")!;
-    const conditionalLines = lines.slice(firstIndex("Capabilities")! + 1, exitStart).map((line) => line.trim()).filter(Boolean);
-    const conditionalCapabilities: string[] = [];
-    for (const line of conditionalLines) {
+    const legacyDirectCapabilities: string[] = [];
+    const legacyConditionalCapabilities: string[] = [];
+    const capabilitiesIndexes = indexes.get("Capabilities") || [];
+    if (capabilitiesIndexes.length) {
+      const capabilitiesLine = lines[capabilitiesIndexes[0]!]!.trim();
+      const capabilitiesValue = capabilitiesLine.replace(/^Capabilities:\s*/, "").trim();
+      if (!capabilitiesValue) {
+        add(`${label} Capabilities: must use None or backtick-wrapped catalog slugs`);
+      }
+      const legacyDirect = [...capabilitiesValue.matchAll(/`([^`]+)`/g)].map((match) => match[1]!);
+      if (capabilitiesValue !== "None" && !/^`[a-z0-9]+(?:-[a-z0-9]+)*`(?:,\s*`[a-z0-9]+(?:-[a-z0-9]+)*`)*$/.test(capabilitiesValue)) {
+        add(`${label} Capabilities: must use None or backtick-wrapped catalog slugs`);
+      }
+      for (const capability of legacyDirect) {
+        legacyDirectCapabilities.push(capability);
+        if (!catalog.has(capability)) add(`${label} references unknown capability slug: ${capability}`);
+      }
+    }
+
+    const conditionalIndexes = indexes.get("Conditional capability") || [];
+    const legacyConditionalStart = conditionalIndexes.length ? Math.min(...conditionalIndexes) : undefined;
+    if (legacyConditionalStart !== undefined && capabilitiesIndexes.length && legacyConditionalStart < capabilitiesIndexes[0]!) {
+      add(`${label} Conditional capability: lines must follow Capabilities:`);
+    }
+    const legacySectionLines = lines.slice(legacyCapabilityStart, exitStart).map((line) => line.trim()).filter(Boolean);
+    for (const line of legacySectionLines) {
+      if (/^Capabilities:/.test(line)) continue;
       const match = line.match(/^Conditional capability:\s+`([^`]+)`\s+—\s+(\S.*)$/);
       if (!match) {
-        add(`${label} has an invalid Conditional capability line`);
+        add(`${label} has an invalid legacy capability declaration`);
         continue;
       }
-      conditionalCapabilities.push(match[1]!);
+      legacyConditionalCapabilities.push(match[1]!);
       if (!catalog.has(match[1]!)) add(`${label} references unknown conditional capability slug: ${match[1]}`);
     }
-    for (const capability of conditionalCapabilities) {
-      if (directCapabilities.includes(capability)) add(`${label} cannot list ${capability} as both direct and conditional capability`);
+    for (const capability of legacyConditionalCapabilities) {
+      if (legacyDirectCapabilities.includes(capability)) add(`${label} cannot list ${capability} as both direct and conditional capability`);
     }
-    const duplicateConditional = conditionalCapabilities.filter((capability, index) => conditionalCapabilities.indexOf(capability) !== index);
+    const duplicateDirect = legacyDirectCapabilities.filter((capability, index) => legacyDirectCapabilities.indexOf(capability) !== index);
+    if (duplicateDirect.length) add(`${label} cannot repeat direct capability slugs: ${[...new Set(duplicateDirect)].join(", ")}`);
+    const duplicateConditional = legacyConditionalCapabilities.filter((capability, index) => legacyConditionalCapabilities.indexOf(capability) !== index);
     if (duplicateConditional.length) add(`${label} cannot repeat conditional capability slugs: ${[...new Set(duplicateConditional)].join(", ")}`);
 
     const exit = fieldLine("Exit trigger").trim().replace(/^Exit trigger:\s*/, "");

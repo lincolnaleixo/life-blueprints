@@ -49,10 +49,6 @@ Required:
 Optional:
 - <useful but non-blocking work>
 
-Capabilities: <None or one or more catalog slugs>
-
-Conditional capability: `<slug>` — <fit, eligibility, or approval condition>
-
 Exit trigger: <this stage's own observable result>
 Window: <measurement window>
 Evidence: <aggregate or otherwise permitted evidence source>
@@ -60,4 +56,13 @@ Review: Every 30 days from stage entry or last review
 If not met: <diagnosis, adjustment, or escalation guidance; no automatic kill implied>
 ```
 
-The `Conditional capability` line is optional and may repeat when more than one conditional reference is useful. Capability references are not automatic obligations unless they are explicitly listed under `Required`.
+Capability references belong inline in the `Required` or `Optional` task that uses them. For example:
+
+```markdown
+- Claim the relevant official profile (`official-profiles`).
+- Use the Shorts lane only when the approved experiment selects it (`shorts-lane`).
+```
+
+They are references to the catalog, not a second stage capability card or a requirement to map the whole catalog into the roadmap. When a capability is conditional, put its fit, eligibility, or approval condition in that same task sentence. A conditional reference does not create an extra trigger or gate. Capability references are not automatic obligations unless they are explicitly listed under `Required`.
+
+For backward compatibility, validators may still accept the older `Capabilities:` and `Conditional capability:` declaration lines when reading an existing blueprint. New stage-plan blueprints should use task-inline references so the roadmap has one task path and no duplicate capability catalog. Unassigned catalog slugs remain source references for later private-plan decisions.

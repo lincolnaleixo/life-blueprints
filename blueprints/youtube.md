@@ -1,6 +1,6 @@
 ---
 type: youtube
-version: 7.0
+version: 7.1
 updated: 2026-09-05
 status: first-pass
 plan_grammar: phases
@@ -48,11 +48,8 @@ Required:
 - Start reusable automation code that can reduce repeated production work; do not claim full automation at E0.
 
 Optional:
-- Claim relevant official profiles and route the video to an eligible next video or destination.
-
-Capabilities: `official-profiles`, `end-screen-routing`
-
-Conditional capability: `shorts-lane` — only when the approved experiment selects a Shorts lane and its transformation boundary is explicit.
+- Claim relevant official profiles (`official-profiles`) and route the video to an eligible next video or destination (`end-screen-routing`).
+- When the approved experiment selects a Shorts lane, make its transformation boundary explicit (`shorts-lane`); otherwise this optional task is not required.
 
 Exit trigger: >=10 valid public channel views
 Window: Trailing 30 days
@@ -71,9 +68,7 @@ Required:
 - Extend the reusable automation code to automate as much of the repeatable workflow as practical; semi-manual operation remains allowed.
 
 Optional:
-- Improve one packaging or viewer-routing detail when aggregate evidence identifies a concrete gap.
-
-Capabilities: `feedback-intake`
+- Improve one packaging or viewer-routing detail when aggregate evidence identifies a concrete gap, and collect topic requests where useful (`feedback-intake`).
 
 Exit trigger: >=100 valid public channel views
 Window: Trailing 30 days
@@ -94,8 +89,6 @@ Required:
 Optional:
 - Add one low-risk quality or routing improvement that does not weaken the approval boundary.
 
-Capabilities: None
-
 Exit trigger: >=200 valid public channel views
 Window: Trailing 30 days
 Evidence: YouTube Analytics aggregate channel views for the trailing 30 days, with production/publication records and owner or responsible-approver approvals for the three consecutive videos retained alongside source health.
@@ -113,9 +106,7 @@ Required:
 - Retain explicit exception-handling and safety-approval boundaries; routine autonomy does not remove those boundaries.
 
 Optional:
-- Improve the owned viewer route only when audience fit and accountable reply ownership are clear.
-
-Capabilities: `owned-site`, `email-list`, `direct-channel`
+- Improve the owned viewer route only when audience fit and accountable reply ownership are clear, using an owned site (`owned-site`), email list (`email-list`), or direct channel (`direct-channel`) only when selected by the private plan.
 
 Exit trigger: >=500 valid public channel views
 Window: Trailing 30 days
@@ -136,8 +127,6 @@ Required:
 Optional:
 - Use a fit-based feedback or owned-audience surface when it supports the selected quality focus.
 
-Capabilities: None
-
 Exit trigger: >=5000 valid public channel views
 Window: Trailing 30 days
 Evidence: YouTube Analytics aggregate channel views for the trailing 30 days, with source health retained separately.
@@ -155,11 +144,7 @@ Required:
 - Choose exactly one small niche- or audience-fit commercial test and measure interest and revenue.
 
 Optional:
-- Use one fit-appropriate owned or partner surface only when its audience fit, disclosure, and approval conditions are clear.
-
-Capabilities: None
-
-Conditional capability: `backend-product` — only if the selected commercial test uses an owned digital product; it is not an E5 obligation.
+- Use one fit-appropriate owned or partner surface only when its audience fit, disclosure, and approval conditions are clear; if the selected test needs an owned digital product, build the smallest offer needed to test it (`backend-product`) with those fit, disclosure, and approval conditions, otherwise skip this optional task.
 
 Exit trigger: >=10000 valid public channel views
 Window: Trailing 30 days
