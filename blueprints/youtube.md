@@ -1,6 +1,6 @@
 ---
 type: youtube
-version: 7.2
+version: 7.3
 updated: 2026-09-05
 status: first-pass
 plan_grammar: phases
@@ -16,10 +16,10 @@ graduation_gate: revenue
 
 ## Planning Contract
 
-- This blueprint opts into the `level_contract: stage-plan` experiment contract. The public roadmap is the ordered `E0`–`E5` Stage Roadmap; it is not a second level ladder or a date-based launch plan.
+- This blueprint opts into the `level_contract: stage-plan` experiment contract. The public roadmap is the ordered `E0`–`E6` Stage Roadmap; it is not a second level ladder or a date-based launch plan.
 - A stage is one bounded unit of work plus its expected result. The stage is complete only when its required work is complete **and** its own exit trigger is met. A later stage never borrows an earlier stage's trigger.
 - Idea validation, niche and audience selection, channel proposal, and fit approval happen before `E0`. The Stage Roadmap does not ask the operator to revalidate an already approved idea.
-- `E0`–`E5` use total valid public channel views from a date-bounded YouTube Analytics aggregate in a trailing 30-day window. The exact trigger is written on the stage whose result it proves.
+- `E0`–`E6` use total valid public channel views from a date-bounded YouTube Analytics aggregate in a trailing 30-day window. The exact trigger is written on the stage whose result it proves.
 - The shared `## Optional Work` pool is available whenever a task fits the approved channel and private plan. Its tasks never replace stage Required work, the stage's own trigger, or approval boundaries. An exception requires owner approval and a record in the private plan; the public blueprint does not invent an exception for a specific operator.
 - When required work and the stage's own result pass early, close the stage without waiting for the next 30-day review clock; the clock governs review, not completion.
 - The review clock is every 30 days from stage entry or the last review. It is separate from the trailing measurement window. A review can record falling evidence, but there is no automatic regression or automatic pause; retain completed work when graduation happens.
@@ -133,6 +133,22 @@ Evidence: YouTube Analytics aggregate channel views for the trailing 30 days, wi
 Review: Every 30 days from stage entry or last review
 If not met: Review the stage bottleneck and adjust one focus; do not auto-kill the experiment.
 
+### E6 — Improve the channel and test niche-fit monetization
+
+Objective: Improve the channel and test niche-fit monetization without treating any individual revenue path as mandatory or promised.
+
+Entry: E5 required work is complete and E5's own >=10000 valid public channel views trigger is met.
+
+Required:
+- Maintain daily publishing while improving videos based on aggregate evidence and preserving the approved channel's editorial, safety, and rights boundaries.
+- Test ONE niche-fit monetization option at a time according to the niche: YouTube ads/YPP when eligibility and audience fit are clear (`ypp`), affiliates or sponsorship when audience fit and disclosure conditions are clear (`sponsors`), or an owned product only when that option is selected and eligible (`backend-product`); no individual option is mandatory or promised.
+
+Exit trigger: >=20000 valid public channel views
+Window: Trailing 30 days
+Evidence: YouTube Analytics aggregate channel views for the trailing 30 days, with source health retained separately; retain aggregate selected monetization-test interest and revenue evidence separately.
+Review: Every 30 days from stage entry or last review
+If not met: Review the stage bottleneck and adjust one focus; do not auto-kill the experiment.
+
 ## Optional Work
 
 These tasks are available at any stage whenever appropriate for the approved channel and private plan. Shared optional work never replaces required work, the stage's own exit trigger, or approval boundaries; it does not bypass mandatory production, safety, or rights checks. Each recommendation below is advisory only: the task may be used at another stage when its conditions fit, and the hint creates no eligibility, capability debt, blocked state, or unlock.
@@ -147,13 +163,13 @@ These tasks are available at any stage whenever appropriate for the approved cha
 
 ## Graduation
 
-Graduation is independent of the E0–E5 views sequence and may be decided at any stage. It requires settled channel-attributable external revenue and explicit owner approval; estimated revenue is not proof. Graduation is never automatic, and views alone do not graduate an experiment. Revenue can satisfy graduation earlier than E5; it does not replace the E5 stage trigger when the experiment continues the views sequence. E5 can close as soon as its required work and >=10000 result pass; the review clock does not delay completion, and no E6 work is invented.
+Graduation is independent of the E0–E6 views sequence and may be decided at any stage. It requires settled channel-attributable external revenue and explicit owner approval; estimated revenue is not proof. Graduation is never automatic, and views alone do not graduate an experiment. Revenue can satisfy graduation earlier than E6; it does not replace the current stage's own view trigger when the experiment continues the views sequence. E6 can close as soon as its required work and >=20000 result pass; the review clock does not delay completion, and no E7 work is invented.
 
 ## Future Stages
 
-E6 is undefined until a deliberate public blueprint change defines it. Revenue stages `R0`, `R1`, and later, Profit stages `P0`, `P1`, and later, and Self-running stages `S0`, `S1`, and later are names reserved for future reviewed work only. No threshold or decision ladder for Profit or Self-running is defined. This section provides no thresholds, plans, or gates.
+E7 is undefined until a deliberate public blueprint change defines it. Revenue stages `R0`, `R1`, and later, Profit stages `P0`, `P1`, and later, and Self-running stages `S0`, `S1`, and later are names reserved for future reviewed work only. No threshold or decision ladder for Profit or Self-running is defined. This section provides no thresholds, plans, or gates.
 
-The remaining sections are optional reference prose for operators adapting a private plan. They do not add required work, stage triggers, maturity gates, or automatic monetization obligations to E0–E5.
+The remaining sections are optional reference prose for operators adapting a private plan. They do not add required work, stage triggers, maturity gates, or automatic monetization obligations to E0–E6.
 
 ## 1. The model in one screen
 
@@ -471,7 +487,7 @@ Run this before YPP application, after any warning, and immediately after a demo
 2. **Shipping raw AI slop** — no editorial pass = YouTube's inauthentic-content policy demonetizes it. Always add real research + a POV.
 3. **Medical/health claims** — the "doctors won't tell you / cure" framing is the #1 ban + FTC risk. Folk-tradition framing only.
 4. **Letting the persona drift** — the consistent voice + avatar *is* the brand. Lock one voice + one avatar seed; reuse identically on every video.
-5. **Judging the niche on one video (optional heuristic)** — a 3–5 video catalog read may help a private review, but it does not replace the E0–E5 triggers, add a waiting period, or create an automatic kill decision.
+5. **Judging the niche on one video (optional heuristic)** — a 3–5 video catalog read may help a private review, but it does not replace the E0–E6 triggers, add a waiting period, or create an automatic kill decision.
 6. **Underpricing opportunity cost** — months of $0 against any proven higher-leverage lever you already run. It only earns a place in the portfolio if production is hands-off and the catalog can hit real scale.
 7. **Believing guru mechanism claims without proof** — "Gemini scans X" and "GIST kills Y" can be useful metaphors, but the operating truth is simpler: YouTube monetization requires original, non-repetitive, non-mass-produced work with a human fingerprint.
 8. **Waiting for YPP to monetize** — an owned domain, lead magnet, product, checkout, or email list can be tested before YPP when the private plan supports it. YouTube Earn is upside; the business does not require every surface.

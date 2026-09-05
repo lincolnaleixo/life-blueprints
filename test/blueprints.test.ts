@@ -4,6 +4,15 @@ import { fileURLToPath } from "node:url";
 import { validateBlueprintContent, validateRepository } from "../scripts/blueprints.ts";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
+
+function youtube72Fixture(content: string): string {
+  return content
+    .replace(/\n### E6 — Improve the channel and test niche-fit monetization[\s\S]*?(?=\n## Optional Work)/m, "")
+    .replace("version: 7.3", "version: 7.2")
+    .replaceAll("E0–E6", "E0–E5")
+    .replace("Revenue can satisfy graduation earlier than E6; it does not replace the current stage's own view trigger when the experiment continues the views sequence. E6 can close as soon as its required work and >=20000 result pass; the review clock does not delay completion, and no E7 work is invented.", "Revenue can satisfy graduation earlier than E5; it does not replace the E5 stage trigger when the experiment continues the views sequence. E5 can close as soon as its required work and >=10000 result pass; the review clock does not delay completion, and no E6 work is invented.")
+    .replace("E7 is undefined", "E6 is undefined");
+}
 const validBlueprint = `---
 type: example
 version: 1.0
@@ -233,7 +242,7 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
       "Legacy fixture prose."
     ].join("\n");
     const fixture = current
-      .replace("version: 7.2", "version: 6.2")
+      .replace("version: 7.3", "version: 6.2")
       .replace("level_contract: stage-plan", "level_contract: trigger-plan")
       .replace("## Stage Policy", legacyLadder);
     expect(validateBlueprintContent("youtube.md", fixture, tick + "youtube@6.2" + tick)).toEqual([]);
@@ -245,10 +254,10 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
     expect(validateBlueprintContent("youtube.md", fake, tick + "youtube@6.2" + tick).some((problem) => problem.message.includes("Level 6"))).toBe(true);
   });
 
-  test("publishes the YouTube v7.2 stage-plan roadmap with a shared optional pool", async () => {
+  test("publishes the YouTube v7.3 stage-plan roadmap with E6 and a shared optional pool", async () => {
     const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
 
-    expect(content).toContain("version: 7.2");
+    expect(content).toContain("version: 7.3");
     expect(content).toContain("level_contract: stage-plan");
     expect(content).toContain("graduation_gate: revenue");
     expect(content).toContain("## Stage Roadmap");
@@ -256,26 +265,28 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
     expect(content).not.toMatch(/^### L\d+\b/m);
     expect(content).toContain("### E0 — Prepare the channel and first representative video");
     expect(content).toContain("### E5 — Measure one small commercial fit test");
+    expect(content).toContain("### E6 — Improve the channel and test niche-fit monetization");
     expect(content).toContain("Exit trigger: >=10 valid public channel views");
     expect(content).toContain("Exit trigger: >=100 valid public channel views");
     expect(content).toContain("Exit trigger: >=200 valid public channel views");
     expect(content).toContain("Exit trigger: >=500 valid public channel views");
     expect(content).toContain("Exit trigger: >=5000 valid public channel views");
     expect(content).toContain("Exit trigger: >=10000 valid public channel views");
+    expect(content).toContain("Exit trigger: >=20000 valid public channel views");
     expect(content).toContain("THREE consecutive correctly produced and published videos");
     expect(content).toContain("## Graduation");
     expect(content).toContain("settled channel-attributable external revenue");
     expect(content).toContain("explicit owner approval");
     expect(content).toContain("estimated revenue is not proof");
     expect(content).toContain("## Future Stages");
-    expect(content).toContain("E6 is undefined");
+    expect(content).toContain("E7 is undefined");
     expect(content).toContain("Revenue stages " + String.fromCharCode(96) + "R0" + String.fromCharCode(96) + ", " + String.fromCharCode(96) + "R1" + String.fromCharCode(96));
     expect(content).toContain("Profit stages " + String.fromCharCode(96) + "P0" + String.fromCharCode(96) + ", " + String.fromCharCode(96) + "P1" + String.fromCharCode(96));
     expect(content).toContain("Self-running stages " + String.fromCharCode(96) + "S0" + String.fromCharCode(96) + ", " + String.fromCharCode(96) + "S1" + String.fromCharCode(96));
 
     const roadmap = content.match(/^## Stage Roadmap\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/m)?.[1] || "";
     const headings = [...roadmap.matchAll(/^### (E\d+)\s+—\s+(.+)$/gm)].map((match) => match[1]!);
-    expect(headings).toEqual(["E0", "E1", "E2", "E3", "E4", "E5"]);
+    expect(headings).toEqual(["E0", "E1", "E2", "E3", "E4", "E5", "E6"]);
     expect(content).not.toMatch(/^Optional:$/m);
     expect(content).not.toMatch(/^Capabilities:/m);
     expect(content).not.toMatch(/^Conditional capability:/m);
@@ -293,7 +304,13 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
     expect(content).toContain("(`email-list`)");
     expect(content).toContain("(`direct-channel`)");
     expect(content).toContain("(`backend-product`)");
-    expect((content.match(/^Review: Every 30 days from stage entry or last review$/gm) || []).length).toBe(6);
+    expect(content).toContain("Maintain daily publishing while improving videos based on aggregate evidence");
+    expect(content).toContain("Test ONE niche-fit monetization option at a time");
+    expect(content).toContain("no individual option is mandatory or promised");
+    expect(content).toContain("(`ypp`)");
+    expect(content).toContain("(`sponsors`)");
+    expect(content).toContain("(`backend-product`)");
+    expect((content.match(/^Review: Every 30 days from stage entry or last review$/gm) || []).length).toBe(7);
   });
 
   test("publishes the reusable stage template policy", async () => {
@@ -318,9 +335,10 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
 
   test("accepts legacy stage-level optional and capability declarations for backward compatibility", async () => {
     const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
-    const shared = content.match(/^## Optional Work\s*$([\s\S]*?)(?=^## Graduation\s*$)/m)?.[1] || "";
+    const legacySource = youtube72Fixture(content);
+    const shared = legacySource.match(/^## Optional Work\s*$([\s\S]*?)(?=^## Graduation\s*$)/m)?.[1] || "";
     const bullets = [...shared.matchAll(/^-\s+(.+)$/gm)].map((match) => `- ${match[1]!}`);
-    let legacy = content.replace(/^## Optional Work\s*$[\s\S]*?(?=^## Graduation\s*$)/m, "").replace("version: 7.2", "version: 7.1");
+    let legacy = legacySource.replace(/^## Optional Work\s*$[\s\S]*?(?=^## Graduation\s*$)/m, "").replace("version: 7.2", "version: 7.1");
     const counts = [2, 1, 1, 1, 1, 1];
     let offset = 0;
     for (const [stage, count] of counts.entries()) {
@@ -334,45 +352,45 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
   test("validates inline capability slugs and rejects unknown or duplicate declarations", async () => {
     const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
     const unknown = content.replace("(`feedback-intake`)", "(`not-in-catalog`)");
-    const unknownProblems = validateBlueprintContent("youtube.md", unknown, "`youtube@7.2`");
+    const unknownProblems = validateBlueprintContent("youtube.md", unknown, "`youtube@7.3`");
     expect(unknownProblems.some((problem) => problem.message.includes("unknown capability slug: not-in-catalog"))).toBe(true);
 
     const duplicate = content.replace(
       "- Add one low-risk quality or routing improvement that does not weaken the approval boundary.",
       "- Add one low-risk quality or routing improvement that does not weaken the approval boundary (`official-profiles`) and repeat the same optional reference (`official-profiles`)."
     );
-    const duplicateProblems = validateBlueprintContent("youtube.md", duplicate, "`youtube@7.2`");
+    const duplicateProblems = validateBlueprintContent("youtube.md", duplicate, "`youtube@7.3`");
     expect(duplicateProblems.some((problem) => problem.message.includes("cannot repeat inline capability slugs in one task"))).toBe(true);
 
     const reused = content.replace(
       "- Add one low-risk quality or routing improvement that does not weaken the approval boundary.",
       "- Add one low-risk quality or routing improvement that does not weaken the approval boundary (`official-profiles`)."
     );
-    expect(validateBlueprintContent("youtube.md", reused, "`youtube@7.2`")).toEqual([]);
+    expect(validateBlueprintContent("youtube.md", reused, "`youtube@7.3`")).toEqual([]);
   });
 
   test("keeps shared recommendations advisory and validates their suffix", async () => {
     const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
     const withoutHints = content.replace(/ Recommended stage: E\d+\./g, "");
-    expect(validateBlueprintContent("youtube.md", withoutHints, "`youtube@7.2`")).toEqual([]);
+    expect(validateBlueprintContent("youtube.md", withoutHints, "`youtube@7.3`")).toEqual([]);
 
-    const unavailable = content.replace("Recommended stage: E0.", "Recommended stage: E6.");
-    const unavailableProblems = validateBlueprintContent("youtube.md", unavailable, "`youtube@7.2`");
-    expect(unavailableProblems.some((problem) => problem.message.includes("unavailable Recommended stage: E6"))).toBe(true);
+    const unavailable = content.replace("Recommended stage: E0.", "Recommended stage: E7.");
+    const unavailableProblems = validateBlueprintContent("youtube.md", unavailable, "`youtube@7.3`");
+    expect(unavailableProblems.some((problem) => problem.message.includes("unavailable Recommended stage: E7"))).toBe(true);
 
     const duplicate = content.replace("Recommended stage: E0.", "Recommended stage: E0. Recommended stage: E1.");
-    const duplicateProblems = validateBlueprintContent("youtube.md", duplicate, "`youtube@7.2`");
+    const duplicateProblems = validateBlueprintContent("youtube.md", duplicate, "`youtube@7.3`");
     expect(duplicateProblems.some((problem) => problem.message.includes("only one Recommended stage hint"))).toBe(true);
 
     const malformed = content.replace("Recommended stage: E1.", "Recommended stage: E1");
-    const malformedProblems = validateBlueprintContent("youtube.md", malformed, "`youtube@7.2`");
+    const malformedProblems = validateBlueprintContent("youtube.md", malformed, "`youtube@7.3`");
     expect(malformedProblems.some((problem) => problem.message.includes("malformed Recommended stage hint"))).toBe(true);
 
     const assigned = content.replace(
       "- Add one low-risk quality or routing improvement that does not weaken the approval boundary.",
       "- Add one low-risk quality or routing improvement at E2 that does not weaken the approval boundary. Recommended stage: E2."
     );
-    const assignedProblems = validateBlueprintContent("youtube.md", assigned, "`youtube@7.2`");
+    const assignedProblems = validateBlueprintContent("youtube.md", assigned, "`youtube@7.3`");
     expect(assignedProblems.some((problem) => problem.message.includes("must not assign work to a stage"))).toBe(true);
   });
 
@@ -382,45 +400,77 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
       "Exit trigger: >=10 valid public channel views",
       "Exit trigger: >=100 valid public channel views"
     );
-    const problems = validateBlueprintContent("youtube.md", wrong, String.fromCharCode(96) + "youtube@7.2" + String.fromCharCode(96));
+    const problems = validateBlueprintContent("youtube.md", wrong, String.fromCharCode(96) + "youtube@7.3" + String.fromCharCode(96));
     expect(problems.some((problem) => problem.message.includes("E0 Exit trigger must be >=10"))).toBe(true);
   });
 
-  test("rejects a fake E6 and future stage plan", async () => {
+  test("rejects a fake E7 and future stage plan", async () => {
     const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
     const wrong = content.replace(
       "## Graduation",
-      "### E6 — Invented future stage\n\nObjective: Future work\n\n## Graduation"
+      "### E7 — Invented future stage\n\nObjective: Future work\n\n## Graduation"
     );
-    const problems = validateBlueprintContent("youtube.md", wrong, String.fromCharCode(96) + "youtube@7.2" + String.fromCharCode(96));
+    const problems = validateBlueprintContent("youtube.md", wrong, String.fromCharCode(96) + "youtube@7.3" + String.fromCharCode(96));
+    expect(problems.some((problem) => /E7|exactly E0 through E6|invalid stage heading/.test(problem.message))).toBe(true);
+  });
+
+  test("retains the YouTube v7.2 stage-plan fixture and its E6 boundary", async () => {
+    const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
+    const legacy = youtube72Fixture(content);
+    for (const version of ["7.0", "7.1", "7.2"]) {
+      expect(validateBlueprintContent("youtube.md", legacy.replace("version: 7.2", `version: ${version}`), `\`youtube@${version}\``)).toEqual([]);
+    }
+
+    const fake = legacy.replace(
+      "\n## Optional Work\n",
+      "### E6 — Invented future stage\n\nObjective: Future work\n\n## Optional Work"
+    );
+    const problems = validateBlueprintContent("youtube.md", fake, "`youtube@7.2`");
     expect(problems.some((problem) => /E6|exactly E0 through E5|invalid stage heading/.test(problem.message))).toBe(true);
+  });
+
+  test("validates E6 entry work and conditional monetization choices", async () => {
+    const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
+    const incompleteEntry = content.replace(
+      "Entry: E5 required work is complete and E5's own >=10000 valid public channel views trigger is met.",
+      "Entry: E5 result is ready."
+    );
+    const entryProblems = validateBlueprintContent("youtube.md", incompleteEntry, "`youtube@7.3`");
+    expect(entryProblems.some((problem) => problem.message.includes("E6 Entry must require completed E5 work"))).toBe(true);
+
+    const mandatoryOption = content.replace(
+      "no individual option is mandatory or promised",
+      "choose the preferred monetization path"
+    );
+    const optionProblems = validateBlueprintContent("youtube.md", mandatoryOption, "`youtube@7.3`");
+    expect(optionProblems.some((problem) => problem.message.includes("no individual monetization option"))).toBe(true);
   });
 
   test("rejects missing, malformed, or mixed shared optional work", async () => {
     const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
     const withoutShared = content.replace(/^## Optional Work\s*$[\s\S]*?(?=^## Graduation\s*$)/m, "");
-    const missingProblems = validateBlueprintContent("youtube.md", withoutShared, "`youtube@7.2`");
+    const missingProblems = validateBlueprintContent("youtube.md", withoutShared, "`youtube@7.3`");
     expect(missingProblems.some((problem) => problem.message.includes("E0 must declare Optional:"))).toBe(true);
 
     const malformed = content.replace(
       "- Claim relevant official profiles (`official-profiles`)",
       "+ Claim relevant official profiles (`official-profiles`)"
     );
-    const malformedProblems = validateBlueprintContent("youtube.md", malformed, "`youtube@7.2`");
+    const malformedProblems = validateBlueprintContent("youtube.md", malformed, "`youtube@7.3`");
     expect(malformedProblems.some((problem) => problem.message.includes("plain '- ' task bullets"))).toBe(true);
 
     const mixed = content.replace(
       "Exit trigger: >=10 valid public channel views",
       "Optional:\n- A stage-assigned optional task.\n\nExit trigger: >=10 valid public channel views"
     );
-    const mixedProblems = validateBlueprintContent("youtube.md", mixed, "`youtube@7.2`");
+    const mixedProblems = validateBlueprintContent("youtube.md", mixed, "`youtube@7.3`");
     expect(mixedProblems.some((problem) => problem.message.includes("cannot mix shared ## Optional Work"))).toBe(true);
 
     const missingEvidence = content.replace(
       "Evidence: YouTube Analytics aggregate channel views for the trailing 30 days, with source health retained separately.",
       "Evidence:"
     );
-    const evidenceProblems = validateBlueprintContent("youtube.md", missingEvidence, "`youtube@7.2`");
+    const evidenceProblems = validateBlueprintContent("youtube.md", missingEvidence, "`youtube@7.3`");
     expect(evidenceProblems.some((problem) => problem.message.includes("E0 Evidence must contain text"))).toBe(true);
   });
 
@@ -430,7 +480,7 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
       "THREE consecutive correctly produced and published videos must be approved by the owner or designated responsible approver.",
       "Produce supervised videos."
     );
-    const problems = validateBlueprintContent("youtube.md", wrong, String.fromCharCode(96) + "youtube@7.2" + String.fromCharCode(96));
+    const problems = validateBlueprintContent("youtube.md", wrong, String.fromCharCode(96) + "youtube@7.3" + String.fromCharCode(96));
     expect(problems.some((problem) => problem.message.includes("E2 must require three consecutive"))).toBe(true);
   });
 
@@ -439,7 +489,7 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
     const wrong = content
       .replace("settled channel-attributable external revenue", "unsettled estimated views")
       .replace("explicit owner approval", "a later decision");
-    const problems = validateBlueprintContent("youtube.md", wrong, String.fromCharCode(96) + "youtube@7.2" + String.fromCharCode(96));
+    const problems = validateBlueprintContent("youtube.md", wrong, String.fromCharCode(96) + "youtube@7.3" + String.fromCharCode(96));
     expect(problems.some((problem) => problem.message.includes("settled channel-attributable external revenue"))).toBe(true);
     expect(problems.some((problem) => problem.message.includes("explicit owner approval"))).toBe(true);
   });
@@ -450,36 +500,36 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
       "## Future Stages",
       "## Future Stages\n\n### R0 — Revenue plan\n\nObjective: Invent a plan"
     );
-    const problems = validateBlueprintContent("youtube.md", wrong, String.fromCharCode(96) + "youtube@7.2" + String.fromCharCode(96));
+    const problems = validateBlueprintContent("youtube.md", wrong, String.fromCharCode(96) + "youtube@7.3" + String.fromCharCode(96));
     expect(problems.some((problem) => problem.message.includes("Future Stages may reserve names"))).toBe(true);
   });
 
   test("rejects the old YouTube L roadmap in a stage-plan blueprint", async () => {
     const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
     const wrong = content.replace("## Stage Roadmap", "## Stage Roadmap\n\n### L0 — Old roadmap");
-    const problems = validateBlueprintContent("youtube.md", wrong, String.fromCharCode(96) + "youtube@7.2" + String.fromCharCode(96));
+    const problems = validateBlueprintContent("youtube.md", wrong, String.fromCharCode(96) + "youtube@7.3" + String.fromCharCode(96));
     expect(problems.some((problem) => problem.message.includes("old L0-L5 roadmap") || problem.message.includes("invalid stage heading"))).toBe(true);
   });
 
-  test("documents the YouTube v7.2 source and stage-plan contract", async () => {
+  test("documents the YouTube v7.3 source and stage-plan contract", async () => {
     const readme = await Bun.file(resolve(root, "README.md")).text();
     const specification = await Bun.file(resolve(root, "docs/specification.md")).text();
     const changelog = await Bun.file(resolve(root, "CHANGELOG.md")).text();
-    expect(readme).toContain("| YouTube | 7.2 | First pass |");
+    expect(readme).toContain("| YouTube | 7.3 | First pass |");
     expect(readme).toContain("level_contract: stage-plan");
     expect(specification).toContain("level_contract: stage-plan");
     expect(specification).toContain("stage-template.md");
-    expect(changelog).toContain("youtube@7.2");
+    expect(changelog).toContain("youtube@7.3");
   });
 
   test("requires both opt-in metadata fields for the stage-plan contract", async () => {
     const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
     const withoutGate = content.replace("graduation_gate: revenue\n", "");
-    const gateProblems = validateBlueprintContent("youtube.md", withoutGate, String.fromCharCode(96) + "youtube@7.2" + String.fromCharCode(96));
+    const gateProblems = validateBlueprintContent("youtube.md", withoutGate, String.fromCharCode(96) + "youtube@7.3" + String.fromCharCode(96));
     expect(gateProblems.some((problem) => problem.message.includes("requires graduation_gate: revenue"))).toBe(true);
 
     const withoutContract = content.replace("level_contract: stage-plan\n", "");
-    const contractProblems = validateBlueprintContent("youtube.md", withoutContract, String.fromCharCode(96) + "youtube@7.2" + String.fromCharCode(96));
+    const contractProblems = validateBlueprintContent("youtube.md", withoutContract, String.fromCharCode(96) + "youtube@7.3" + String.fromCharCode(96));
     expect(contractProblems.some((problem) => problem.message.includes("requires level_contract"))).toBe(true);
   });
 
