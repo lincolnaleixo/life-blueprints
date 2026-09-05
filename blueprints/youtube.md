@@ -1,6 +1,6 @@
 ---
 type: youtube
-version: 6.1
+version: 6.2
 updated: 2026-09-05
 status: first-pass
 plan_grammar: phases
@@ -10,9 +10,9 @@ level_contract: trigger-plan
 graduation_gate: revenue
 ---
 
-# Blueprint — Faceless YouTube business
+# YouTube Channel
 
-> **How to build a faceless YouTube channel, split into long-form and Shorts lanes.** Long-form combines evergreen content with an owned product funnel. Shorts uses high-cadence, hook-and-payoff content for reach, then adds sponsors, products, or a funnel when the niche supports one. This is the **reusable methodology for any operator building this business type**; a specific bet adds its own niche, persona, voice, offer, and format mix. Run a separate niche-validation pass before committing. The operating gates draw on YouTube policy and creator post-mortems; treat single-creator claims as heuristics until independently verified.
+> **How to build a YouTube channel across long-form and Shorts lanes.** A channel may be faceless or on-camera. Long-form combines evergreen content with an owned product funnel. Shorts uses high-cadence, hook-and-payoff content for reach, then adds sponsors, products, or a funnel when the niche supports one. This is the **reusable methodology for any operator building this business type**; a specific bet adds its own niche, persona, voice, offer, and format mix. Run a separate niche-validation pass before committing. The operating gates draw on YouTube policy and creator post-mortems; treat single-creator claims as heuristics until independently verified.
 
 ## Planning Contract
 
@@ -67,6 +67,8 @@ Guidance for each level; select/adapt relevant capabilities in private plan, not
 
 Capabilities: `official-profiles`, `end-screen-routing`
 
+Conditional capability: `shorts-lane` — use only when this experiment chooses a Shorts lane; keep its hook, payoff, and transformation model explicit.
+
 ### L1 — Inspect the first public signal
 
 - Check the representative video's availability, ownership, rights, title, thumbnail, promise alignment, and measurement.
@@ -88,6 +90,10 @@ Capabilities: `feedback-intake`, `end-screen-routing`
 
 Capabilities: `owned-site`, `email-list`, `direct-channel`
 
+Conditional capability: `whatsapp-group` — consider only when audience demand and accountable reply ownership support a group.
+
+Conditional capability: `telegram-group` — consider only when audience demand and accountable reply ownership support an additional contact surface.
+
 ### L4 — Test a bounded revenue path
 
 - Inspect offer fit and audience intent, and select one bounded revenue-path test only when real interest and explicit approval support it.
@@ -95,12 +101,26 @@ Capabilities: `owned-site`, `email-list`, `direct-channel`
 
 Capabilities: `backend-product`, `funnel-wiring`
 
+Conditional capability: `sponsors` — use only when sponsor or affiliate fit, disclosure, and explicit approval are in place.
+
+Conditional capability: `merch` — test only when product and audience fit are evidenced and launch approval is explicit.
+
 ### L5 — Reconcile revenue and decide
 
 - Reconcile real receipts, costs, and channel-attributable revenue into the live P&L, preserving aggregate evidence and its source.
 - Use that evidence for the explicit graduation decision; keep YPP eligibility separate, and never treat 500 views alone as graduation evidence.
 
 Capabilities: `live-pnl`
+
+Conditional capability: `ypp` — consider when the relevant platform eligibility and format fit are confirmed; YPP status stays independent of view levels and graduation.
+
+Conditional capability: `shopping` — consider only when store or product eligibility and format fit are confirmed; do not create a store solely for this level.
+
+Conditional capability: `memberships` — consider only when platform eligibility and a sustainable member value and support model fit the audience.
+
+Conditional capability: `supers` — consider only when platform eligibility and a live or premiere format genuinely fit the channel.
+
+Conditional capability: `second-channel` — consider only after the original channel is profitable and systematized; it is never a 500-view unlock.
 
 ## 1. The model in one screen
 
@@ -455,7 +475,7 @@ Run this before YPP application, after any warning, and immediately after a demo
 
 ## Phases
 
-The trigger-plan ladder above is the experiment evidence contract from preparation through the last published view level. These four maturity phases remain the generic capability grouping a Revenue-or-higher Unit consults afterward; they are not a second launch sequence. Each capability below sits where it becomes the focus, and phases gate on evidence rather than time.
+The trigger-plan ladder above is the experiment evidence contract from preparation through the last published view level. The Level Plans section above is the UI-facing sequential home for capability guidance. These four maturity phases remain the generic capability grouping a Revenue-or-higher Unit consults afterward; they are retained as source reference, not a second UI roadmap or launch sequence. Each capability below sits where it becomes the focus, and phases gate on evidence rather than time.
 
 - **Phase 0 · Publish & Wire** — get the engine running and every video pointing home: the production pipeline shipping on cadence, the funnel link on every upload, the live P&L from day one, and the Shorts lane if the bet runs one. *Focus: a publishing machine wired to an owned destination.*
 - **Phase 1 · Monetize on-platform** — YPP unlocks the native rails: ad revenue, Shopping, memberships, Supers. Turn every eligible Earn surface on, but keep it the small money. *Gate in: a catalog earning expanding impressions (CTR ≥5% + AVD ≥35%). Focus: every native surface live.*

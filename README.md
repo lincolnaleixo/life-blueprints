@@ -17,7 +17,7 @@ A blueprint is reusable reference material, not a task list or a promise of resu
 | SaaS | 5.0 | Pilot | [saas](blueprints/saas.md) |
 | Social media | 0.7 | First pass | [social media](blueprints/social-media.md) |
 | Utility site | 2.0 | Draft | [utility site](blueprints/utility-site.md) |
-| YouTube | 6.1 | First pass | [youtube](blueprints/youtube.md) |
+| YouTube | 6.2 | First pass | [youtube](blueprints/youtube.md) |
 
 Statuses describe confidence, not business maturity:
 
@@ -47,7 +47,7 @@ The ladder is also the private experiment's roadmap. Its plan uses `L0`, `L1`, .
 
 An alternative, explicitly opted-in contract uses `level_contract: trigger-plan` with `graduation_gate: revenue`. It publishes a contiguous prefix of numbered levels, each with a trigger, metric, and observation window; each trigger is an entry condition, while the private plan at the current level supplies the bounded work toward the next trigger and must be complete before that trigger can advance the experiment. This contract does not require a Progressive Automation, Bootstrap, or Build Path section, and it does not require a numbered graduation row. Graduation remains independent of the numbered ladder: it requires actual settled externally attributable revenue and explicit owner approval. Future levels stay undefined until the blueprint publishes their triggers. An implementation may still claim automation, but each such claim needs production proof, safe correction or rollback, health evidence, and operating limits.
 
-A trigger-plan blueprint may optionally publish an `## Level Plans` section for UI-facing guidance. Its `### L<number>` entries contain two or three concise action bullets and one ``Capabilities: `slug`, ...`` reference line; every published level appears exactly once in order. The guidance is adapted in the private plan and does not add obligations, unlocks, or gates. Earlier capabilities can be reused at any level, and phase numbers are not experiment levels.
+A trigger-plan blueprint may optionally publish an `## Level Plans` section for UI-facing guidance. Its `### L<number>` entries contain two or three concise action bullets and one ``Capabilities: `slug`, ...`` reference line, followed by optional ``Conditional capability: `slug` — <condition>`` lines; every published level appears exactly once in order. Conditional references use existing catalog slugs and describe fit, eligibility, or approval context rather than adding obligations, unlocks, or gates. The guidance is adapted in the private plan, earlier capabilities can be reused at any level, and phase numbers are not experiment levels.
 
 A legacy blueprint with `build_path: stage-gate` also publishes one ordered path from pre-admission through graduation. Each step says what to build, what observable gate advances it, what pass and miss decisions mean, and which automation frontier opens next. The path supplies defaults for a new experiment plan; the private plan keeps only its adapted projects and evidence, never a copied tracker. A trigger-plan blueprint does not use this stage-gate contract.
 
