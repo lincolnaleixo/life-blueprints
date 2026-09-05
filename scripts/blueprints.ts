@@ -206,6 +206,7 @@ function validateSharedOptionalWork(
 function validateStagePlanContract(
   filename: string,
   body: string,
+  version: string | undefined,
   add: (message: string) => void
 ): void {
   const { section, blocks } = stageRoadmapBlocks(body);
@@ -252,7 +253,8 @@ function validateStagePlanContract(
     2: ">=200 valid public channel views",
     3: ">=500 valid public channel views",
     4: ">=5000 valid public channel views",
-    5: ">=10000 valid public channel views"
+    5: ">=10000 valid public channel views",
+    6: ">=20000 valid public channel views"
   };
 
   for (const block of blocks) {
@@ -393,8 +395,12 @@ function validateStagePlanContract(
   }
 
   if (filename === "youtube.md") {
-    if (uniqueStages.length !== 6 || uniqueStages.some((stage, index) => stage !== index) || blocks.some((block) => block.stage > 5)) {
-      add("youtube stage-plan roadmap must contain exactly E0 through E5 and no E6");
+    const supportedVersion = /^7\.(0|1|2|3)$/.exec(version || "");
+    if (!supportedVersion) add(`youtube stage-plan validator does not support version ${version || "unknown"}`);
+    const lastPublishedStage = supportedVersion?.[1] === "3" ? 6 : 5;
+    const firstUndefinedStage = lastPublishedStage + 1;
+    if (uniqueStages.length !== lastPublishedStage + 1 || uniqueStages.some((stage, index) => stage !== index) || blocks.some((block) => block.stage > lastPublishedStage)) {
+      add(`youtube stage-plan roadmap must contain exactly E0 through E${lastPublishedStage} and no E${firstUndefinedStage}`);
     }
     const e2 = blocks.find((block) => block.stage === 2);
     if (e2) {
@@ -423,19 +429,44 @@ function validateStagePlanContract(
     if (!future) {
       add("stage-plan YouTube blueprint requires an ## Future Stages section");
     } else {
-      if (!/E6 is undefined/i.test(future)) add("stage-plan Future Stages must leave E6 undefined");
+      if (!new RegExp(`E${firstUndefinedStage} is undefined`, "i").test(future)) {
+        add(`stage-plan Future Stages must leave E${firstUndefinedStage} undefined`);
+      }
       if (!/Revenue[^.\n]*R0[^.\n]*R1/i.test(future) || !/Profit[^.\n]*P0[^.\n]*P1/i.test(future) || !/Self-running[^.\n]*S0[^.\n]*S1/i.test(future)) {
         add("stage-plan Future Stages must reserve Revenue R0/R1, Profit P0/P1, and Self-running S0/S1 names");
       }
-      if (/^###\s+(?:E6|R\d+|P\d+|S\d+)\b/m.test(future) || /^(?:Objective|Entry|Required|Optional|Capabilities|Exit trigger|Window|Evidence|Review|If not met):/m.test(future)) {
+      const futureExperimentStage = [...future.matchAll(/^###\s+E(\d+)\b/gm)].some((match) => Number(match[1]) >= firstUndefinedStage);
+      if (futureExperimentStage || /^###\s+(?:R\d+|P\d+|S\d+)\b/m.test(future) || /^(?:Objective|Entry|Required|Optional|Capabilities|Exit trigger|Window|Evidence|Review|If not met):/m.test(future)) {
         add("stage-plan Future Stages may reserve names but must not publish future stage plans or thresholds");
       }
     }
     if (/^## (?:Experiment Ladder|Level Plans)\s*$/m.test(body) || /^### L\d+\b/m.test(body)) {
       add("stage-plan YouTube blueprint must not retain the old L0-L5 roadmap");
     }
-    if (/^###\s+(?:E6|R\d+|P\d+|S\d+)\b/m.test(body)) {
-      add("stage-plan YouTube blueprint must not publish E6, Revenue, Profit, or Self-running stage plans");
+    if ([...body.matchAll(/^###\s+E(\d+)\b/gm)].some((match) => Number(match[1]) > lastPublishedStage) || /^###\s+(?:R\d+|P\d+|S\d+)\b/m.test(body)) {
+      add(`stage-plan YouTube blueprint must not publish E${firstUndefinedStage}, Revenue, Profit, or Self-running stage plans`);
+    }
+    if (lastPublishedStage >= 6) {
+      const e6 = blocks.find((block) => block.stage === 6);
+      if (e6) {
+        const entry = e6.body.match(/^Entry:\s*(.+)$/m)?.[1] || "";
+        if (!/E5 required work is complete[^.\n]*E5's own >=10000 valid public channel views/i.test(entry)) {
+          add("youtube stage E6 Entry must require completed E5 work and the >=10000 view trigger");
+        }
+        const required = e6.body.match(/^Required:\s*$([\s\S]*?)(?=^Exit trigger:\s*)/m)?.[1] || "";
+        if (!/improv(?:e|ing) videos[^.\n]*based on[^.\n]*evidence/i.test(required)) {
+          add("youtube stage E6 must require improving videos based on evidence");
+        }
+        if (!/ONE[^.\n]*monetization option[^.\n]*at a time[^.\n]*according to the niche/i.test(required)) {
+          add("youtube stage E6 must require one niche-fit monetization option at a time");
+        }
+        if (!/YouTube ads\/YPP[^.\n]*`ypp`/i.test(required) || !/affiliates or sponsorship[^.\n]*`sponsors`/i.test(required) || !/owned product[^.\n]*`backend-product`/i.test(required)) {
+          add("youtube stage E6 must integrate ypp, sponsors, and backend-product references into its monetization task");
+        }
+        if (!/no individual option is mandatory or promised/i.test(required)) {
+          add("youtube stage E6 must state that no individual monetization option is mandatory or promised");
+        }
+      }
     }
     const policyChecks: Array<[RegExp, string]> = [
       [/required work[^.\n]*own exit trigger[^.\n]*(?:mandatory|met)|both[^.\n]*required work[^.\n]*trigger/i, "stage policy must require both work and the stage's own trigger"],
@@ -680,7 +711,7 @@ export function validateBlueprintContent(
     if (triggerPlan) {
       validateTriggerPlanContract(filename, body, add);
     } else if (stagePlan) {
-      validateStagePlanContract(filename, body, add);
+      validateStagePlanContract(filename, body, metadata.version, add);
     } else {
       const ladder = experimentLadderSection(body);
       if (!ladder) {

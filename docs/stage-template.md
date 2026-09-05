@@ -34,7 +34,7 @@ A review records the current evidence, source health, and any falling signal. Fa
 
 ## Graduation and future stages
 
-Graduation is a separate decision when a blueprint declares it. It does not erase or rewrite completed stage work; retain the evidence and built artifacts after graduation. Future stages may be named as reserved, undefined placeholders, but they must not acquire invented thresholds, plans, or gates until a reviewed blueprint version defines them. A sample `E0` block does not imply that future `R`, `P`, or `S` steps exist or have a threshold.
+Graduation is a separate decision when a blueprint declares it. It does not erase or rewrite completed stage work; retain the evidence and built artifacts after graduation. Future stages may be named as reserved, undefined placeholders, but they must not acquire invented thresholds, plans, or gates until a reviewed blueprint version defines them. A later minor release may append a contiguous stage when it preserves existing stage work and triggers, but consumers must not infer that stage from an earlier source. A sample `E0` block does not imply that future `E`, `R`, `P`, or `S` steps exist or have a threshold.
 
 ## Stage block template
 
