@@ -286,7 +286,7 @@ Treat YouTube Studio's **Earn** tab as a setup checklist, not as the business mo
 
 | Stage | Threshold / trigger | Turn on |
 |---|---|---|
-| **Before YPP** | day 1 | Domain/site, email capture, lead magnet, digital product, affiliate disclosures, channel links, banner QR, pinned-comment template. |
+| **Before YPP** | model recommendation; not an experiment admission gate | When relevant and available, use a domain/site, email capture, lead magnet, digital product, affiliate disclosures, channel links, banner QR, and pinned-comment template. |
 | **Expanded YPP / fan funding** | eligible countries: 500 subscribers + 3 public uploads in 90 days + either 3,000 valid public watch hours in 12 months or 3M valid Shorts views in 90 days | Apply from Earn; accept Base terms, AdSense setup, and Commerce Product Module; enable Super Thanks, Super Chat/Stickers + live-stream Gifts (Jewels) if premieres/lives are used, memberships, and own-product Shopping if eligible. |
 | **Hype (discovery, not real money)** | YPP + ~500–500,000 subscribers «verify», eligible country | Toggle **Let viewers hype** on (Earn → Hype / Advanced; on by default when eligible). Viewers Hype within ~7 days of publish (free + paid Jewels); top videos rise on a **weekly leaderboard** YouTube can surface more widely. A small-channel **reach** lever — you age out near the top of the sub range. |
 | **Full ad revenue** | 1,000 subscribers + either 4,000 valid public watch hours in 12 months or 10M Shorts views in 90 days | Accept Watch Page Monetization and Shorts Feed modules; turn on watch-page ads, Shorts revenue share, YouTube Premium revenue, ad preferences, mid-rolls where content length supports them. |
