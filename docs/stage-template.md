@@ -15,7 +15,9 @@ The trigger belongs to the stage that it proves. Do not put the next stage's thr
 
 ## Required and optional work
 
-Every stage has a `Required:` block and an `Optional:` block. Required work is compulsory. Optional work is useful guidance, but its absence never blocks stage completion. When no generic optional guidance is useful, write:
+Every stage has a `Required:` block. Required work is compulsory. In the current shared-pool layout, optional guidance appears once in a `## Optional Work` section outside the stage blocks. Its tasks are available whenever appropriate, have no stage assignment, and never block stage completion. A blueprint must choose one layout: it must not mix the shared pool with stage-level `Optional:` blocks.
+
+Older sources may keep an `Optional:` block inside each stage for backward compatibility. When no generic optional guidance is useful in that older layout, write:
 
 ```markdown
 Optional:
@@ -46,9 +48,6 @@ Entry: <what is already true before this stage starts>
 Required:
 - <compulsory work>
 
-Optional:
-- <useful but non-blocking work>
-
 Exit trigger: <this stage's own observable result>
 Window: <measurement window>
 Evidence: <aggregate or otherwise permitted evidence source>
@@ -56,13 +55,23 @@ Review: Every 30 days from stage entry or last review
 If not met: <diagnosis, adjustment, or escalation guidance; no automatic kill implied>
 ```
 
-Capability references belong inline in the `Required` or `Optional` task that uses them. For example:
+For a shared optional pool, use one plain-bullet section outside the stages:
+
+```markdown
+## Optional Work
+
+Shared optional work never replaces required work, the stage's own exit trigger, or approval boundaries.
+
+- <useful but non-blocking task (`catalog-slug`), with any condition in this sentence>
+```
+
+Capability references belong inline in the `Required` or shared `Optional Work` task that uses them. For example:
 
 ```markdown
 - Claim the relevant official profile (`official-profiles`).
 - Use the Shorts lane only when the approved experiment selects it (`shorts-lane`).
 ```
 
-They are references to the catalog, not a second stage capability card or a requirement to map the whole catalog into the roadmap. When a capability is conditional, put its fit, eligibility, or approval condition in that same task sentence. A conditional reference does not create an extra trigger or gate. Capability references are not automatic obligations unless they are explicitly listed under `Required`.
+They are references to the catalog, not a second stage capability card or a requirement to map the whole catalog into the roadmap. When a capability is conditional, put its fit, eligibility, or approval condition in that same task sentence. A conditional reference does not create an extra trigger or gate. Shared optional work cannot bypass required production, safety, rights, or owner-approval boundaries. Capability references are not automatic obligations unless they are explicitly listed under `Required`.
 
-For backward compatibility, validators may still accept the older `Capabilities:` and `Conditional capability:` declaration lines when reading an existing blueprint. New stage-plan blueprints should use task-inline references so the roadmap has one task path and no duplicate capability catalog. Unassigned catalog slugs remain source references for later private-plan decisions.
+For backward compatibility, validators may still accept the older stage-level `Capabilities:` and `Conditional capability:` declaration lines and per-stage `Optional:` blocks when reading an existing blueprint. New stage-plan blueprints should use one shared optional pool and task-inline capability references so the roadmap has one task path and no duplicate capability catalog. Unassigned catalog slugs remain source references for later private-plan decisions.

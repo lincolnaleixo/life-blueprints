@@ -1,6 +1,6 @@
 ---
 type: youtube
-version: 7.1
+version: 7.2
 updated: 2026-09-05
 status: first-pass
 plan_grammar: phases
@@ -20,7 +20,7 @@ graduation_gate: revenue
 - A stage is one bounded unit of work plus its expected result. The stage is complete only when its required work is complete **and** its own exit trigger is met. A later stage never borrows an earlier stage's trigger.
 - Idea validation, niche and audience selection, channel proposal, and fit approval happen before `E0`. The Stage Roadmap does not ask the operator to revalidate an already approved idea.
 - `E0`–`E5` use total valid public channel views from a date-bounded YouTube Analytics aggregate in a trailing 30-day window. The exact trigger is written on the stage whose result it proves.
-- Optional work can improve a stage but never blocks completion. An exception requires owner approval and a record in the private plan; the public blueprint does not invent an exception for a specific operator.
+- The shared `## Optional Work` pool is available whenever a task fits the approved channel and private plan. Its tasks never replace stage Required work, the stage's own trigger, or approval boundaries. An exception requires owner approval and a record in the private plan; the public blueprint does not invent an exception for a specific operator.
 - When required work and the stage's own result pass early, close the stage without waiting for the next 30-day review clock; the clock governs review, not completion.
 - The review clock is every 30 days from stage entry or the last review. It is separate from the trailing measurement window. A review can record falling evidence, but there is no automatic regression or automatic pause; retain completed work when graduation happens.
 - The maturity phases below are generic capability indexing for a later Revenue-or-higher unit. They are not an alternative experiment roadmap, and no catalog phase number maps to an E-stage.
@@ -34,7 +34,7 @@ The reusable policy for this and future stage-plan blueprints is defined in [`do
 
 ## Stage Roadmap
 
-Each stage below is a private-plan reference. The entry condition points to the prior result; the exit trigger belongs to the stage itself. The operator adapts the required work to the approved channel and keeps unassigned catalog capabilities as future undecided options.
+Each stage below is a private-plan reference. The entry condition points to the prior result; the exit trigger belongs to the stage itself. The operator adapts the required work to the approved channel, may draw from the shared Optional Work pool when appropriate, and keeps unassigned catalog capabilities as future undecided options.
 
 ### E0 — Prepare the channel and first representative video
 
@@ -46,10 +46,6 @@ Required:
 - Set up channel measurement, ownership, channel health checks, and rights checks.
 - Produce and publish one representative video semi-manually with AI assistance under the owner or a designated responsible approver's editorial and safety approval.
 - Start reusable automation code that can reduce repeated production work; do not claim full automation at E0.
-
-Optional:
-- Claim relevant official profiles (`official-profiles`) and route the video to an eligible next video or destination (`end-screen-routing`).
-- When the approved experiment selects a Shorts lane, make its transformation boundary explicit (`shorts-lane`); otherwise this optional task is not required.
 
 Exit trigger: >=10 valid public channel views
 Window: Trailing 30 days
@@ -67,9 +63,6 @@ Required:
 - Produce and publish the second video semi-manually with AI assistance and explicit editorial, safety, and rights approval.
 - Extend the reusable automation code to automate as much of the repeatable workflow as practical; semi-manual operation remains allowed.
 
-Optional:
-- Improve one packaging or viewer-routing detail when aggregate evidence identifies a concrete gap, and collect topic requests where useful (`feedback-intake`).
-
 Exit trigger: >=100 valid public channel views
 Window: Trailing 30 days
 Evidence: YouTube Analytics aggregate channel views for the trailing 30 days, with source health retained separately.
@@ -85,9 +78,6 @@ Entry: E1 required work is complete and E1's own >=100 valid public channel view
 Required:
 - Automate one video per day with supervision for the initial videos; keep editorial, safety, and rights approval boundaries explicit.
 - Before E2 can exit, THREE consecutive correctly produced and published videos must be approved by the owner or designated responsible approver.
-
-Optional:
-- Add one low-risk quality or routing improvement that does not weaken the approval boundary.
 
 Exit trigger: >=200 valid public channel views
 Window: Trailing 30 days
@@ -105,9 +95,6 @@ Required:
 - Maintain one video per day without routine supervision.
 - Retain explicit exception-handling and safety-approval boundaries; routine autonomy does not remove those boundaries.
 
-Optional:
-- Improve the owned viewer route only when audience fit and accountable reply ownership are clear, using an owned site (`owned-site`), email list (`email-list`), or direct channel (`direct-channel`) only when selected by the private plan.
-
 Exit trigger: >=500 valid public channel views
 Window: Trailing 30 days
 Evidence: YouTube Analytics aggregate channel views for the trailing 30 days, with source health retained separately.
@@ -123,9 +110,6 @@ Entry: E3 required work is complete and E3's own >=500 valid public channel view
 Required:
 - Maintain the daily video cadence.
 - Improve one of the automation, video, thumbnail, title, or description quality dimensions at a time and observe the aggregate result.
-
-Optional:
-- Use a fit-based feedback or owned-audience surface when it supports the selected quality focus.
 
 Exit trigger: >=5000 valid public channel views
 Window: Trailing 30 days
@@ -143,14 +127,23 @@ Required:
 - Maintain the daily video cadence and safe exception boundaries.
 - Choose exactly one small niche- or audience-fit commercial test and measure interest and revenue.
 
-Optional:
-- Use one fit-appropriate owned or partner surface only when its audience fit, disclosure, and approval conditions are clear; if the selected test needs an owned digital product, build the smallest offer needed to test it (`backend-product`) with those fit, disclosure, and approval conditions, otherwise skip this optional task.
-
 Exit trigger: >=10000 valid public channel views
 Window: Trailing 30 days
 Evidence: YouTube Analytics aggregate channel views for the trailing 30 days, with source health retained separately; retain aggregate commercial-test interest and revenue evidence separately.
 Review: Every 30 days from stage entry or last review
 If not met: Review the stage bottleneck and adjust one focus; do not auto-kill the experiment.
+
+## Optional Work
+
+These tasks are available at any stage whenever appropriate for the approved channel and private plan. Shared optional work never replaces required work, the stage's own exit trigger, or approval boundaries; it does not bypass mandatory production, safety, or rights checks.
+
+- Claim relevant official profiles (`official-profiles`) and route the video to an eligible next video or destination (`end-screen-routing`).
+- When the approved experiment selects a Shorts lane, make its transformation boundary explicit (`shorts-lane`); otherwise this optional task is not required.
+- Improve one packaging or viewer-routing detail when aggregate evidence identifies a concrete gap, and collect topic requests where useful (`feedback-intake`).
+- Add one low-risk quality or routing improvement that does not weaken the approval boundary.
+- Improve the owned viewer route only when audience fit and accountable reply ownership are clear, using an owned site (`owned-site`), email list (`email-list`), or direct channel (`direct-channel`) only when selected by the private plan.
+- Use a fit-based feedback or owned-audience surface when it supports the selected quality focus.
+- Use one fit-appropriate owned or partner surface only when its audience fit, disclosure, and approval conditions are clear; if the selected test needs an owned digital product, build the smallest offer needed to test it (`backend-product`) with those fit, disclosure, and approval conditions, otherwise skip this optional task.
 
 ## Graduation
 

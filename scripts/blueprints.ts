@@ -131,6 +131,67 @@ function stageFieldLines(block: StageBlock): { lines: string[]; indexes: Map<str
   return { lines, indexes };
 }
 
+function sectionHeadingCount(body: string, heading: string): number {
+  const escaped = heading.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&");
+  return [...body.matchAll(new RegExp(`^## ${escaped}\\s*$`, "gm"))].length;
+}
+
+function validateInlineCapabilityTask(
+  line: string,
+  catalog: Set<string>,
+  label: string,
+  add: (message: string) => void
+): void {
+  const inlineSlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  const inlineCapabilities: string[] = [];
+  for (const match of line.matchAll(/`([^`]+)`/g)) {
+    const capability = match[1]!;
+    if (!inlineSlugPattern.test(capability)) {
+      add(`${label} has an invalid inline capability slug: ${capability}`);
+      continue;
+    }
+    if (!catalog.has(capability)) add(`${label} references unknown capability slug: ${capability}`);
+    inlineCapabilities.push(capability);
+  }
+  const duplicateInline = inlineCapabilities.filter((capability, index) => inlineCapabilities.indexOf(capability) !== index);
+  if (duplicateInline.length) {
+    add(`${label} cannot repeat inline capability slugs in one task: ${[...new Set(duplicateInline)].join(", ")}`);
+  }
+}
+
+function validateSharedOptionalWork(
+  body: string,
+  catalog: Set<string>,
+  add: (message: string) => void
+): void {
+  const section = namedSection(body, "Optional Work");
+  if (!section) {
+    add("stage-plan shared optional layout requires an ## Optional Work section");
+    return;
+  }
+  const lines = section.split("\n").map((line) => line.trim());
+  const bullets = lines.filter((line) => /^-\s+\S/.test(line));
+  if (!bullets.length) add("## Optional Work must contain one or more plain '- ' task bullets");
+  let sawBullet = false;
+  for (const line of lines) {
+    if (!line) continue;
+    if (/^-\s+\S/.test(line)) {
+      sawBullet = true;
+      if (/\bE\d+\b/i.test(line)) add("## Optional Work tasks must not assign work to a stage");
+      validateInlineCapabilityTask(line, catalog, "## Optional Work", add);
+    } else if (sawBullet) {
+      add("## Optional Work may contain only plain task bullets after its introduction");
+    } else if (/^(?:[-+*]|\d+[.)])(?:\s+.*)?$/.test(line)) {
+      add("## Optional Work must use plain '- ' task bullets");
+    } else if (/^(?:###|Objective:|Entry:|Required:|Optional:|Capabilities:|Conditional capability:|Exit trigger:|Window:|Evidence:|Review:|If not met:)/.test(line)) {
+      add("## Optional Work contains a malformed task or stage field");
+    }
+  }
+  if (!/never replaces[^.\n]*required work/i.test(section)) add("## Optional Work must state that shared tasks do not replace required work");
+  if (!/exit trigger/i.test(section)) add("## Optional Work must state that shared tasks do not replace the stage exit trigger");
+  if (!/approval[^.\n]*boundar/i.test(section)) add("## Optional Work must state that shared tasks do not replace approval boundaries");
+}
+
 function validateStagePlanContract(
   filename: string,
   body: string,
@@ -162,7 +223,17 @@ function validateStagePlanContract(
   if (duplicates.length) add(`duplicate stage-plan stages: ${[...new Set(duplicates)].map((stage) => `E${stage}`).join(", ")}`);
 
   const catalog = new Set(capabilitySlugs(body));
-  const expectedFields = ["Objective", "Entry", "Required", "Optional", "Exit trigger", "Window", "Evidence", "Review", "If not met"];
+  const optionalWorkSectionCount = sectionHeadingCount(body, "Optional Work");
+  const currentUsesSharedOptionalPool = optionalWorkSectionCount === 1;
+  const stageOptionalBlocks = blocks.filter((block) => stageFieldLines(block).indexes.has("Optional"));
+  if (optionalWorkSectionCount > 1) add("stage-plan must contain exactly one ## Optional Work section");
+  if (optionalWorkSectionCount > 0 && stageOptionalBlocks.length) {
+    add("stage-plan cannot mix shared ## Optional Work with stage-level Optional: blocks");
+  }
+  if (currentUsesSharedOptionalPool) validateSharedOptionalWork(body, catalog, add);
+  const expectedFields = currentUsesSharedOptionalPool
+    ? ["Objective", "Entry", "Required", "Exit trigger", "Window", "Evidence", "Review", "If not met"]
+    : ["Objective", "Entry", "Required", "Optional", "Exit trigger", "Window", "Evidence", "Review", "If not met"];
   const expectedYoutubeTriggers: Record<number, string> = {
     0: ">=10 valid public channel views",
     1: ">=100 valid public channel views",
@@ -187,7 +258,7 @@ function validateStagePlanContract(
     const ordered = expectedFields.map(firstIndex);
     if (ordered.some((index) => index === undefined)) continue;
     if (ordered.some((index, position) => position > 0 && (index as number) <= (ordered[position - 1] as number))) {
-      add(`${label} fields must appear in Objective, Entry, Required, Optional, trigger, evidence, and review order`);
+      add(`${label} fields must appear in the declared order`);
       continue;
     }
 
@@ -198,58 +269,47 @@ function validateStagePlanContract(
     if (!entry) add(`${label} Entry must contain text`);
 
     const requiredStart = firstIndex("Required")!;
-    const optionalStart = firstIndex("Optional")!;
-    const requiredLine = lines[requiredStart]!.trim();
-    if (requiredLine !== "Required:") add(`${label} Required: must be followed by checklist bullets, not inline text`);
-    const requiredLines = lines.slice(requiredStart + 1, optionalStart).map((line) => line.trim()).filter(Boolean);
-    if (!requiredLines.length || requiredLines.some((line) => !/^-\s+\S/.test(line))) {
-      add(`${label} Required: must contain one or more '- ' bullets`);
-    }
-
+    const optionalStart = firstIndex("Optional");
     const exitStart = firstIndex("Exit trigger")!;
     const legacyCapabilityIndexes = [
       ...(indexes.get("Capabilities") || []),
       ...(indexes.get("Conditional capability") || [])
     ].sort((a, b) => a - b);
     const legacyCapabilityStart = legacyCapabilityIndexes[0] ?? exitStart;
+    const requiredEnd = Math.min(optionalStart ?? exitStart, legacyCapabilityStart);
+    const requiredLine = lines[requiredStart]!.trim();
+    if (requiredLine !== "Required:") add(`${label} Required: must be followed by checklist bullets, not inline text`);
+    const requiredLines = lines.slice(requiredStart + 1, requiredEnd).map((line) => line.trim()).filter(Boolean);
+    if (!requiredLines.length || requiredLines.some((line) => !/^-\s+\S/.test(line))) {
+      add(`${label} Required: must contain one or more '- ' bullets`);
+    }
+
     for (const index of legacyCapabilityIndexes) {
-      if (index <= optionalStart || index >= exitStart) {
-        add(`${label} legacy capability declarations must appear after Optional: and before Exit trigger:`);
+      const declarationBoundary = optionalStart ?? requiredStart;
+      if (index <= declarationBoundary || index >= exitStart) {
+        add(`${label} legacy capability declarations must appear after the task blocks and before Exit trigger:`);
       }
     }
     const legacyCapabilitiesIndexes = indexes.get("Capabilities") || [];
     if (legacyCapabilitiesIndexes.length > 1) add(`${label} Capabilities: must be declared at most once for backward compatibility`);
     const optionalEnd = legacyCapabilityStart;
-    const optionalLine = lines[optionalStart]!.trim();
-    if (optionalLine !== "Optional:") add(`${label} Optional: must be followed by checklist bullets or None.`);
-    const optionalLines = lines.slice(optionalStart + 1, optionalEnd).map((line) => line.trim()).filter(Boolean);
-    if (!optionalLines.length || optionalLines.some((line) => line !== "None." && !/^-\s+\S/.test(line))) {
-      add(`${label} Optional: must contain '- ' bullets or exactly None.`);
-    }
-    if (optionalLines.includes("None.") && optionalLines.length !== 1) {
-      add(`${label} Optional: None. cannot be combined with bullets`);
+    const optionalLines = optionalStart === undefined
+      ? []
+      : lines.slice(optionalStart + 1, optionalEnd).map((line) => line.trim()).filter(Boolean);
+    if (optionalStart !== undefined) {
+      const optionalLine = lines[optionalStart]!.trim();
+      if (optionalLine !== "Optional:") add(`${label} Optional: must be followed by checklist bullets or None.`);
+      if (!optionalLines.length || optionalLines.some((line) => line !== "None." && !/^-\s+\S/.test(line))) {
+        add(`${label} Optional: must contain '- ' bullets or exactly None.`);
+      }
+      if (optionalLines.includes("None.") && optionalLines.length !== 1) {
+        add(`${label} Optional: None. cannot be combined with bullets`);
+      }
+      if (currentUsesSharedOptionalPool) add(`${label} must omit Optional:; use the shared ## Optional Work pool`);
     }
 
     const taskLines = [...requiredLines, ...optionalLines.filter((line) => line !== "None.")];
-    const inlineSlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-    for (const line of taskLines) {
-      const inlineCapabilities: string[] = [];
-      for (const match of line.matchAll(/`([^`]+)`/g)) {
-        const capability = match[1]!;
-        if (!inlineSlugPattern.test(capability)) {
-          add(`${label} has an invalid inline capability slug: ${capability}`);
-          continue;
-        }
-        if (!catalog.has(capability)) {
-          add(`${label} references unknown capability slug: ${capability}`);
-        }
-        inlineCapabilities.push(capability);
-      }
-      const duplicateInline = inlineCapabilities.filter((capability, index) => inlineCapabilities.indexOf(capability) !== index);
-      if (duplicateInline.length) {
-        add(`${label} cannot repeat inline capability slugs in one task: ${[...new Set(duplicateInline)].join(", ")}`);
-      }
-    }
+    for (const line of taskLines) validateInlineCapabilityTask(line, catalog, label, add);
 
     const legacyDirectCapabilities: string[] = [];
     const legacyConditionalCapabilities: string[] = [];
@@ -326,7 +386,7 @@ function validateStagePlanContract(
     }
     const e2 = blocks.find((block) => block.stage === 2);
     if (e2) {
-      const required = e2.body.match(/^Required:\s*$([\s\S]*?)(?=^Optional:\s*$)/m)?.[1] || "";
+      const required = e2.body.match(/^Required:\s*$([\s\S]*?)(?=^Optional:\s*$|^Exit trigger:\s*)/m)?.[1] || "";
       if (!/one video per day[^\n]*supervision/i.test(required)) add("youtube stage E2 must require one supervised video per day");
       if (!/THREE consecutive correctly produced and published videos[^\n]*approved by (?:the )?owner or designated responsible approver/i.test(required)) {
         add("youtube stage E2 must require three consecutive correctly produced and published videos approved by the owner or responsible approver");
