@@ -4,6 +4,10 @@ Open-source, evidence-gated playbooks for building durable digital businesses.
 
 A blueprint is reusable reference material, not a task list or a promise of results. It describes a business model, meaningful maturity phases, operating gates, and durable capabilities. A specific business should translate the relevant parts into its own plan instead of mirroring the complete catalog.
 
+## Simple starting point
+
+For a lighter way to decide what to do next, start with the [YouTube Action Map](action-maps/youtube.md) (E0 and E1 only) and consult the [YouTube Playbook](playbooks/youtube.md) to choose one technique. The map gives focus, triggers and action; the playbook is an optional menu. Concrete tasks stay in the channel's own plan. These references do not automatically replace existing blueprint contracts or migrate recorded levels.
+
 ## Catalog
 
 | Type | Version | Status | Blueprint |
