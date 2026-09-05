@@ -135,15 +135,15 @@ If not met: Review the stage bottleneck and adjust one focus; do not auto-kill t
 
 ## Optional Work
 
-These tasks are available at any stage whenever appropriate for the approved channel and private plan. Shared optional work never replaces required work, the stage's own exit trigger, or approval boundaries; it does not bypass mandatory production, safety, or rights checks.
+These tasks are available at any stage whenever appropriate for the approved channel and private plan. Shared optional work never replaces required work, the stage's own exit trigger, or approval boundaries; it does not bypass mandatory production, safety, or rights checks. Each recommendation below is advisory only: the task may be used at another stage when its conditions fit, and the hint creates no eligibility, capability debt, blocked state, or unlock.
 
-- Claim relevant official profiles (`official-profiles`) and route the video to an eligible next video or destination (`end-screen-routing`).
-- When the approved experiment selects a Shorts lane, make its transformation boundary explicit (`shorts-lane`); otherwise this optional task is not required.
-- Improve one packaging or viewer-routing detail when aggregate evidence identifies a concrete gap, and collect topic requests where useful (`feedback-intake`).
-- Add one low-risk quality or routing improvement that does not weaken the approval boundary.
-- Improve the owned viewer route only when audience fit and accountable reply ownership are clear, using an owned site (`owned-site`), email list (`email-list`), or direct channel (`direct-channel`) only when selected by the private plan.
-- Use a fit-based feedback or owned-audience surface when it supports the selected quality focus.
-- Use one fit-appropriate owned or partner surface only when its audience fit, disclosure, and approval conditions are clear; if the selected test needs an owned digital product, build the smallest offer needed to test it (`backend-product`) with those fit, disclosure, and approval conditions, otherwise skip this optional task.
+- Claim relevant official profiles (`official-profiles`) and route the video to an eligible next video or destination (`end-screen-routing`). Recommended stage: E0.
+- When the approved experiment selects a Shorts lane, make its transformation boundary explicit (`shorts-lane`); otherwise this optional task is not required. Recommended stage: E0.
+- Improve one packaging or viewer-routing detail when aggregate evidence identifies a concrete gap, and collect topic requests where useful (`feedback-intake`). Recommended stage: E1.
+- Add one low-risk quality or routing improvement that does not weaken the approval boundary. Recommended stage: E2.
+- Improve the owned viewer route only when audience fit and accountable reply ownership are clear, using an owned site (`owned-site`), email list (`email-list`), or direct channel (`direct-channel`) only when selected by the private plan. Recommended stage: E3.
+- Use a fit-based feedback or owned-audience surface when it supports the selected quality focus. Recommended stage: E4.
+- Use one fit-appropriate owned or partner surface only when its audience fit, disclosure, and approval conditions are clear; if the selected test needs an owned digital product, build the smallest offer needed to test it (`backend-product`) with those fit, disclosure, and approval conditions, otherwise skip this optional task. Recommended stage: E5.
 
 ## Graduation
 

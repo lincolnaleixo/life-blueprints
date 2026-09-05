@@ -283,6 +283,8 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
     const optionalWork = content.match(/^## Optional Work\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/m)?.[1] || "";
     expect((optionalWork.match(/^-\s+\S/gm) || []).length).toBe(7);
     expect((optionalWork.match(/`[a-z0-9]+(?:-[a-z0-9]+)*`/g) || []).length).toBe(8);
+    expect([...optionalWork.matchAll(/Recommended stage: (E\d+)\./g)].map((match) => match[1]!)).toEqual(["E0", "E0", "E1", "E2", "E3", "E4", "E5"]);
+    expect(optionalWork).toContain("advisory only");
     expect(content).toContain("(`official-profiles`)");
     expect(content).toContain("(`end-screen-routing`)");
     expect(content).toContain("(`shorts-lane`); otherwise this optional task is not required.");
@@ -303,6 +305,8 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
     expect(template).toContain("Optional:\nNone.");
     expect(template).toContain("## Optional Work");
     expect(template).toContain("must not mix the shared pool with stage-level");
+    expect(template).toContain("Recommended stage: E0.");
+    expect(template).toContain("does not assign the task to a stage");
     expect(template).toContain("Required work and the stage's own exit trigger");
     expect(template).toContain("Every 30 days from stage entry or last review");
     expect(template).toContain("do not wait for the review clock");
@@ -345,6 +349,31 @@ Level 0 requires one verified autonomous capability. The next evidence trigger r
       "- Add one low-risk quality or routing improvement that does not weaken the approval boundary (`official-profiles`)."
     );
     expect(validateBlueprintContent("youtube.md", reused, "`youtube@7.2`")).toEqual([]);
+  });
+
+  test("keeps shared recommendations advisory and validates their suffix", async () => {
+    const content = await Bun.file(resolve(root, "blueprints/youtube.md")).text();
+    const withoutHints = content.replace(/ Recommended stage: E\d+\./g, "");
+    expect(validateBlueprintContent("youtube.md", withoutHints, "`youtube@7.2`")).toEqual([]);
+
+    const unavailable = content.replace("Recommended stage: E0.", "Recommended stage: E6.");
+    const unavailableProblems = validateBlueprintContent("youtube.md", unavailable, "`youtube@7.2`");
+    expect(unavailableProblems.some((problem) => problem.message.includes("unavailable Recommended stage: E6"))).toBe(true);
+
+    const duplicate = content.replace("Recommended stage: E0.", "Recommended stage: E0. Recommended stage: E1.");
+    const duplicateProblems = validateBlueprintContent("youtube.md", duplicate, "`youtube@7.2`");
+    expect(duplicateProblems.some((problem) => problem.message.includes("only one Recommended stage hint"))).toBe(true);
+
+    const malformed = content.replace("Recommended stage: E1.", "Recommended stage: E1");
+    const malformedProblems = validateBlueprintContent("youtube.md", malformed, "`youtube@7.2`");
+    expect(malformedProblems.some((problem) => problem.message.includes("malformed Recommended stage hint"))).toBe(true);
+
+    const assigned = content.replace(
+      "- Add one low-risk quality or routing improvement that does not weaken the approval boundary.",
+      "- Add one low-risk quality or routing improvement at E2 that does not weaken the approval boundary. Recommended stage: E2."
+    );
+    const assignedProblems = validateBlueprintContent("youtube.md", assigned, "`youtube@7.2`");
+    expect(assignedProblems.some((problem) => problem.message.includes("must not assign work to a stage"))).toBe(true);
   });
 
   test("rejects stage plans that use a next-stage trigger", async () => {

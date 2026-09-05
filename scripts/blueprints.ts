@@ -162,6 +162,7 @@ function validateInlineCapabilityTask(
 function validateSharedOptionalWork(
   body: string,
   catalog: Set<string>,
+  availableStages: Set<string>,
   add: (message: string) => void
 ): void {
   const section = namedSection(body, "Optional Work");
@@ -177,8 +178,18 @@ function validateSharedOptionalWork(
     if (!line) continue;
     if (/^-\s+\S/.test(line)) {
       sawBullet = true;
-      if (/\bE\d+\b/i.test(line)) add("## Optional Work tasks must not assign work to a stage");
-      validateInlineCapabilityTask(line, catalog, "## Optional Work", add);
+      const recommendationCount = (line.match(/Recommended stage:/g) || []).length;
+      const recommendation = line.match(/^(.*)\s+Recommended stage:\s+(E\d+)\.$/);
+      if (recommendationCount > 1) add("## Optional Work tasks may contain only one Recommended stage hint");
+      if (recommendationCount === 1 && !recommendation) {
+        add("## Optional Work has a malformed Recommended stage hint");
+      }
+      const taskText = recommendation?.[1] || line;
+      if (/\bE\d+\b/i.test(taskText)) add("## Optional Work tasks must not assign work to a stage");
+      if (recommendation && !availableStages.has(recommendation[2]!)) {
+        add(`## Optional Work references unavailable Recommended stage: ${recommendation[2]}`);
+      }
+      validateInlineCapabilityTask(taskText, catalog, "## Optional Work", add);
     } else if (sawBullet) {
       add("## Optional Work may contain only plain task bullets after its introduction");
     } else if (/^(?:[-+*]|\d+[.)])(?:\s+.*)?$/.test(line)) {
@@ -226,11 +237,12 @@ function validateStagePlanContract(
   const optionalWorkSectionCount = sectionHeadingCount(body, "Optional Work");
   const currentUsesSharedOptionalPool = optionalWorkSectionCount === 1;
   const stageOptionalBlocks = blocks.filter((block) => stageFieldLines(block).indexes.has("Optional"));
+  const availableStages = new Set(blocks.map((block) => `E${block.stage}`));
   if (optionalWorkSectionCount > 1) add("stage-plan must contain exactly one ## Optional Work section");
   if (optionalWorkSectionCount > 0 && stageOptionalBlocks.length) {
     add("stage-plan cannot mix shared ## Optional Work with stage-level Optional: blocks");
   }
-  if (currentUsesSharedOptionalPool) validateSharedOptionalWork(body, catalog, add);
+  if (currentUsesSharedOptionalPool) validateSharedOptionalWork(body, catalog, availableStages, add);
   const expectedFields = currentUsesSharedOptionalPool
     ? ["Objective", "Entry", "Required", "Exit trigger", "Window", "Evidence", "Review", "If not met"]
     : ["Objective", "Entry", "Required", "Optional", "Exit trigger", "Window", "Evidence", "Review", "If not met"];

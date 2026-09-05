@@ -60,9 +60,9 @@ For a shared optional pool, use one plain-bullet section outside the stages:
 ```markdown
 ## Optional Work
 
-Shared optional work never replaces required work, the stage's own exit trigger, or approval boundaries.
+Shared optional work never replaces required work, the stage's own exit trigger, or approval boundaries. A recommendation is advisory only; it does not assign the task to a stage or create eligibility, capability debt, a blocked state, or an unlock.
 
-- <useful but non-blocking task (`catalog-slug`), with any condition in this sentence>
+- <useful but non-blocking task (`catalog-slug`), with any condition in this sentence> Recommended stage: E0.
 ```
 
 Capability references belong inline in the `Required` or shared `Optional Work` task that uses them. For example:
@@ -73,5 +73,7 @@ Capability references belong inline in the `Required` or shared `Optional Work` 
 ```
 
 They are references to the catalog, not a second stage capability card or a requirement to map the whole catalog into the roadmap. When a capability is conditional, put its fit, eligibility, or approval condition in that same task sentence. A conditional reference does not create an extra trigger or gate. Shared optional work cannot bypass required production, safety, rights, or owner-approval boundaries. Capability references are not automatic obligations unless they are explicitly listed under `Required`.
+
+Each shared task may have at most one exact suffix in the form `Recommended stage: E0.`. The stage must exist in that roadmap, but the hint is only a best-fit recommendation: the task may be used at another stage when its conditions fit. A task without the suffix remains valid for backward compatibility. Consumers may strip the suffix from displayed task prose while retaining it as advisory metadata; they must not interpret a recommendation as a gate, debt, blocked state, or unlock.
 
 For backward compatibility, validators may still accept the older stage-level `Capabilities:` and `Conditional capability:` declaration lines and per-stage `Optional:` blocks when reading an existing blueprint. New stage-plan blueprints should use one shared optional pool and task-inline capability references so the roadmap has one task path and no duplicate capability catalog. Unassigned catalog slugs remain source references for later private-plan decisions.
